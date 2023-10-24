@@ -159,4 +159,24 @@ public class Plateau extends AbstractModel {
     public Case getCase (int i, int j) {
         return this.cases[i][j];
     }
+
+    public void setHauteur(int hauteur) {
+        this.hauteur = hauteur;
+    }
+
+    public void setLargeur(int largeur) {
+        this.largeur = largeur;
+    }
+
+    public Case[][] getCases() {
+        return cases;
+    }
+
+    public void setCases(Case[][] cases) {
+        this.cases = cases;
+    }
+
+    public boolean isPartieTerminer() {
+        return partieTerminer;
+    }
 }
