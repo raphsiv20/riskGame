@@ -16,14 +16,14 @@ public class MouseListener extends MouseAdapter {
     }
 
 
-    //Declenche un evenement clic sur la case correspondant aux coordonnees de la souris
+    //Declenche un evenement clic sur le territoire correspondant aux coordonnees de la souris
     public void mousePressed (MouseEvent e) {
         int xSouris = e.getX() ;
         int ySouris = e.getY() ;
 
         if (alinterieur(xSouris,ySouris)) {
-            int i = numeroCaseColonne(xSouris) ;
-            int j = numeroCaseLigne(ySouris) ;
+            int i = numeroTerritoireColonne(xSouris) ;
+            int j = numeroTerritoireLigne(ySouris) ;
             this.controler.cliqueSur(i, j);
         }
     }
@@ -43,12 +43,12 @@ public class MouseListener extends MouseAdapter {
     }
 
     //Renvoit la colonne correspondant aux coordonnees de la souris
-    private int numeroCaseColonne(int Xpos) {
+    private int numeroTerritoireColonne(int Xpos) {
         return (Xpos-x0)/cote ;
     }
 
     //Renvoit la ligne correspondant aux coordonnees de la souris
-    private int numeroCaseLigne(int Ypos) {
+    private int numeroTerritoireLigne(int Ypos) {
         return (Ypos-y0)/cote ;
     }
 }

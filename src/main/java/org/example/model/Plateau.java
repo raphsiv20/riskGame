@@ -107,7 +107,7 @@ public class Plateau extends AbstractModel {
     /*------------*/
 
     /**
-     * Affecte / retourne le type d'une case donnee.
+     * Affecte / retourne le type d'un territoire donnee.
      */
 
     @Override
@@ -149,7 +149,7 @@ public class Plateau extends AbstractModel {
     }
 
     /**
-     * Affecte / retourne la case en position i,j.
+     * Affecte / retourne le territoire en position i,j.
      */
 
     public void setTerritoire (int i, int j, Territoire c) {
@@ -168,12 +168,12 @@ public class Plateau extends AbstractModel {
         this.largeur = largeur;
     }
 
-    public Case[][] getCases() {
-        return cases;
+    public Territoire[][] getTerritoires() {
+        return territoires;
     }
 
-    public void setCases(Case[][] cases) {
-        this.cases = cases;
+    public void setTerritoires(Territoire[][] territoires) {
+        this.territoires = territoires;
     }
 
     public boolean isPartieTerminer() {

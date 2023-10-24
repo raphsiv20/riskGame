@@ -21,7 +21,7 @@ public class Territoire {
 	/*------------*/
 	
 	/**
-	 * Affecte / retourne le type de la case.
+	 * Affecte / retourne le type de le territoire.
 	 */
 
 	public TypeTerritoire getTypeTerritoire() {
