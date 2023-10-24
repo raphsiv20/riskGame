@@ -13,22 +13,37 @@ public class Joueur {
         this.dateNaissance = dateNaissance;
     }
 
-    public String getNomJoueur(){
-        return this.nomJoueur;
+    public String getNomJoueur() {
+        return nomJoueur;
     }
 
-    public String getNomEquipe(){
-        return this.nomEquipe;
+    public void setNomJoueur(String nomJoueur) {
+        this.nomJoueur = nomJoueur;
     }
 
-    public String getPrenomJoueur(){
-        return this.prenomJoueur;
+    public String getNomEquipe() {
+        return nomEquipe;
     }
 
-    public String getDateNaissance(){
-        return this.dateNaissance;
+    public void setNomEquipe(String nomEquipe) {
+        this.nomEquipe = nomEquipe;
     }
 
+    public String getPrenomJoueur() {
+        return prenomJoueur;
+    }
+
+    public void setPrenomJoueur(String prenomJoueur) {
+        this.prenomJoueur = prenomJoueur;
+    }
+
+    public String getDateNaissance() {
+        return dateNaissance;
+    }
+
+    public void setDateNaissance(String dateNaissance) {
+        this.dateNaissance = dateNaissance;
+    }
 
     public void debuterTour(){
 
@@ -41,4 +56,44 @@ public class Joueur {
     public void faireBataille(){
 
     }
+
+    public void gagnerTerritroire(Territoire t) {
+
+    }
+
+    public void perdreTerritoire(Territoire t) {
+
+    }
+
+    public void renforcerTerritoire(Territoire t) {
+
+    }
+
+    public void terminerTour() {
+
+    }
+
+    public void obtenirCateTerritoire(CarteTerritoire carteTerritoire) {
+
+    }
+
+    public void gagnerPartie() {
+
+    }
+
+    public void gnanerSoldat(int nb) {
+
+    }
+
+    public void perdreSoldat(int nb) {
+
+    }
+    public void exchangerCarteTerritoire() {
+
+    }
+
+    public void quitterPartie() {
+
+    }
+
 }
