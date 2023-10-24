@@ -6,13 +6,13 @@ public class Dé {
 
     protected int valeur;
 
-    public Dé(int valeur) {
-        this.valeur = valeur;
+    public Dé() {
     }
 
-    public void lancerDé() {
+    public int lancerDé() {
         Random random = new Random();
         valeur = random.nextInt(6) + 1;
+        return valeur;
     }
 
     public int getValeur(){

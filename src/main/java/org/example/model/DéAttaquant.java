@@ -3,12 +3,12 @@ package org.example.model;
 import java.util.Random;
 
 public class DéAttaquant extends Dé{
-    public DéAttaquant(int valeur) {
-        super(valeur);
+    public DéAttaquant() {
+
     }
 
-    public void lancerDé() {
-        super.lancerDé();
+    public int lancerDé() {
+        return super.lancerDé();
     }
 
     public int getValeur() {

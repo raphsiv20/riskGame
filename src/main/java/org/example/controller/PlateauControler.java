@@ -2,6 +2,7 @@ package org.example.controller;
 
 import org.example.model.AbstractModel;
 import org.example.model.Case;
+import org.example.model.DéAttaquant;
 
 public class PlateauControler extends AbstractControler {
 
@@ -17,11 +18,16 @@ public class PlateauControler extends AbstractControler {
 
     }
 
-
-
     @Override
     public void calculerStepSuivant() {
         // TODO Auto-generated method stub
+
+    }
+
+    public void bataille(){
+        DéAttaquant déAttaque = new DéAttaquant();
+        System.out.println(déAttaque.lancerDé());
+
 
     }
 }
