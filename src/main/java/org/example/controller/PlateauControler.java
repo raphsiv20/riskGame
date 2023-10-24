@@ -3,6 +3,7 @@ package org.example.controller;
 import org.example.model.AbstractModel;
 import org.example.model.Case;
 import org.example.model.DéAttaquant;
+import org.example.model.DéDefenseur;
 
 public class PlateauControler extends AbstractControler {
 
@@ -26,8 +27,12 @@ public class PlateauControler extends AbstractControler {
 
     public void bataille(){
         DéAttaquant déAttaque = new DéAttaquant();
-        System.out.println(déAttaque.lancerDé());
+        DéAttaquant déAttaque1 = new DéAttaquant();
+        DéAttaquant déAttaque2 = new DéAttaquant();
+        DéDefenseur déDéfenseur1 = new DéDefenseur();
+        DéDefenseur déDéfenseur2 = new DéDefenseur();
 
+        System.out.println(déAttaque.lancerDé());
 
     }
 }
