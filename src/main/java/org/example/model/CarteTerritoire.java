@@ -30,7 +30,5 @@ public class CarteTerritoire{
         this.typeTerritoire = typeTerritoire;
     }
 
-    public void obtenirCarteTerritoire() {
 
-    }
 }

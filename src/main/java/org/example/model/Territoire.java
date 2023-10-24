@@ -35,11 +35,14 @@ public class Territoire{
         this.continent = continent;
     }
 
-    public void modifierTerritoire() {
-
+    public void modifierTerritoire(String nom, String couleur, Continent continent) {
+        this.nomTerritoire = nom;
+        this.continent = continent;
+        this.couleur = couleur;
     }
 
     public void afficherTerritoire() {
-
+        System.out.println("Le nom de la territorie est de : " + this.nomTerritoire +
+                " son couleur est de " + this.couleur + " il est dans le continent " + continent.getNomContinent());
     }
 }

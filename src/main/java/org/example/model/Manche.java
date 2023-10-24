@@ -30,12 +30,14 @@ public class Manche {
         this.ordreManche = ordreManche;
     }
 
-    public void modifierManche() {
-
+    public void modifierManche(String nomManche, String ordreManche) {
+        this.nomManche = nomManche;
+        this.ordreManche = ordreManche;
     }
 
     public void annulerManche() {
-
+        this.nomManche = null;
+        this.ordreManche = null;
     }
 
     public void afficherManche() {
