@@ -61,27 +61,27 @@ public class RiskView extends JFrame {
         this.mouseListener.updateDimension(x, y, x+cote*model.getHauteur(), y+cote*model.getLargeur(), cote);
         for(int xP=0; xP<model.getHauteur();xP++){
             for(int yP=0; yP<model.getLargeur();yP++){
-                switch(model.getTypeCase(xP, yP)){
+                switch(model.getTypeTerritoire(xP, yP)){
                     case VIDE :
-                        panelJeu.drawCaseVide(x+xP*cote, y+yP*cote, cote);
+                        panelJeu.drawTerritoireVide(x+xP*cote, y+yP*cote, cote);
                         break;
                     case AMNORD :
-                        panelJeu.drawCaseAmNord(x+xP*cote, y+yP*cote, cote);
+                        panelJeu.drawTerritoireAmNord(x+xP*cote, y+yP*cote, cote);
                         break;
                     case AMSUD :
-                        panelJeu.drawCaseAmSud(x+xP*cote, y+yP*cote, cote);
+                        panelJeu.drawTerritoireAmSud(x+xP*cote, y+yP*cote, cote);
                         break;
                     case EU :
-                        panelJeu.drawCaseEU(x+xP*cote, y+yP*cote, cote);
+                        panelJeu.drawTerritoireEU(x+xP*cote, y+yP*cote, cote);
                         break;
                     case AFRIQUE :
-                        panelJeu.drawCaseAfrique(x+xP*cote, y+yP*cote, cote);
+                        panelJeu.drawTerritoireAfrique(x+xP*cote, y+yP*cote, cote);
                         break;
                     case ASIE :
-                        panelJeu.drawCaseAsie(x+xP*cote, y+yP*cote, cote);
+                        panelJeu.drawTerritoireAsie(x+xP*cote, y+yP*cote, cote);
                         break;
                     case AUST :
-                        panelJeu.drawCaseAust(x+xP*cote, y+yP*cote, cote);
+                        panelJeu.drawTerritoireAust(x+xP*cote, y+yP*cote, cote);
                         break;
                 }
 

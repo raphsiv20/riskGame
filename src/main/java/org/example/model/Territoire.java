@@ -2,34 +2,34 @@ package org.example.model;
 
 public class Territoire {
 
-    /*------------*/
-    /* Proprietes */
-    /*------------*/
+	/*------------*/
+	/* Proprietes */
+	/*------------*/
+	
+	private TypeTerritoire typeTerritoire;
 
-    private org.example.model.TypeTerritoire TypeTerritoire;
+	/*------------*/
+	/* Constructeur */
+	/*------------*/
 
-    /*------------*/
-    /* Constructeur */
-    /*------------*/
+	public Territoire(TypeTerritoire typeTerritoire) {
+		this.typeTerritoire = typeTerritoire;
+	}
 
-    public Territoire(org.example.model.TypeTerritoire TypeTerritoire) {
-        this.TypeTerritoire = TypeTerritoire;
-    }
+	/*------------*/
+	/* Methodes */
+	/*------------*/
+	
+	/**
+	 * Affecte / retourne le type de le territoire.
+	 */
 
-    /*------------*/
-    /* Methodes */
-    /*------------*/
+	public TypeTerritoire getTypeTerritoire() {
+		return typeTerritoire;
+	}
 
-    /**
-     * Affecte / retourne le type de la case.
-     */
-
-    public TypeTerritoire getTypeTerritoire() {
-        return TypeTerritoire;
-    }
-
-    public void setTypeTerritoire(org.example.model.TypeTerritoire typeTerritoire) {
-        this.TypeTerritoire = typeTerritoire;
-    }
-
+	public void setTypeTerritoire(TypeTerritoire typeTerritoire) {
+		this.typeTerritoire = typeTerritoire;
+	}
+	
 }

@@ -3,6 +3,9 @@ package org.example.controller;
 import org.example.model.AbstractModel;
 import org.example.model.Territoire;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class PlateauControler extends AbstractControler {
 
     public PlateauControler(AbstractModel model) {
@@ -12,8 +15,8 @@ public class PlateauControler extends AbstractControler {
 
     @Override
     public void cliqueSur(int x, int y) {
-        Territoire territoireClique = this.model.getCase(x,y);
-
+        Territoire territoireClique = this.model.getTerritoire(x,y);
+        JOptionPane.showMessageDialog(Frame.getFrames()[0], "blabla","" + territoireClique.getTypeTerritoire(), JOptionPane.INFORMATION_MESSAGE);
 
     }
 
