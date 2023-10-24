@@ -14,7 +14,7 @@ public class Joueur {
         this.nomJoueur = nomJoueur;
         this.nomEquipe = nomEquipe;
         this.prenomJoueur = prenomJoueur;
-        listeCarteTerritoire = new ArrayList<>();
+        listeCarteTerritoire = new ArrayList<CarteTerritoire>();
     }
 
     public String getNomJoueur(){

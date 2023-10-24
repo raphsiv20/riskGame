@@ -1,12 +1,11 @@
 package org.example.model;
 
 public class DéDefenseur extends Dé{
-    public DéDefenseur(int valeur) {
-        super(valeur);
+    public DéDefenseur() {
     }
 
-    public void lancerDé() {
-        super.lancerDé();
+    public int lancerDé() {
+        return super.lancerDé();
     }
 
     public int getValeur() {
