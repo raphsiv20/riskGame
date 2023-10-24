@@ -41,4 +41,7 @@ public class Joueur {
     public void faireBataille(){
 
     }
+    public boolean finirTour (){
+        return true;
+    }
 }

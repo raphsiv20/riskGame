@@ -99,7 +99,6 @@ public class Plateau extends AbstractModel {
         this.setTerritoire(8, 6, new Territoire(TypeTerritoire.VIDE));
         this.setTerritoire(9, 6, new Territoire(TypeTerritoire.VIDE));
 
-
     }
 
     /*------------*/
@@ -165,6 +164,13 @@ public class Plateau extends AbstractModel {
 
     public void setLargeur(int largeur) {
         this.largeur = largeur;
+    }
+
+    public int getNumTour(){
+        return 0;
+    }
+    public int getNumManche(){
+        return 0;
     }
 
     public Territoire[][] getTerritoires() {
