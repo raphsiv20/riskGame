@@ -4,15 +4,13 @@ public class Joueur {
     private String nomJoueur;
     private String nomEquipe;
     private String prenomJoueur;
-    private String dateNaissance;
 
-    public Joueur(String nomJoueur, String nomEquipe, String prenomJoueur, String dateNaissance){
+    private int troupeDisponible;
+
+    public Joueur(String nomJoueur, String nomEquipe, String prenomJoueur){
         this.nomJoueur = nomJoueur;
         this.nomEquipe = nomEquipe;
         this.prenomJoueur = prenomJoueur;
-        this.dateNaissance = dateNaissance;
-        String sql = "UPDATE joueur SET colonne = ? WHERE condition = ?";
-
     }
 
     public String getNomJoueur(){
@@ -27,20 +25,12 @@ public class Joueur {
         return this.prenomJoueur;
     }
 
-    public String getDateNaissance(){
-        return this.dateNaissance;
+    public int getTroupeDisponible(){
+        return this.troupeDisponible;
     }
 
-
-    public void debuterTour(){
-
+    public void SetTroupeDisponible(int nombre){
+        this.troupeDisponible = nombre;
     }
 
-    public void placerTroupe(Soldat soldat, Territoire territoire){
-
-    }
-
-    public void faireBataille(){
-
-    }
 }
