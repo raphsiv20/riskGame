@@ -112,7 +112,6 @@ public class Plateau extends AbstractModel {
 
     @Override
     public TypeTerritoire getTypeTerritoire(int x, int y) {
-        System.out.println(this.territoires[x][y].getTypeTerritoire());
         return this.territoires[x][y].getTypeTerritoire();
     }
 
