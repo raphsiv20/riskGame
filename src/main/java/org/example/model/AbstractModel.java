@@ -9,5 +9,6 @@ public abstract class AbstractModel {
     public abstract int getLargeur();
     public abstract int getHauteur();
     public abstract boolean partieTerminer();
+    public abstract Case getCase (int i, int j);
 
 }

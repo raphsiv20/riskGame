@@ -112,8 +112,6 @@ public class Plateau extends AbstractModel {
 
     @Override
     public TypeCase getTypeCase(int x, int y) {
-        System.out.println(x);
-        System.out.println(y);
         System.out.println(this.cases[x][y].getTypeCase());
         return this.cases[x][y].getTypeCase();
     }
@@ -160,5 +158,25 @@ public class Plateau extends AbstractModel {
 
     public Case getCase (int i, int j) {
         return this.cases[i][j];
+    }
+
+    public void setHauteur(int hauteur) {
+        this.hauteur = hauteur;
+    }
+
+    public void setLargeur(int largeur) {
+        this.largeur = largeur;
+    }
+
+    public Case[][] getCases() {
+        return cases;
+    }
+
+    public void setCases(Case[][] cases) {
+        this.cases = cases;
+    }
+
+    public boolean isPartieTerminer() {
+        return partieTerminer;
     }
 }

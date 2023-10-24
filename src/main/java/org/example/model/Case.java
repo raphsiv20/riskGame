@@ -33,5 +33,6 @@ public class Case {
 	public void setTypeCase(TypeCase typeCase) {
 		this.typeCase = typeCase;
 	}
+
 	
 }
