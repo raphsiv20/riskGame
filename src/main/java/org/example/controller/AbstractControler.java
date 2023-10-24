@@ -2,7 +2,8 @@ package org.example.controller;
 
 import org.example.model.AbstractModel;
 
-public abstract class AbstractControler {
+public abstract class
+AbstractControler {
     protected AbstractModel model;
     private String phaseTour;
 
