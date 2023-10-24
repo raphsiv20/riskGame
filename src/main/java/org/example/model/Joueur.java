@@ -11,6 +11,8 @@ public class Joueur {
         this.nomEquipe = nomEquipe;
         this.prenomJoueur = prenomJoueur;
         this.dateNaissance = dateNaissance;
+        String sql = "UPDATE joueur SET colonne = ? WHERE condition = ?";
+
     }
 
     public String getNomJoueur(){
