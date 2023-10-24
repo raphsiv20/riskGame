@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.model.AbstractModel;
+import org.example.model.Case;
 
 public class PlateauControler extends AbstractControler {
 
@@ -11,7 +12,8 @@ public class PlateauControler extends AbstractControler {
 
     @Override
     public void cliqueSur(int x, int y) {
-        // TODO Auto-generated method stub
+        Case caseClique = this.model.getCase(x,y);
+
 
     }
 

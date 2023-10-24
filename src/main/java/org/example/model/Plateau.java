@@ -112,8 +112,6 @@ public class Plateau extends AbstractModel {
 
     @Override
     public TypeCase getTypeCase(int x, int y) {
-        System.out.println(x);
-        System.out.println(y);
         System.out.println(this.cases[x][y].getTypeCase());
         return this.cases[x][y].getTypeCase();
     }
