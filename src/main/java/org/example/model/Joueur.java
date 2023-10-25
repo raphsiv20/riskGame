@@ -10,6 +10,7 @@ public class Joueur {
     private String prenomJoueur;
     private List<Territoire> territoiresOccupes;
     private List<Continent> continentsConquis;
+    private List<CarteTerritoire> carteTerritoires;
 
     public Joueur(int idJoueur, String nomJoueur, String prenomJoueur, Equipe equipeJoueur) {
         this.idJoueur = idJoueur;
@@ -18,7 +19,31 @@ public class Joueur {
         this.equipeJoueur = equipeJoueur;
         this.territoiresOccupes = new ArrayList<>();
         this.continentsConquis = new ArrayList<>();
+        this.carteTerritoires = new ArrayList<>();
         this.equipeJoueur.addJoueur(this);
+    }
+
+    public void addTerritoire(Territoire territoireConquis) {
+        this.territoiresOccupes.add(territoireConquis);
+    }
+
+    public void removeTerritoire(Territoire territoirePerdu) {
+        this.territoiresOccupes.remove(territoirePerdu);
+    }
+
+    public void addContinent(Continent continentConquis) {
+        this.continentsConquis.remove(continentConquis);
+    }
+
+    public void removeContinent(Continent continentPerdu) {
+        this.continentsConquis.remove(continentPerdu);
+    }
+    public void addCarteTerritoire(CarteTerritoire carteTerritoire) {
+        this.carteTerritoires.add(carteTerritoire);
+    }
+
+    public void removeCarteTerritoire(CarteTerritoire carteTerritoire) {
+        this.carteTerritoires.remove(carteTerritoire);
     }
 
     public Equipe getEquipeJoueur() {
@@ -68,5 +93,13 @@ public class Joueur {
 
     public void setIdJoueur(int idJoueur) {
         this.idJoueur = idJoueur;
+    }
+
+    public List<CarteTerritoire> getCarteTerritoires() {
+        return carteTerritoires;
+    }
+
+    public void setCarteTerritoires(List<CarteTerritoire> carteTerritoires) {
+        this.carteTerritoires = carteTerritoires;
     }
 }
