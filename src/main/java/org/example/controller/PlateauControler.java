@@ -1,8 +1,9 @@
 package org.example.controller;
 
 import org.example.model.AbstractModel;
-import org.example.model.Case;
+import org.example.model.Territoire;
 import org.example.model.DéAttaquant;
+import org.example.model.Territoire;
 
 public class PlateauControler extends AbstractControler {
 
@@ -13,7 +14,7 @@ public class PlateauControler extends AbstractControler {
 
     @Override
     public void cliqueSur(int x, int y) {
-        Case caseClique = this.model.getCase(x,y);
+        Territoire caseClique = this.model.getTerritoire(x,y);
 
 
     }
