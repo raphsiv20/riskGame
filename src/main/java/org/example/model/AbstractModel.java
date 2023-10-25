@@ -12,5 +12,9 @@ public abstract class AbstractModel {
     public abstract int getNumManche();
     public abstract boolean partieTerminer();
     public abstract Territoire getTerritoire (int i, int j);
+    public abstract void setNumManche(int num);
+    public abstract void setNumTour(int num);
+    public abstract boolean gagnant ();
+
 
 }
