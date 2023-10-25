@@ -33,13 +33,13 @@ public class RiskView extends JFrame {
         this.joueurs = new ArrayList<>();
         this.incr = 0;
         Equipe equipe1 = new Equipe("equipe1");
-        Joueur joueur1 = new Joueur("NomJoueur1","NomJoueur1", equipe1);
+        Joueur joueur1 = new Joueur("NomJoueur1","NomJoueur1", equipe1, 1);
         joueurs.add(joueur1);
-        Joueur joueur2 = new Joueur("NomJoueur2", "NomJoueur2", equipe1);
+        Joueur joueur2 = new Joueur("NomJoueur2", "NomJoueur2", equipe1, 2);
         joueurs.add(joueur2);
-        Joueur joueur3 = new Joueur("NomJoueur3", "NomJoueur3", equipe1);
+        Joueur joueur3 = new Joueur("NomJoueur3", "NomJoueur3", equipe1, 3);
         joueurs.add(joueur3);
-        Joueur joueur4 = new Joueur("Nomjoueur4", "NomJoueur4", equipe1);
+        Joueur joueur4 = new Joueur("Nomjoueur4", "NomJoueur4", equipe1, 4);
         joueurs.add(joueur4);
 
         initComponents();
