@@ -2,6 +2,7 @@ package org.example.vue;
 
 import org.example.controller.AbstractControler;
 import org.example.model.AbstractModel;
+import org.example.model.Equipe;
 import org.example.model.Joueur;
 
 import javax.swing.*;
@@ -18,10 +19,11 @@ public class RiskView extends JFrame {
     private AbstractControler controler;
     private PanelJeu panelJeu;
     private javax.swing.JLabel labelNbTour;
-    private javax.swing.JLabel labelNbManche;
     private javax.swing.JTextArea labelJoueur;
     private ArrayList<Joueur> joueurs;
     private int joueurActifIndex = 0;
+    private int incr;
+
 
 
 
@@ -29,13 +31,15 @@ public class RiskView extends JFrame {
         this.model = model;
         this.controler = controler;
         this.joueurs = new ArrayList<>();
-        Joueur joueur1 = new Joueur("NomJoueur1","NomJoueur1", "NomJoueur1"); // Remplacez "NomJoueur1" par le vrai nom du joueur
+        this.incr = 0;
+        Equipe equipe1 = new Equipe("equipe1");
+        Joueur joueur1 = new Joueur("NomJoueur1","NomJoueur1", equipe1);
         joueurs.add(joueur1);
-        Joueur joueur2 = new Joueur("NomJoueur2", "NomJoueur2", "NomJoueur2");
+        Joueur joueur2 = new Joueur("NomJoueur2", "NomJoueur2", equipe1);
         joueurs.add(joueur2);
-        Joueur joueur3 = new Joueur("NomJoueur3", "NomJoueur3", "NomJoueur3");
+        Joueur joueur3 = new Joueur("NomJoueur3", "NomJoueur3", equipe1);
         joueurs.add(joueur3);
-        Joueur joueur4 = new Joueur("Nomjoueur4", "NomJoueur4", "NomJoueur4");
+        Joueur joueur4 = new Joueur("Nomjoueur4", "NomJoueur4", equipe1);
         joueurs.add(joueur4);
 
         initComponents();
@@ -51,8 +55,9 @@ public class RiskView extends JFrame {
 
 
         panelJeu = new PanelJeu(this);
-        labelNbTour = new javax.swing.JLabel();
-        labelNbManche = new javax.swing.JLabel();
+        JLabel labelNbTour = new javax.swing.JLabel();
+        model.setNumTour(1);
+        labelNbTour.setText("Tour "+ model.getNumTour());
         labelJoueur = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -76,8 +81,14 @@ public class RiskView extends JFrame {
                         labelPhaseJeu.setText(controler.getPhaseTour());
                         break;
                     case "Phase de renforcement" :
+                        incr = incr + 1;
                         controler.setPhaseTour("Phase de déploiement des troupes");
                         labelPhaseJeu.setText(controler.getPhaseTour());
+                        if (incr == 4) {
+                            model.setNumTour(model.getNumTour() + 1);
+                            labelNbTour.setText("Tour " + model.getNumTour());
+                            incr = 0;
+                        }
                         if (joueurActifIndex >= joueurs.size()-1) {
                             joueurActifIndex = 0;
                             dessinerJeu();
@@ -98,7 +109,6 @@ public class RiskView extends JFrame {
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelNbManche, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labelNbTour, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -115,7 +125,6 @@ public class RiskView extends JFrame {
                                 .addComponent(labelPhaseJeu)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(labelNbManche)
                         .addComponent(labelNbTour))
                         .addComponent(labelJoueur))
 
@@ -128,8 +137,6 @@ public class RiskView extends JFrame {
 
     // dessine le plateau de jeu
     public void dessinerJeu() {
-        labelNbTour.setText("Tour " + model.getNumTour());
-        labelNbManche.setText("Manche " + model.getNumTour());
         labelJoueur.setText("Joueurs :" + '\n');
         for (int i = 0; i < joueurs.size(); i++) {
             String nomJoueur = joueurs.get(i).getNomJoueur();
