@@ -20,7 +20,7 @@ public class Joueur {
     private ArrayList<CarteTerritoire> listeCarteTerritoire;
 
 
-    public Joueur(String nomJoueur, String prenomJoueur, Equipe nomEquipe, int idJoueur){
+    public Joueur(String nomJoueur, String prenomJoueur, Equipe equipeJoueur, int idJoueur){
         this.idJoueur = idJoueur;
         this.nomJoueur = nomJoueur;
         this.prenomJoueur = prenomJoueur;
@@ -64,41 +64,22 @@ public class Joueur {
         this.continentsConquis.remove(continentPerdu);
     }
     public void addCarteTerritoire(CarteTerritoire carteTerritoire) {
-        this.carteTerritoires.add(carteTerritoire);
+        this.listeCarteTerritoire.add(carteTerritoire);
     }
 
     public void removeCarteTerritoire(CarteTerritoire carteTerritoire) {
-        this.carteTerritoires.remove(carteTerritoire);
-        listeCarteTerritoire = new ArrayList<CarteTerritoire>();
-        this.idJoueur = idJoueur;
-
+        this.listeCarteTerritoire.remove(carteTerritoire);
     }
 
     public Equipe getEquipeJoueur() {
         return equipeJoueur;
     }
-
-    public void setEquipeJoueur(Equipe equipeJoueur) {
-        this.equipeJoueur = equipeJoueur;
-    }
-
     public String getNomJoueur() {
         return nomJoueur;
     }
-
-    public void setNomJoueur(String nomJoueur) {
-        this.nomJoueur = nomJoueur;
-    }
-
-
     public String getPrenomJoueur() {
         return prenomJoueur;
     }
-
-    public void setPrenomJoueur(String prenomJoueur) {
-        this.prenomJoueur = prenomJoueur;
-    }
-  
     public int getTroupeDisponible(){
         return this.troupeDisponible;
     }
@@ -126,17 +107,12 @@ public class Joueur {
     public int getIdJoueur() {
         return idJoueur;
     }
-
-    public void setIdJoueur(int idJoueur) {
-        this.idJoueur = idJoueur;
-    }
-
     public List<CarteTerritoire> getCarteTerritoires() {
-        return carteTerritoires;
+        return listeCarteTerritoire;
     }
 
-    public void setCarteTerritoires(List<CarteTerritoire> carteTerritoires) {
-        this.carteTerritoires = carteTerritoires;
+    public void setCarteTerritoires(ArrayList<CarteTerritoire> carteTerritoires) {
+        this.listeCarteTerritoire = carteTerritoires;
     }
 
     public int getSoldatsADeployer() {
@@ -145,6 +121,7 @@ public class Joueur {
 
     public void setSoldatsADeployer(int soldatsADeployer) {
         this.soldatsADeployer = soldatsADeployer;
+    }
 
     public void gagnerTerritoire(Territoire territoire){
         this.territoiresOccupes.add(territoire);

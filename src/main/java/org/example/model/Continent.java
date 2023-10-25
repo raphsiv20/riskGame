@@ -19,31 +19,15 @@ public class Continent {
     public String getContinentName() {
         return continentName;
     }
-
-    public void setContinentName(String continentName) {
-        this.continentName = continentName;
-    }
-
     public int getBonusContinent() {
         return bonusContinent;
     }
-
-    public void setBonusContinent(int bonusContinent) {
-        this.bonusContinent = bonusContinent;
-    }
-
     public List<Territoire> getTerritoiresContinent() {
         return territoiresContinent;
     }
-
-    public void setTerritoiresContinent(List<Territoire> territoiresContinent) {
-        this.territoiresContinent = territoiresContinent;
-    }
-
     public Joueur getJoueurOccupant() {
         return joueurOccupant;
     }
-
     public void setJoueurOccupant(Joueur joueurOccupant) {
         this.joueurOccupant = joueurOccupant;
     }

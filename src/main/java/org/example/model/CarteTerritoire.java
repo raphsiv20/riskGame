@@ -20,8 +20,4 @@ public class CarteTerritoire {
     public String getTypeCarte() {
         return typeCarte;
     }
-
-    public void setTypeCarte(String typeCarte) {
-        this.typeCarte = typeCarte;
-    }
 }

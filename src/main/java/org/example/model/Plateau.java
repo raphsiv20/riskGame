@@ -23,8 +23,6 @@ public class Plateau extends AbstractModel {
     private List<CarteTerritoire> cartesTerritoires;
     private List<Joueur> joueurs;
     private Tour tours;
-    private Manche manche;
-
     private List<Equipe> equipes;
 
 
@@ -43,16 +41,15 @@ public class Plateau extends AbstractModel {
         this.joueurs = new ArrayList<>();
         this.equipes = new ArrayList<>();
         this.tours = new Tour(1);
-        this.manche = new Manche(1);
         this.readFiles();
 
-        /* System.out.println("----------------------------------\n");
+        System.out.println("----------------------------------\n");
         this.cartesTerritoires.forEach(carteTerritoire -> System.out.println(carteTerritoire.getTerritoire().getTerritoireName() +" " +carteTerritoire.getTypeCarte()));
         System.out.println("----------------------------------\n");
         this.equipes.forEach(equipe -> equipe.getJoueursEquipe().forEach(joueur -> System.out.println(equipe.getNomEquipe() + ": " + joueur.getNomJoueur())));
         System.out.println("----------------------------------\n");
         this.continentsGame.forEach(continent -> continent.getTerritoiresContinent().forEach(territoire -> System.out.println(continent.getContinentName() + ": " + territoire.getTerritoireName())));
-         */
+
 
         this.setTerritoire(3, 0, new Territoire(TypeTerritoire.VIDE));
         this.setTerritoire(4, 0, new Territoire(TypeTerritoire.VIDE));
@@ -226,7 +223,7 @@ public class Plateau extends AbstractModel {
         String[] joueursArray;
         for (int i = 0; i < joueurs.length; i++) {
             joueursArray = joueurs[i].split(",");
-            this.joueurs.add(new Joueur(Integer.parseInt(joueursArray[0]), joueursArray[1], joueursArray[2], this.getEquipeByName(joueursArray[3])));
+            this.joueurs.add(new Joueur(joueursArray[1], joueursArray[2], this.getEquipeByName(joueursArray[3]),Integer.parseInt(joueursArray[0]) ));
         }
     }
 
@@ -287,11 +284,6 @@ public class Plateau extends AbstractModel {
         return this.territoires[x][y].getTypeTerritoire();
     }
 
-    @Override
-    public void setTypeTerritoire(int x, int y, TypeTerritoire tt) {
-        this.territoires[x][y].setTypeTerritoire(tt);
-    }
-
     /**
      * Retourne la hauteur et la largeur du labyrinthe.
      */
@@ -333,14 +325,6 @@ public class Plateau extends AbstractModel {
         return this.territoires[i][j];
     }
 
-    public void setHauteur(int hauteur) {
-        this.hauteur = hauteur;
-    }
-
-    public void setLargeur(int largeur) {
-        this.largeur = largeur;
-    }
-
     public Territoire[][] getTerritoires() {
         return territoires;
     }
@@ -349,32 +333,16 @@ public class Plateau extends AbstractModel {
         this.territoires = territoires;
     }
 
-    public boolean isPartieTerminer() {
-        return partieTerminer;
-    }
-
     public List<Territoire> getTerritoiresGame() {
         return territoiresGame;
-    }
-
-    public void setTerritoiresGame(List<Territoire> territoiresGame) {
-        this.territoiresGame = territoiresGame;
     }
 
     public List<Continent> getContinentsGame() {
         return continentsGame;
     }
 
-    public void setContinentsGame(List<Continent> continentsGame) {
-        this.continentsGame = continentsGame;
-    }
-
     public List<CarteTerritoire> getCartesTerritoires() {
         return cartesTerritoires;
-    }
-
-    public void setCartesTerritoires(List<CarteTerritoire> cartesTerritoires) {
-        this.cartesTerritoires = cartesTerritoires;
     }
 
     public List<Joueur> getJoueurs() {
@@ -384,9 +352,7 @@ public class Plateau extends AbstractModel {
     public void setJoueurs(List<Joueur> joueurs) {
         this.joueurs = joueurs;
     }
-    public void setNumManche(int num){
-        manche.setterNumManche(num);
-    }
+
     public void setNumTour(int num){
         tours.setNumTour(num);
     }
@@ -394,11 +360,4 @@ public class Plateau extends AbstractModel {
     public int getNumTour(){
         return tours.getNumTour();
     }
-    public int getNumManche(){
-        return manche.getnumManche();
-    }
-    public boolean gagnant (){
-        boolean joueurGagnant = false ;
-        return joueurGagnant ;
-    }
-}
+ }

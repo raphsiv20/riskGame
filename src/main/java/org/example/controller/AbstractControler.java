@@ -13,8 +13,6 @@ AbstractControler {
 
     public abstract void cliqueSur(int x, int y);
 
-    public abstract void calculerStepSuivant();
-
     public String getPhaseTour() {
         return this.phaseTour;
     }
