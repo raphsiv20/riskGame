@@ -22,6 +22,8 @@ public class Plateau extends AbstractModel {
     private List<Continent> continentsGame;
     private List<CarteTerritoire> cartesTerritoires;
     private List<Joueur> joueurs;
+    private Tour tours;
+    private Manche manche;
 
     private List<Equipe> equipes;
 
@@ -40,7 +42,8 @@ public class Plateau extends AbstractModel {
         this.cartesTerritoires = new ArrayList<>();
         this.joueurs = new ArrayList<>();
         this.equipes = new ArrayList<>();
-
+        this.tours = new Tour(1);
+        this.manche = new Manche(1);
         this.readFiles();
 
         /* System.out.println("----------------------------------\n");
@@ -85,9 +88,6 @@ public class Plateau extends AbstractModel {
         this.setTerritoire(7, 6, new Territoire(TypeTerritoire.VIDE));
         this.setTerritoire(8, 6, new Territoire(TypeTerritoire.VIDE));
         this.setTerritoire(9, 6, new Territoire(TypeTerritoire.VIDE));
-
-
-
 
     }
 
@@ -383,5 +383,22 @@ public class Plateau extends AbstractModel {
 
     public void setJoueurs(List<Joueur> joueurs) {
         this.joueurs = joueurs;
+    }
+    public void setNumManche(int num){
+        manche.setterNumManche(num);
+    }
+    public void setNumTour(int num){
+        tours.setNumTour(num);
+    }
+
+    public int getNumTour(){
+        return tours.getNumTour();
+    }
+    public int getNumManche(){
+        return manche.getnumManche();
+    }
+    public boolean gagnant (){
+        boolean joueurGagnant = false ;
+        return joueurGagnant ;
     }
 }

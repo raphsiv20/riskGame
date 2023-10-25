@@ -1,4 +1,7 @@
 package org.example.model;
+import java.util.ArrayList;
+import java.sql.*;
+import static org.example.controller.Gestion_BDD.insertNombreTerritoire;
 
 import org.example.Exceptions.PasAssezDeSoldatsException;
 
@@ -13,16 +16,18 @@ public class Joueur {
     private int soldatsADeployer;
     private List<Territoire> territoiresOccupes;
     private List<Continent> continentsConquis;
-    private List<CarteTerritoire> carteTerritoires;
+    private int troupeDisponible;
+    private ArrayList<CarteTerritoire> listeCarteTerritoire;
 
-    public Joueur(int idJoueur, String nomJoueur, String prenomJoueur, Equipe equipeJoueur) {
+
+    public Joueur(String nomJoueur, String prenomJoueur, Equipe nomEquipe, int idJoueur){
         this.idJoueur = idJoueur;
         this.nomJoueur = nomJoueur;
         this.prenomJoueur = prenomJoueur;
         this.equipeJoueur = equipeJoueur;
         this.territoiresOccupes = new ArrayList<>();
         this.continentsConquis = new ArrayList<>();
-        this.carteTerritoires = new ArrayList<>();
+        this.listeCarteTerritoire = new ArrayList<>();
         this.equipeJoueur.addJoueur(this);
     }
 
@@ -64,6 +69,9 @@ public class Joueur {
 
     public void removeCarteTerritoire(CarteTerritoire carteTerritoire) {
         this.carteTerritoires.remove(carteTerritoire);
+        listeCarteTerritoire = new ArrayList<CarteTerritoire>();
+        this.idJoueur = idJoueur;
+
     }
 
     public Equipe getEquipeJoueur() {
@@ -82,6 +90,7 @@ public class Joueur {
         this.nomJoueur = nomJoueur;
     }
 
+
     public String getPrenomJoueur() {
         return prenomJoueur;
     }
@@ -89,7 +98,14 @@ public class Joueur {
     public void setPrenomJoueur(String prenomJoueur) {
         this.prenomJoueur = prenomJoueur;
     }
+  
+    public int getTroupeDisponible(){
+        return this.troupeDisponible;
+    }
 
+    public void SetTroupeDisponible(int nombre){
+        this.troupeDisponible = nombre;
+    }
 
     public List<Territoire> getTerritoiresOccupes() {
         return territoiresOccupes;
@@ -129,5 +145,14 @@ public class Joueur {
 
     public void setSoldatsADeployer(int soldatsADeployer) {
         this.soldatsADeployer = soldatsADeployer;
+
+    public void gagnerTerritoire(Territoire territoire){
+        this.territoiresOccupes.add(territoire);
+        insertNombreTerritoire(this.idJoueur);
+    }
+
+    public void perdreTerritoire(Territoire territoire){
+        this.territoiresOccupes.remove(territoire);
+
     }
 }
