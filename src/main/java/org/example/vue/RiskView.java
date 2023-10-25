@@ -12,6 +12,8 @@ public class RiskView extends JFrame {
     private AbstractControler controler;
     private PanelJeu panelJeu;
 
+    private int[][] nbSoldats;
+
     public RiskView(AbstractModel model, AbstractControler controler) {
         this.model = model;
         this.controler = controler;
@@ -19,6 +21,8 @@ public class RiskView extends JFrame {
         this.mouseListener = new MouseListener(controler);
         this.panelJeu.addMouseListener(this.mouseListener);
         setVisible(true);
+
+        nbSoldats = new int[model.getHauteur()][model.getLargeur()];
     }
 
     // initialise l'affichage
@@ -44,6 +48,10 @@ public class RiskView extends JFrame {
         pack();
     }
 
+    public void ModifierNbSoldats(int x, int y, int number) {
+        nbSoldats[x][y] = number;
+    }
+
     // dessine le plateau de jeu
     public void dessinerJeu(){
         int h = this.panelJeu.getWidth();
@@ -63,25 +71,25 @@ public class RiskView extends JFrame {
             for(int yP=0; yP<model.getLargeur();yP++){
                 switch(model.getTypeTerritoire(xP, yP)){
                     case VIDE :
-                        panelJeu.drawTerritoireVide(x+xP*cote, y+yP*cote, cote);
+                        panelJeu.drawTerritoireVide(x+xP*cote, y+yP*cote, cote, nbSoldats[xP][yP]);
                         break;
                     case AMNORD :
-                        panelJeu.drawTerritoireAmNord(x+xP*cote, y+yP*cote, cote);
+                        panelJeu.drawTerritoireAmNord(x+xP*cote, y+yP*cote, cote, nbSoldats[xP][yP]);
                         break;
                     case AMSUD :
-                        panelJeu.drawTerritoireAmSud(x+xP*cote, y+yP*cote, cote);
+                        panelJeu.drawTerritoireAmSud(x+xP*cote, y+yP*cote, cote, nbSoldats[xP][yP]);
                         break;
                     case EU :
-                        panelJeu.drawTerritoireEU(x+xP*cote, y+yP*cote, cote);
+                        panelJeu.drawTerritoireEU(x+xP*cote, y+yP*cote, cote, nbSoldats[xP][yP]);
                         break;
                     case AFRIQUE :
-                        panelJeu.drawTerritoireAfrique(x+xP*cote, y+yP*cote, cote);
+                        panelJeu.drawTerritoireAfrique(x+xP*cote, y+yP*cote, cote, nbSoldats[xP][yP]);
                         break;
                     case ASIE :
-                        panelJeu.drawTerritoireAsie(x+xP*cote, y+yP*cote, cote);
+                        panelJeu.drawTerritoireAsie(x+xP*cote, y+yP*cote, cote, nbSoldats[xP][yP]);
                         break;
                     case AUST :
-                        panelJeu.drawTerritoireAust(x+xP*cote, y+yP*cote, cote);
+                        panelJeu.drawTerritoireAust(x+xP*cote, y+yP*cote, cote, nbSoldats[xP][yP]);
                         break;
                 }
 

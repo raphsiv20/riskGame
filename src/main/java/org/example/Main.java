@@ -15,6 +15,7 @@ public class Main {
 
         AbstractControler controler = new PlateauControler(model);
         RiskView v = new RiskView(model,controler);
+        v.ModifierNbSoldats(5,4, 20);
         while(!model.partieTerminer()){
             controler.calculerStepSuivant();
         }
