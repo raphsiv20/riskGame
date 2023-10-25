@@ -54,6 +54,7 @@ public class PlateauControler extends AbstractControler {
                 0
         );
 
+        territoireClique.setSoldats(nbTroupes);
         //set troupes territoires (visuellement aussi)
         //enlève troupes joueur
         //si le joueur a plus de troupe passe phase suivante
