@@ -9,6 +9,11 @@ public abstract class AbstractModel {
     public abstract int getLargeur();
     public abstract int getHauteur();
     public abstract int getNumTour();
+    public abstract void setPhaseTour(String phase);
+    public abstract void setNumManche(int num);
+    public abstract void setNumTour(int num);
+    public abstract boolean gagnant ();
+    public abstract String getPhaseTour();
     public abstract int getNumManche();
     public abstract boolean partieTerminer();
     public abstract Territoire getTerritoire (int i, int j);

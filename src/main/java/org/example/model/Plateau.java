@@ -1,5 +1,4 @@
 package org.example.model;
-
 public class Plateau extends AbstractModel {
 
     /*------------*/
@@ -9,6 +8,9 @@ public class Plateau extends AbstractModel {
     private int hauteur;
     private int largeur;
     private Territoire[][] territoires;
+    private Tour tours;
+    private Manche manche;
+    private Phase phase;
     private boolean partieTerminer;
 
     /*------------*/
@@ -18,7 +20,10 @@ public class Plateau extends AbstractModel {
     public Plateau() {
         this.hauteur = 10;
         this.largeur = 7;
+        this.phase = new Phase("Phase de déploiement des troupes");
         this.territoires = new Territoire[11][8];
+        this.tours = new Tour(1);
+        this.manche = new Manche(1);
         this.partieTerminer = false;
 
         //construction du plateau par ligne de gauche à droite
@@ -166,11 +171,22 @@ public class Plateau extends AbstractModel {
         this.largeur = largeur;
     }
 
+    public void setNumManche(int num){
+        manche.setterNumManche(num);
+    }
+    public void setNumTour(int num){
+        tours.setNumTour(num);
+    }
+
     public int getNumTour(){
-        return 0;
+    return tours.getNumTour();
     }
     public int getNumManche(){
-        return 0;
+        return manche.getnumManche();
+    }
+    public boolean gagnant (){
+        boolean joueurGagnant = false ;
+        return joueurGagnant ;
     }
 
     public Territoire[][] getTerritoires() {
@@ -183,5 +199,13 @@ public class Plateau extends AbstractModel {
 
     public boolean isPartieTerminer() {
         return partieTerminer;
+    }
+
+    @Override
+    public String getPhaseTour() {
+        return this.phase.getPhase();
+    }
+    public void setPhaseTour(String phaseT){
+        this.phase.setPhase(phaseT);
     }
 }

@@ -1,7 +1,7 @@
 package org.example.vue;
 
-import org.example.controller.AbstractControler;
 import org.example.model.AbstractModel;
+import org.example.controller.AbstractControler;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -13,14 +13,14 @@ public class RiskView extends JFrame {
     private MouseListener mouseListener;
     private AbstractControler controler;
     private PanelJeu panelJeu;
-    private javax.swing.JLabel labelNbTour;
-    private javax.swing.JLabel labelNbManche;
+    private int incr;
 
     public RiskView(AbstractModel model, AbstractControler controler) {
         this.model = model;
         this.controler = controler;
+        this.incr = 0;
         initComponents();
-        this.mouseListener = new MouseListener(controler);
+        this.mouseListener = new MouseListener(this.controler);
         this.panelJeu.addMouseListener(this.mouseListener);
         setVisible(true);
     }
@@ -29,62 +29,84 @@ public class RiskView extends JFrame {
     private void initComponents() {
 
         panelJeu = new PanelJeu(this);
-        labelNbTour = new javax.swing.JLabel();
-        labelNbManche = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        //label tour et manche
+        JLabel labelNbTour = new javax.swing.JLabel();
+        model.setNumTour(1);
+        labelNbTour.setText("Tour "+ model.getNumTour());
+
+        JLabel labelNbManche = new javax.swing.JLabel();
+        model.setNumManche(1);
+        labelNbManche.setText("Manche "+ model.getNumManche());
+
         // label phase de jeu
         JLabel labelPhaseJeu = new javax.swing.JLabel();
-        controler.setPhaseTour("Phase de déploiement des troupes");
-        labelPhaseJeu.setText(controler.getPhaseTour());
+        model.setPhaseTour("Phase de déploiement des troupes");
+        labelPhaseJeu.setText(model.getPhaseTour());
 
         //bouton phase de jeu
-        JButton bouton = new JButton("Passer a la phase de jeu suivante");
+        JButton bouton = new JButton("Fin du tour du Joueur");
         bouton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                switch (controler.getPhaseTour()) {
-                    case "Phase de déploiement des troupes" :
-                        controler.setPhaseTour("Phase de bataille");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
+                switch (model.getPhaseTour()) {
+                    case "Phase de déploiement des troupes":
+                        model.setPhaseTour("Phase de bataille");
+                        labelPhaseJeu.setText(model.getPhaseTour());
                         break;
-                    case "Phase de bataille" :
-                        controler.setPhaseTour("Phase de renforcement");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
+                    case "Phase de bataille":
+                        model.setPhaseTour("Phase de renforcement");
+                        labelPhaseJeu.setText(model.getPhaseTour());
                         break;
-                    case "Phase de renforcement" :
-                        controler.setPhaseTour("Phase de déploiement des troupes");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
+                    case "Phase de renforcement":
+                        incr = incr + 1;
+                        model.setPhaseTour("Phase de déploiement des troupes");
+                        labelPhaseJeu.setText(model.getPhaseTour());
+                        if (incr == 6) {
+                            model.setNumTour(model.getNumTour() + 1);
+                            labelNbTour.setText("Tour " + model.getNumTour());
+                        }
+                        if (model.gagnant() == true) {
+                            model.setNumTour(1);
+                            model.setNumManche(model.getNumManche() + 1);
+                            labelNbManche.setText("Manche " + model.getNumManche());
+                            labelNbTour.setText("Tour " + model.getNumTour());
+                        }
                         break;
-                    default :
-                        controler.setPhaseTour("Phase de déploiement des troupes");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
+                    default:
+                        model.setPhaseTour("Phase de déploiement des troupes");
+                        labelPhaseJeu.setText(model.getPhaseTour());
                 }
             }
-        });
+
+        }
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelNbManche, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelNbManche, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelNbTour, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelNbTour, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelPhaseJeu, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addComponent(bouton)
-                        .addComponent(labelPhaseJeu)
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
                                 .addComponent(bouton)
-                                .addComponent(labelPhaseJeu)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(labelNbManche)
                         .addComponent(labelNbTour))
+                        .addComponent(labelPhaseJeu)
+
 
         );
 
@@ -93,8 +115,6 @@ public class RiskView extends JFrame {
 
     // dessine le plateau de jeu
     public void dessinerJeu(){
-        labelNbTour.setText("Tour "+ model.getNumTour());
-        labelNbManche.setText("Manche "+ model.getNumTour());
         int h = this.panelJeu.getWidth();
         int l = this.panelJeu.getHeight();
         int x, y, cote;
