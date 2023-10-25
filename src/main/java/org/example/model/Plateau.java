@@ -23,6 +23,7 @@ public class Plateau extends AbstractModel {
     private List<CarteTerritoire> cartesTerritoires;
     private List<Joueur> joueurs;
 
+
     private List<Equipe> equipes;
 
 
