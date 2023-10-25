@@ -1,12 +1,12 @@
 Alaska,fantassin,0,0,Amérique du Nord;
 Alberta,fantassin,0,1,Amérique du Nord;
 Amérique centrale,cavalier,0,3,Amérique du Nord;
-Etat de l'Est,canon,0,2,Amérique du Nord;
+Est des Etats-Unis,canon,1,2,Amérique du Nord;
 Groenland,cavalier,2,0,Amérique du Nord;
 Territoire du Nord Ouest,canon,1,0,Amérique du Nord;
 Ontario,cavalier,1,1,Amérique du Nord;
 Québec,canon,2,1,Amérique du Nord;
-Etat de l'Ouest,fantassin,1,2,Amérique du Nord;
+Ouest des Etats-Unis,fantassin,0,2,Amérique du Nord;
 Argentine,fantassin,1,5,Amérique du Sud;
 Perou,cavalier,0,5,Amérique du Sud;
 Brésil,canon,1,4,Amérique du Sud;

@@ -3,3 +3,6 @@ Karmine;
 Optic;
 BDS;
 EnVy;
+DRX;
+FaZe;
+
