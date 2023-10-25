@@ -77,32 +77,14 @@ public class Territoire {
 	public int getX() {
 		return x;
 	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
 	public int getY() {
 		return y;
 	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
-
 	public String getTerritoireName() {
 		return territoireName;
 	}
 
-	public void setTerritoireName(String territoireName) {
-		this.territoireName = territoireName;
-	}
-
 	public String getTerritoireContinentStr() {
 		return territoireContinentStr;
-	}
-
-	public void setTerritoireContinentStr(String territoireContinentStr) {
-		this.territoireContinentStr = territoireContinentStr;
 	}
 }

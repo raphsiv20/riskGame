@@ -15,10 +15,5 @@ public class Main {
 
         AbstractControler controler = new PlateauControler(model);
         RiskView v = new RiskView(model,controler);
-        while(!model.partieTerminer()){
-            controler.calculerStepSuivant();
-        }
-
-
     }
 }

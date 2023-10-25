@@ -19,16 +19,7 @@ public class Equipe {
     public String getNomEquipe() {
         return nomEquipe;
     }
-
-    public void setNomEquipe(String nomEquipe) {
-        this.nomEquipe = nomEquipe;
-    }
-
     public List<Joueur> getJoueursEquipe() {
         return joueursEquipe;
-    }
-
-    public void setJoueursEquipe(List<Joueur> joueursEquipe) {
-        this.joueursEquipe = joueursEquipe;
     }
 }
