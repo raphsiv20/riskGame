@@ -1,4 +1,7 @@
 package org.example.model;
+import java.util.ArrayList;
+import java.sql.*;
+import static org.example.controller.Gestion_BDD.insertNombreTerritoire;
 
 import org.example.Exceptions.PasAssezDeSoldatsException;
 
@@ -13,16 +16,18 @@ public class Joueur {
     private int soldatsADeployer;
     private List<Territoire> territoiresOccupes;
     private List<Continent> continentsConquis;
-    private List<CarteTerritoire> carteTerritoires;
+    private int troupeDisponible;
+    private ArrayList<CarteTerritoire> listeCarteTerritoire;
 
-    public Joueur(int idJoueur, String nomJoueur, String prenomJoueur, Equipe equipeJoueur) {
+
+    public Joueur(String nomJoueur, String prenomJoueur, Equipe equipeJoueur, int idJoueur){
         this.idJoueur = idJoueur;
         this.nomJoueur = nomJoueur;
         this.prenomJoueur = prenomJoueur;
         this.equipeJoueur = equipeJoueur;
         this.territoiresOccupes = new ArrayList<>();
         this.continentsConquis = new ArrayList<>();
-        this.carteTerritoires = new ArrayList<>();
+        this.listeCarteTerritoire = new ArrayList<>();
         this.equipeJoueur.addJoueur(this);
     }
 
@@ -59,37 +64,29 @@ public class Joueur {
         this.continentsConquis.remove(continentPerdu);
     }
     public void addCarteTerritoire(CarteTerritoire carteTerritoire) {
-        this.carteTerritoires.add(carteTerritoire);
+        this.listeCarteTerritoire.add(carteTerritoire);
     }
 
     public void removeCarteTerritoire(CarteTerritoire carteTerritoire) {
-        this.carteTerritoires.remove(carteTerritoire);
+        this.listeCarteTerritoire.remove(carteTerritoire);
     }
 
     public Equipe getEquipeJoueur() {
         return equipeJoueur;
     }
-
-    public void setEquipeJoueur(Equipe equipeJoueur) {
-        this.equipeJoueur = equipeJoueur;
-    }
-
     public String getNomJoueur() {
         return nomJoueur;
     }
-
-    public void setNomJoueur(String nomJoueur) {
-        this.nomJoueur = nomJoueur;
-    }
-
     public String getPrenomJoueur() {
         return prenomJoueur;
     }
-
-    public void setPrenomJoueur(String prenomJoueur) {
-        this.prenomJoueur = prenomJoueur;
+    public int getTroupeDisponible(){
+        return this.troupeDisponible;
     }
 
+    public void SetTroupeDisponible(int nombre){
+        this.troupeDisponible = nombre;
+    }
 
     public List<Territoire> getTerritoiresOccupes() {
         return territoiresOccupes;
@@ -110,17 +107,12 @@ public class Joueur {
     public int getIdJoueur() {
         return idJoueur;
     }
-
-    public void setIdJoueur(int idJoueur) {
-        this.idJoueur = idJoueur;
-    }
-
     public List<CarteTerritoire> getCarteTerritoires() {
-        return carteTerritoires;
+        return listeCarteTerritoire;
     }
 
-    public void setCarteTerritoires(List<CarteTerritoire> carteTerritoires) {
-        this.carteTerritoires = carteTerritoires;
+    public void setCarteTerritoires(ArrayList<CarteTerritoire> carteTerritoires) {
+        this.listeCarteTerritoire = carteTerritoires;
     }
 
     public int getSoldatsADeployer() {
@@ -129,5 +121,15 @@ public class Joueur {
 
     public void setSoldatsADeployer(int soldatsADeployer) {
         this.soldatsADeployer = soldatsADeployer;
+    }
+
+    public void gagnerTerritoire(Territoire territoire){
+        this.territoiresOccupes.add(territoire);
+        insertNombreTerritoire(this.idJoueur);
+    }
+
+    public void perdreTerritoire(Territoire territoire){
+        this.territoiresOccupes.remove(territoire);
+
     }
 }
