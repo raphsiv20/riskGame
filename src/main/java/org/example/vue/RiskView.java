@@ -4,6 +4,8 @@ import org.example.controller.AbstractControler;
 import org.example.model.AbstractModel;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class RiskView extends JFrame {
 
@@ -11,6 +13,8 @@ public class RiskView extends JFrame {
     private MouseListener mouseListener;
     private AbstractControler controler;
     private PanelJeu panelJeu;
+    private javax.swing.JLabel labelNbTour;
+    private javax.swing.JLabel labelNbManche;
 
     public RiskView(AbstractModel model, AbstractControler controler) {
         this.model = model;
@@ -25,20 +29,63 @@ public class RiskView extends JFrame {
     private void initComponents() {
 
         panelJeu = new PanelJeu(this);
+        labelNbTour = new javax.swing.JLabel();
+        labelNbManche = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        // label phase de jeu
+        JLabel labelPhaseJeu = new javax.swing.JLabel();
+        controler.setPhaseTour("Phase de déploiement des troupes");
+        labelPhaseJeu.setText(controler.getPhaseTour());
+
+        //bouton phase de jeu
+        JButton bouton = new JButton("Passer a la phase de jeu suivante");
+        bouton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                switch (controler.getPhaseTour()) {
+                    case "Phase de déploiement des troupes" :
+                        controler.setPhaseTour("Phase de bataille");
+                        labelPhaseJeu.setText(controler.getPhaseTour());
+                        break;
+                    case "Phase de bataille" :
+                        controler.setPhaseTour("Phase de renforcement");
+                        labelPhaseJeu.setText(controler.getPhaseTour());
+                        break;
+                    case "Phase de renforcement" :
+                        controler.setPhaseTour("Phase de déploiement des troupes");
+                        labelPhaseJeu.setText(controler.getPhaseTour());
+                        break;
+                    default :
+                        controler.setPhaseTour("Phase de déploiement des troupes");
+                        labelPhaseJeu.setText(controler.getPhaseTour());
+                }
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                        .addComponent(labelNbManche, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelNbTour, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(bouton)
+                        .addComponent(labelPhaseJeu)
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                                .addComponent(bouton)
+                                .addComponent(labelPhaseJeu)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(labelNbManche)
+                        .addComponent(labelNbTour))
+
         );
 
         pack();
@@ -46,6 +93,8 @@ public class RiskView extends JFrame {
 
     // dessine le plateau de jeu
     public void dessinerJeu(){
+        labelNbTour.setText("Tour "+ model.getNumTour());
+        labelNbManche.setText("Manche "+ model.getNumTour());
         int h = this.panelJeu.getWidth();
         int l = this.panelJeu.getHeight();
         int x, y, cote;

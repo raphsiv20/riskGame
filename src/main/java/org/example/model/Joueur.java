@@ -9,6 +9,8 @@ public class Joueur {
     private String prenomJoueur;
     private List<Territoire> territoiresOccupes;
     private List<Continent> continentsConquis;
+    private int troupeDisponible;
+    private ArrayList<CarteTerritoire> listeCarteTerritoire;
 
     public Joueur(String nomJoueur, String prenomJoueur, Equipe equipeJoueur) {
         this.nomJoueur = nomJoueur;
@@ -16,6 +18,7 @@ public class Joueur {
         this.equipeJoueur = equipeJoueur;
         this.territoiresOccupes = new ArrayList<>();
         this.continentsConquis = new ArrayList<>();
+        listeCarteTerritoire = new ArrayList<CarteTerritoire>();
     }
 
     public Equipe getEquipeJoueur() {
@@ -41,7 +44,14 @@ public class Joueur {
     public void setPrenomJoueur(String prenomJoueur) {
         this.prenomJoueur = prenomJoueur;
     }
+  
+    public int getTroupeDisponible(){
+        return this.troupeDisponible;
+    }
 
+    public void SetTroupeDisponible(int nombre){
+        this.troupeDisponible = nombre;
+    }
 
     public List<Territoire> getTerritoiresOccupes() {
         return territoiresOccupes;
