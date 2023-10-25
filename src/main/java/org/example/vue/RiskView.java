@@ -4,6 +4,7 @@ import org.example.controller.AbstractControler;
 import org.example.model.AbstractModel;
 import org.example.model.Equipe;
 import org.example.model.Joueur;
+import org.example.observer.Observateur;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,17 +13,18 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 
-public class RiskView extends JFrame {
+public class RiskView extends JFrame implements Observateur {
 
     private AbstractModel model;
     private MouseListener mouseListener;
     private AbstractControler controler;
     private PanelJeu panelJeu;
-    private javax.swing.JLabel labelNbTour;
-    private javax.swing.JTextArea labelJoueur;
-    private ArrayList<Joueur> joueurs;
+    private java.util.List<Joueur> joueurs;
     private int joueurActifIndex = 0;
     private int incr;
+    private JLabel labelNbTour = new javax.swing.JLabel();
+    private javax.swing.JTextArea labelJoueur = new JTextArea();
+    JLabel labelPhaseJeu = new javax.swing.JLabel();
 
 
 
@@ -30,17 +32,8 @@ public class RiskView extends JFrame {
     public RiskView(AbstractModel model, AbstractControler controler) {
         this.model = model;
         this.controler = controler;
-        this.joueurs = new ArrayList<>();
+        this.joueurs = model.getJoueurs();
         this.incr = 0;
-        Equipe equipe1 = new Equipe("equipe1");
-        Joueur joueur1 = new Joueur("NomJoueur1","NomJoueur1", equipe1, 1);
-        joueurs.add(joueur1);
-        Joueur joueur2 = new Joueur("NomJoueur2", "NomJoueur2", equipe1, 2);
-        joueurs.add(joueur2);
-        Joueur joueur3 = new Joueur("NomJoueur3", "NomJoueur3", equipe1, 3);
-        joueurs.add(joueur3);
-        Joueur joueur4 = new Joueur("Nomjoueur4", "NomJoueur4", equipe1, 4);
-        joueurs.add(joueur4);
 
         initComponents();
         this.mouseListener = new MouseListener(controler);
@@ -55,35 +48,34 @@ public class RiskView extends JFrame {
 
 
         panelJeu = new PanelJeu(this);
-        JLabel labelNbTour = new javax.swing.JLabel();
+
+        // label tour
         model.setNumTour(1);
         labelNbTour.setText("Tour "+ model.getNumTour());
-        labelJoueur = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         // label phase de jeu
-        JLabel labelPhaseJeu = new javax.swing.JLabel();
-        controler.setPhaseTour("Phase de déploiement des troupes");
-        labelPhaseJeu.setText(controler.getPhaseTour());
+        model.setPhaseTour("Phase de déploiement des troupes");
+        labelPhaseJeu.setText(model.getPhaseTour());
 
         //bouton phase de jeu
         JButton bouton = new JButton("Passer a la phase de jeu suivante");
         bouton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                switch (controler.getPhaseTour()) {
+                switch (model.getPhaseTour()) {
                     case "Phase de déploiement des troupes" :
-                        controler.setPhaseTour("Phase de bataille");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
+                        model.setPhaseTour("Phase de bataille");
+                        labelPhaseJeu.setText(model.getPhaseTour());
                         break;
                     case "Phase de bataille" :
-                        controler.setPhaseTour("Phase de renforcement");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
+                        model.setPhaseTour("Phase de renforcement");
+                        labelPhaseJeu.setText(model.getPhaseTour());
                         break;
                     case "Phase de renforcement" :
                         incr = incr + 1;
-                        controler.setPhaseTour("Phase de déploiement des troupes");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
+                        model.setPhaseTour("Phase de déploiement des troupes");
+                        labelPhaseJeu.setText(model.getPhaseTour());
                         if (incr == 4) {
                             model.setNumTour(model.getNumTour() + 1);
                             labelNbTour.setText("Tour " + model.getNumTour());
@@ -99,8 +91,8 @@ public class RiskView extends JFrame {
                         }
                         break;
                     default :
-                        controler.setPhaseTour("Phase de déploiement des troupes");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
+                        model.setPhaseTour("Phase de déploiement des troupes");
+                        labelPhaseJeu.setText(model.getPhaseTour());
                 }
             }
         });
@@ -189,5 +181,10 @@ public class RiskView extends JFrame {
 
             }
         }
+    }
+
+    public void update() {
+        labelPhaseJeu.setText(model.getPhaseTour());
+        repaint();
     }
 }

@@ -24,7 +24,7 @@ public class PlateauControler extends AbstractControler {
         territoireClique.getTerritoiresAdjacents().forEach(territoire -> sb.append(territoire.getTerritoireName()).append("\n"));
         JOptionPane.showMessageDialog(Frame.getFrames()[0], sb);
 
-        switch (super.getPhaseTour()) {
+        switch (model.getPhaseTour()) {
             case "Phase de déploiement des troupes" :
                 this.deploiementTroupe(territoireClique);
                 break;
@@ -44,7 +44,7 @@ public class PlateauControler extends AbstractControler {
         NumberFormatter formatter = new NumberFormatter(format);
         formatter.setValueClass(Integer.class);
         formatter.setMinimum(0);
-        formatter.setMaximum(Integer.MAX_VALUE); // troupe dispo joueur
+        formatter.setMaximum(model.getJoueurActif().getSoldatsADeployer());
         formatter.setAllowsInvalid(false);
 
         JFormattedTextField textField = new JFormattedTextField(formatter);
@@ -61,9 +61,13 @@ public class PlateauControler extends AbstractControler {
         );
 
         territoireClique.setSoldats(nbTroupes);
-        //set troupes territoires (visuellement aussi)
-        //enlève troupes joueur
-        //si le joueur a plus de troupe passe phase suivante
+
+        model.getJoueurActif().removeSoldatsAdeployer(nbTroupes);
+
+        if (model.getJoueurActif().getSoldatsADeployer() == 0) {
+            model.setPhaseTour("Phase de bataille");
+            model.demandeMiseAjourVue();
+        }
 
     }
 

@@ -50,6 +50,9 @@ public class Plateau extends AbstractModel {
         this.getEquipes().forEach(equipe -> equipe.getJoueursEquipe().forEach(joueur -> System.out.println(equipe.getNomEquipe() + ": " + joueur.getNomJoueur())));
         System.out.println("----------------------------------\n");
         this.getContinentsGame().forEach(continent -> continent.getTerritoiresContinent().forEach(territoire -> System.out.println(continent.getContinentName() + ": " + territoire.getTerritoireName())));
+        System.out.println("----------------------------------\n");
+        this.getJoueurs().forEach(joueur -> System.out.println(joueur.getPrenomJoueur()));
+        System.out.println("----------------------------------\n");
 
 
         this.setTerritoire(3, 0, new Territoire(TypeTerritoire.VIDE));
@@ -87,6 +90,7 @@ public class Plateau extends AbstractModel {
         this.setTerritoire(8, 6, new Territoire(TypeTerritoire.VIDE));
         this.setTerritoire(9, 6, new Territoire(TypeTerritoire.VIDE));
 
+        this.getJoueurs().get(0).setActif(true);
     }
 
     /*------------*/

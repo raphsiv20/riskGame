@@ -1,11 +1,8 @@
 package org.example.model;
 import java.util.ArrayList;
-import java.sql.*;
+
 import static org.example.controller.Gestion_BDD.insertNombreTerritoire;
 
-import org.example.Exceptions.PasAssezDeSoldatsException;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Joueur {
@@ -18,6 +15,7 @@ public class Joueur {
     private List<Continent> continentsConquis;
     private int troupeDisponible;
     private ArrayList<CarteTerritoire> listeCarteTerritoire;
+    private boolean actif;
 
 
     public Joueur(String nomJoueur, String prenomJoueur, Equipe equipeJoueur, int idJoueur){
@@ -29,6 +27,15 @@ public class Joueur {
         this.continentsConquis = new ArrayList<>();
         this.listeCarteTerritoire = new ArrayList<>();
         this.equipeJoueur.addJoueur(this);
+        this.actif = false;
+    }
+
+    public boolean getAtif() {
+        return this.actif;
+    }
+
+    public void setActif (boolean actif) {
+        this.actif = actif;
     }
 
     public void addSoldatsAdeployer(int nouveauxSoldatsAdeployer){
@@ -38,14 +45,9 @@ public class Joueur {
     /**
      *
      * @param soldatsDeployés le nombre de soldats que le joueur souhaite déployer
-     * @throws PasAssezDeSoldatsException l'exception est lévée si le joueur souhaite deployer plus de soldats qu'il n'en détient.
      */
-    public void removeSoldatsAdeployer(int soldatsDeployés) throws PasAssezDeSoldatsException {
-        if (this.soldatsADeployer >= soldatsDeployés) {
-            this.soldatsADeployer -= soldatsDeployés;
-        } else {
-            throw new PasAssezDeSoldatsException("Pas assez de soldats. Vous avez " + this.soldatsADeployer + "soldats à déployer et vous voulez déployer " + soldatsDeployés + " soldats.");
-        }
+    public void removeSoldatsAdeployer(int soldatsDeployés) {
+        this.soldatsADeployer -= soldatsDeployés;
     }
 
     public void addTerritoire(Territoire territoireConquis) {
