@@ -25,7 +25,7 @@ Madagascar,Afrique de l'Est,Afrique du Sud;
 Afrique du Nord,Europe de l'Ouest,Europe du Sud,Égypte,Congo,Brésil;
 Afrique du Sud,Congo,Afrique de l'Est,Madagascar;
 Afghanistan,Ukraine,Oural,Chine,Inde,Moyen-Orient;
-Chine,Afghanistan,Sibérie,Mongolie,Siam,Inde;
+Chine,Afghanistan,Sibérie,Mongolie,Siam,Inde,Oural;
 Inde, Moyen-Orient, Afghanistan, Chine, Siam;
 Tchita, Sibérie, Irkoutsk, Kamchatka, Mongolie;
 Japon,Kamchatka,Mongolie;
