@@ -16,12 +16,9 @@ public class Joueur {
     private int troupeDisponible;
     private ArrayList<CarteTerritoire> listeCarteTerritoire;
 
-    public Joueur(String nomJoueur, String prenomJoueur, Equipe equipeJoueur) {
-    private String dateNaissance;
     private int idJoueur;
-    private ArrayList<Territoire> TerritoiresConquis = new ArrayList<Territoire>();
 
-    public Joueur(String nomJoueur, String nomEquipe, String prenomJoueur, String dateNaissance, int idJoueur){
+    public Joueur(String nomJoueur, String prenomJoueur, Equipe nomEquipe, int idJoueur){
 
         this.nomJoueur = nomJoueur;
         this.prenomJoueur = prenomJoueur;
@@ -29,7 +26,6 @@ public class Joueur {
         this.territoiresOccupes = new ArrayList<>();
         this.continentsConquis = new ArrayList<>();
         listeCarteTerritoire = new ArrayList<CarteTerritoire>();
-        this.dateNaissance = dateNaissance;
         this.idJoueur = idJoueur;
     }
 
@@ -83,11 +79,11 @@ public class Joueur {
     }
 
     public void gagnerTerritoire(Territoire territoire){
-        this.TerritoiresConquis.add(territoire);
+        this.territoiresOccupes.add(territoire);
         insertNombreTerritoire(this.idJoueur);
     }
 
     public void perdreTerritoire(Territoire territoire){
-        this.TerritoiresConquis.remove(territoire);
+        this.territoiresOccupes.remove(territoire);
     }
 }
