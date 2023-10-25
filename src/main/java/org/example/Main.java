@@ -11,8 +11,7 @@ import java.io.File;
 
 public class Main {
     public static void main(String[] args) {
-        AbstractModel model = new Plateau();
-
+        AbstractModel model = new Plateau(10, 7);
         AbstractControler controler = new PlateauControler(model);
         RiskView v = new RiskView(model,controler);
     }
