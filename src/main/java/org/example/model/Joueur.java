@@ -4,18 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Joueur {
+    private int idJoueur;
     private Equipe equipeJoueur;
     private String nomJoueur;
     private String prenomJoueur;
     private List<Territoire> territoiresOccupes;
     private List<Continent> continentsConquis;
 
-    public Joueur(String nomJoueur, String prenomJoueur, Equipe equipeJoueur) {
+    public Joueur(int idJoueur, String nomJoueur, String prenomJoueur, Equipe equipeJoueur) {
+        this.idJoueur = idJoueur;
         this.nomJoueur = nomJoueur;
         this.prenomJoueur = prenomJoueur;
         this.equipeJoueur = equipeJoueur;
         this.territoiresOccupes = new ArrayList<>();
         this.continentsConquis = new ArrayList<>();
+        this.equipeJoueur.addJoueur(this);
     }
 
     public Equipe getEquipeJoueur() {
@@ -57,5 +60,13 @@ public class Joueur {
 
     public void setContinentsConquis(List<Continent> continentsConquis) {
         this.continentsConquis = continentsConquis;
+    }
+
+    public int getIdJoueur() {
+        return idJoueur;
+    }
+
+    public void setIdJoueur(int idJoueur) {
+        this.idJoueur = idJoueur;
     }
 }

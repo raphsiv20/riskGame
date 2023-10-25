@@ -17,9 +17,9 @@ public class PlateauControler extends AbstractControler {
     public void cliqueSur(int x, int y) {
         Territoire territoireClique = this.model.getTerritoire(x,y);
         StringBuilder sb = new StringBuilder();
-        //sb.append("Vous avez cliqué sur le territoire ").append(territoireClique.getTerritoireName()).append("\nVoici ses territoires adjacents: \n");
-        //territoireClique.getTerritoiresAdjacents().forEach(territoire -> sb.append(territoire.getTerritoireName() + "\n"));
-        JOptionPane.showMessageDialog(Frame.getFrames()[0], territoireClique.getSoldats());
+        sb.append("Vous avez cliqué sur le territoire ").append(territoireClique.getTerritoireName()).append("\nVoici ses territoires adjacents: \n");
+        territoireClique.getTerritoiresAdjacents().forEach(territoire -> sb.append(territoire.getTerritoireName()).append("\n"));
+        JOptionPane.showMessageDialog(Frame.getFrames()[0], sb);
     }
 
     @Override
