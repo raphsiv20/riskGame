@@ -97,4 +97,12 @@ public class Territoire {
 	public void setTerritoireName(String territoireName) {
 		this.territoireName = territoireName;
 	}
+
+	public String getTerritoireContinentStr() {
+		return territoireContinentStr;
+	}
+
+	public void setTerritoireContinentStr(String territoireContinentStr) {
+		this.territoireContinentStr = territoireContinentStr;
+	}
 }

@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.Exceptions.PasAssezDeSoldatsException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ public class Joueur {
     private Equipe equipeJoueur;
     private String nomJoueur;
     private String prenomJoueur;
+    private int soldatsADeployer;
     private List<Territoire> territoiresOccupes;
     private List<Continent> continentsConquis;
     private List<CarteTerritoire> carteTerritoires;
@@ -21,6 +24,23 @@ public class Joueur {
         this.continentsConquis = new ArrayList<>();
         this.carteTerritoires = new ArrayList<>();
         this.equipeJoueur.addJoueur(this);
+    }
+
+    public void addSoldatsAdeployer(int nouveauxSoldatsAdeployer){
+        this.soldatsADeployer += nouveauxSoldatsAdeployer;
+    }
+
+    /**
+     *
+     * @param soldatsDeployés le nombre de soldats que le joueur souhaite déployer
+     * @throws PasAssezDeSoldatsException l'exception est lévée si le joueur souhaite deployer plus de soldats qu'il n'en détient.
+     */
+    public void removeSoldatsAdeployer(int soldatsDeployés) throws PasAssezDeSoldatsException {
+        if (this.soldatsADeployer >= soldatsDeployés) {
+            this.soldatsADeployer -= soldatsDeployés;
+        } else {
+            throw new PasAssezDeSoldatsException("Pas assez de soldats. Vous avez " + this.soldatsADeployer + "soldats à déployer et vous voulez déployer " + soldatsDeployés + " soldats.");
+        }
     }
 
     public void addTerritoire(Territoire territoireConquis) {
@@ -101,5 +121,13 @@ public class Joueur {
 
     public void setCarteTerritoires(List<CarteTerritoire> carteTerritoires) {
         this.carteTerritoires = carteTerritoires;
+    }
+
+    public int getSoldatsADeployer() {
+        return soldatsADeployer;
+    }
+
+    public void setSoldatsADeployer(int soldatsADeployer) {
+        this.soldatsADeployer = soldatsADeployer;
     }
 }
