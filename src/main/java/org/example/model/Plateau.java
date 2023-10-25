@@ -43,6 +43,14 @@ public class Plateau extends AbstractModel {
 
         this.readFiles();
 
+        /* System.out.println("----------------------------------\n");
+        this.cartesTerritoires.forEach(carteTerritoire -> System.out.println(carteTerritoire.getTerritoire().getTerritoireName() +" " +carteTerritoire.getTypeCarte()));
+        System.out.println("----------------------------------\n");
+        this.equipes.forEach(equipe -> equipe.getJoueursEquipe().forEach(joueur -> System.out.println(equipe.getNomEquipe() + ": " + joueur.getNomJoueur())));
+        System.out.println("----------------------------------\n");
+        this.continentsGame.forEach(continent -> continent.getTerritoiresContinent().forEach(territoire -> System.out.println(continent.getContinentName() + ": " + territoire.getTerritoireName())));
+         */
+
         this.setTerritoire(3, 0, new Territoire(TypeTerritoire.VIDE));
         this.setTerritoire(4, 0, new Territoire(TypeTerritoire.VIDE));
         this.setTerritoire(5, 0, new Territoire(TypeTerritoire.VIDE));
