@@ -23,6 +23,7 @@ public class RiskView extends JFrame {
     private ArrayList<Joueur> joueurs;
     private int joueurActifIndex = 0;
     private int incr;
+    private int count = 0;
 
 
 
@@ -56,7 +57,6 @@ public class RiskView extends JFrame {
 
         panelJeu = new PanelJeu(this);
         JLabel labelNbTour = new javax.swing.JLabel();
-        model.setNumTour(1);
         labelNbTour.setText("Tour "+ model.getNumTour());
         labelJoueur = new javax.swing.JTextArea();
 
@@ -73,36 +73,61 @@ public class RiskView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 switch (controler.getPhaseTour()) {
                     case "Phase de déploiement des troupes" :
-                        controler.setPhaseTour("Phase de bataille");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
-                        break;
-                    case "Phase de bataille" :
-                        controler.setPhaseTour("Phase de renforcement");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
-                        break;
-                    case "Phase de renforcement" :
-                        incr = incr + 1;
-                        controler.setPhaseTour("Phase de déploiement des troupes");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
-                        if (incr == 4) {
+                        if (incr == 0 && count < 4){
+                            controler.setPhaseTour("Phase de déploiement des troupes");
+                            labelPhaseJeu.setText(controler.getPhaseTour());
+                            count = count +1;
+                            if (joueurActifIndex >= joueurs.size() - 1) {
+                                joueurActifIndex = 0;
+                                dessinerJeu();
+                            } else {
+                                joueurActifIndex += 1;
+                                dessinerJeu();
+                            }
+                        }
+                        if (count == 5) {
+                            controler.setPhaseTour("Phase de bataille");
+                            labelPhaseJeu.setText(controler.getPhaseTour());}
+                        if (count == 4){
+                            controler.setPhaseTour("Phase de déploiement des troupes");
+                            labelPhaseJeu.setText(controler.getPhaseTour());
                             model.setNumTour(model.getNumTour() + 1);
                             labelNbTour.setText("Tour " + model.getNumTour());
-                            incr = 0;
+                            count = count+1;
                         }
-                        if (joueurActifIndex >= joueurs.size()-1) {
-                            joueurActifIndex = 0;
-                            dessinerJeu();
+                            break;
+
+                            case "Phase de bataille":
+                                if (count == 5) {
+                                controler.setPhaseTour("Phase de renforcement");
+                                labelPhaseJeu.setText(controler.getPhaseTour());
+                                break;}
+                            case "Phase de renforcement":
+                                if (count == 5) {
+                                incr = incr + 1;
+                                controler.setPhaseTour("Phase de déploiement des troupes");
+                                labelPhaseJeu.setText(controler.getPhaseTour());
+                                if (incr == 4) {
+                                    model.setNumTour(model.getNumTour() + 1);
+                                    labelNbTour.setText("Tour " + model.getNumTour());
+                                    incr = 0;
+                                }
+                                if (joueurActifIndex >= joueurs.size() - 1) {
+                                    joueurActifIndex = 0;
+                                    dessinerJeu();
+                                } else {
+                                    joueurActifIndex += 1;
+                                    dessinerJeu();
+                                }
+
+                                break;
                         }
-                        else {
-                            joueurActifIndex += 1;
-                            dessinerJeu();
-                        }
-                        break;
                     default :
                         controler.setPhaseTour("Phase de déploiement des troupes");
                         labelPhaseJeu.setText(controler.getPhaseTour());
                 }
             }
+
         });
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

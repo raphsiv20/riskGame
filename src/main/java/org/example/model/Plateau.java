@@ -10,11 +10,7 @@ import java.util.List;
 
 public class Plateau extends AbstractModel {
 
-    /*------------*/
-    /* Proprietes */
-    /*------------*/
-
-    private int hauteur;
+    /*private int hauteur;
     private int largeur;
     private Territoire[][] territoires;
     private boolean partieTerminer;
@@ -22,16 +18,11 @@ public class Plateau extends AbstractModel {
     private List<Continent> continentsGame;
     private List<CarteTerritoire> cartesTerritoires;
     private List<Joueur> joueurs;
-    private Tour tours;
-    private List<Equipe> equipes;
+    private List<Equipe> equipes;*/
 
-
-    /*------------*/
-    /* Constructeur */
-    /*------------*/
-
-    public Plateau() {
-        this.hauteur = 10;
+    public Plateau(int hauteur, int largeur) {
+        super(hauteur, largeur);
+        /*this.hauteur = 10;
         this.largeur = 7;
         this.territoires = new Territoire[11][8];
         this.partieTerminer = false;
@@ -39,16 +30,15 @@ public class Plateau extends AbstractModel {
         this.continentsGame = new ArrayList<>();
         this.cartesTerritoires = new ArrayList<>();
         this.joueurs = new ArrayList<>();
-        this.equipes = new ArrayList<>();
-        this.tours = new Tour(1);
+        this.equipes = new ArrayList<>();*/
         this.readFiles();
 
         System.out.println("----------------------------------\n");
-        this.cartesTerritoires.forEach(carteTerritoire -> System.out.println(carteTerritoire.getTerritoire().getTerritoireName() +" " +carteTerritoire.getTypeCarte()));
+        this.getCartesTerritoires().forEach(carteTerritoire -> System.out.println(carteTerritoire.getTerritoire().getTerritoireName() + " " + carteTerritoire.getTypeCarte()));
         System.out.println("----------------------------------\n");
-        this.equipes.forEach(equipe -> equipe.getJoueursEquipe().forEach(joueur -> System.out.println(equipe.getNomEquipe() + ": " + joueur.getNomJoueur())));
+        this.getEquipes().forEach(equipe -> equipe.getJoueursEquipe().forEach(joueur -> System.out.println(equipe.getNomEquipe() + ": " + joueur.getNomJoueur())));
         System.out.println("----------------------------------\n");
-        this.continentsGame.forEach(continent -> continent.getTerritoiresContinent().forEach(territoire -> System.out.println(continent.getContinentName() + ": " + territoire.getTerritoireName())));
+        this.getContinentsGame().forEach(continent -> continent.getTerritoiresContinent().forEach(territoire -> System.out.println(continent.getContinentName() + ": " + territoire.getTerritoireName())));
 
 
         this.setTerritoire(3, 0, new Territoire(TypeTerritoire.VIDE));
@@ -88,14 +78,11 @@ public class Plateau extends AbstractModel {
 
     }
 
-    /*------------*/
-    /* Methodes */
-    /*------------*/
-
     /**
      * The method creates 5 String[] from the files countries.txt, adjacencies.txt, continents.txt, joueurs.txt, equipes.txt.
      * Those String[] are given to a method to then create the Territory, Continent, Joueur, Equipe objects with the initPlateau
      */
+    @Override
     public void readFiles() {
         BufferedReader reader;
         StringBuilder stringBuilder;
@@ -104,7 +91,7 @@ public class Plateau extends AbstractModel {
             // Reads countries file
             reader = new BufferedReader(new FileReader("src/main/java/org/example/model/countries.txt"));
             stringBuilder = new StringBuilder();
-            while((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line);
             }
             String input = stringBuilder.toString();
@@ -115,7 +102,7 @@ public class Plateau extends AbstractModel {
             reader = new BufferedReader(new FileReader("src/main/java/org/example/model/adjacencies.txt"));
             stringBuilder = new StringBuilder();
 
-            while((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line);
             }
             input = stringBuilder.toString();
@@ -127,7 +114,7 @@ public class Plateau extends AbstractModel {
             reader = new BufferedReader(new FileReader("src/main/java/org/example/model/continents.txt"));
             stringBuilder = new StringBuilder();
 
-            while((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line);
             }
             input = stringBuilder.toString();
@@ -136,7 +123,7 @@ public class Plateau extends AbstractModel {
             // Reads players file
             reader = new BufferedReader(new FileReader("src/main/java/org/example/model/joueurs.txt"));
             stringBuilder = new StringBuilder();
-            while((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line);
             }
             input = stringBuilder.toString();
@@ -146,7 +133,7 @@ public class Plateau extends AbstractModel {
             // Reads teams file
             reader = new BufferedReader(new FileReader("src/main/java/org/example/model/equipes.txt"));
             stringBuilder = new StringBuilder();
-            while((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line);
             }
             input = stringBuilder.toString();
@@ -163,6 +150,7 @@ public class Plateau extends AbstractModel {
 
     }
 
+    @Override
     public void initPlateau(String[] territoires, String[] territoiresVoisins, String[] continents, String[] joueurs, String[] equipes) {
         this.addTerritories(territoires);
         this.addTerritoryNextTerritories(territoiresVoisins);
@@ -171,42 +159,44 @@ public class Plateau extends AbstractModel {
         this.addJoueurs(joueurs);
     }
 
+    @Override
     public void addTerritories(String[] territoires) {
         for (int i = 0; i < territoires.length; i++) {
             String[] countriesArray = territoires[i].split(",");
-            this.territoiresGame.add(new Territoire(countriesArray[0], countriesArray[4]));
-            this.cartesTerritoires.add(new CarteTerritoire(this.territoiresGame.get(i), countriesArray[1]));
+            this.getTerritoiresGame().add(new Territoire(countriesArray[0], countriesArray[4]));
+            this.getCartesTerritoires().add(new CarteTerritoire(this.getTerritoiresGame().get(i), countriesArray[1]));
 
             switch (countriesArray[4]) {
                 case "Amérique du Nord" -> {
-                    this.territoiresGame.get(i).setTypeTerritoire(TypeTerritoire.AMNORD);
-                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.territoiresGame.get(i));
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.AMNORD);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
                 }
                 case "Amérique du Sud" -> {
-                    this.territoiresGame.get(i).setTypeTerritoire(TypeTerritoire.AMSUD);
-                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.territoiresGame.get(i));
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.AMSUD);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
                 }
                 case "Europe" -> {
-                    this.territoiresGame.get(i).setTypeTerritoire(TypeTerritoire.EU);
-                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.territoiresGame.get(i));
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.EU);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
                 }
                 case "Afrique" -> {
-                    this.territoiresGame.get(i).setTypeTerritoire(TypeTerritoire.AFRIQUE);
-                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.territoiresGame.get(i));
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.AFRIQUE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
                 }
                 case "Asie" -> {
-                    this.territoiresGame.get(i).setTypeTerritoire(TypeTerritoire.ASIE);
-                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.territoiresGame.get(i));
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.ASIE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
                 }
                 default -> {
-                    this.territoiresGame.get(i).setTypeTerritoire(TypeTerritoire.AUST);
-                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.territoiresGame.get(i));
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.AUST);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
                 }
 
             }
         }
     }
 
+    @Override
     public void addTerritoryNextTerritories(String[] territoiresVoisins) {
         for (int i = 0; i < territoiresVoisins.length; i++) {
             List<String> adjacenciesTable = new ArrayList<>();
@@ -215,65 +205,73 @@ public class Plateau extends AbstractModel {
                 adjacenciesTable.add(territoiresVoisins[i].split(",")[j]);
             }
             adjacenciesList = adjacenciesTable.stream().map((this::getTerritoireByName)).toList();
-            this.territoiresGame.get(i).setTerritoiresAdjacents(adjacenciesList);
+            this.getTerritoiresGame().get(i).setTerritoiresAdjacents(adjacenciesList);
         }
     }
 
+    @Override
     public void addJoueurs(String[] joueurs) {
         String[] joueursArray;
         for (int i = 0; i < joueurs.length; i++) {
             joueursArray = joueurs[i].split(",");
-            this.joueurs.add(new Joueur(joueursArray[1], joueursArray[2], this.getEquipeByName(joueursArray[3]),Integer.parseInt(joueursArray[0]) ));
+            this.getJoueurs().add(new Joueur(joueursArray[1], joueursArray[2], this.getEquipeByName(joueursArray[3]), Integer.parseInt(joueursArray[0])));
         }
     }
 
+    @Override
     public void addEquipe(String[] equipes) {
-        this.equipes = Arrays.stream(equipes)
+        this.setEquipes(Arrays.stream(equipes)
                 .map(Equipe::new)
-                .toList();
+                .toList());
     }
 
+    @Override
     public void addContinent(String[] continents) {
         for (int i = 0; i < continents.length; i++) {
             String[] continentsArray = continents[i].split(",");
-            this.continentsGame.add(new Continent(continentsArray[0], Integer.parseInt(continentsArray[1]), Arrays.stream(continentsArray).toList().subList(2, continentsArray.length).stream().map(this::getTerritoireByName).toList()));
+            this.getContinentsGame().add(new Continent(continentsArray[0], Integer.parseInt(continentsArray[1]), Arrays.stream(continentsArray).toList().subList(2, continentsArray.length).stream().map(this::getTerritoireByName).toList()));
         }
     }
 
+    @Override
     public Continent getContinentByName(String continentName) {
-        return this.continentsGame.stream()
+        return this.getContinentsGame().stream()
                 .filter(continent -> continent.getContinentName().equals(continentName.replace(" ", "")))
                 .toList().get(0);
     }
 
+    @Override
     public Territoire getTerritoireByName(String territoryName) {
-       return this.territoiresGame.stream()
-               .filter(territoire -> territoire.getTerritoireName().equals(territoryName.stripLeading()))
-               .toList().get(0);
+        return this.getTerritoiresGame().stream()
+                .filter(territoire -> territoire.getTerritoireName().equals(territoryName.stripLeading()))
+                .toList().get(0);
     }
 
     /**
-     *
      * @param countryName
      * @return
      */
+    @Override
     public CarteTerritoire getACarteTerritoireByTerritoireName(String countryName) {
-        return this.cartesTerritoires.stream()
+        return this.getCartesTerritoires().stream()
                 .filter(carteTerritoire -> carteTerritoire.getTerritoire().getTerritoireName().equals(countryName))
                 .toList().get(0);
     }
 
+    @Override
     public Joueur getAJoueurById(int joueurId) {
-        return this.joueurs.stream()
+        return this.getJoueurs().stream()
                 .filter(joueur -> joueur.getIdJoueur() == (joueurId))
                 .toList().get(0);
     }
 
+    @Override
     public Equipe getEquipeByName(String nomEquipe) {
-        return this.equipes.stream()
+        return this.getEquipes().stream()
                 .filter(equipe -> equipe.getNomEquipe().equals(nomEquipe))
                 .toList().get(0);
     }
+
 
     /**
      * Affecte / retourne le type d'un territoire donnee.
@@ -281,83 +279,6 @@ public class Plateau extends AbstractModel {
 
     @Override
     public TypeTerritoire getTypeTerritoire(int x, int y) {
-        return this.territoires[x][y].getTypeTerritoire();
+        return this.getTerritoires()[x][y].getTypeTerritoire();
     }
-
-    /**
-     * Retourne la hauteur et la largeur du labyrinthe.
-     */
-
-    @Override
-    public int getLargeur() {
-        return this.largeur;
-    }
-
-    @Override
-    public int getHauteur() {
-        return this.hauteur;
-    }
-
-
-
-    /**
-     * Affecte / retourne le statu de la partie.
-     */
-
-    @Override
-    public boolean partieTerminer() {
-        return this.partieTerminer;
-    }
-
-    public void setPartieTerminer(boolean partieTerminer) {
-        this.partieTerminer = partieTerminer;
-    }
-
-    /**
-     * Affecte / retourne le territoire en position i,j.
-     */
-
-    public void setTerritoire (int i, int j, Territoire c) {
-        this.territoires[i][j] = c;
-    }
-
-    public Territoire getTerritoire (int i, int j) {
-        return this.territoires[i][j];
-    }
-
-    public Territoire[][] getTerritoires() {
-        return territoires;
-    }
-
-    public void setTerritoires(Territoire[][] territoires) {
-        this.territoires = territoires;
-    }
-
-    public List<Territoire> getTerritoiresGame() {
-        return territoiresGame;
-    }
-
-    public List<Continent> getContinentsGame() {
-        return continentsGame;
-    }
-
-    public List<CarteTerritoire> getCartesTerritoires() {
-        return cartesTerritoires;
-    }
-
-    public List<Joueur> getJoueurs() {
-        return joueurs;
-    }
-
-    public void setJoueurs(List<Joueur> joueurs) {
-        this.joueurs = joueurs;
-    }
-
-    public void setNumTour(int num){
-        tours.setNumTour(num);
-    }
-
-    public int getNumTour(){
-        return tours.getNumTour();
-    }
- }
+}
