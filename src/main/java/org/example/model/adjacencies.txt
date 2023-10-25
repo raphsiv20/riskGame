@@ -1,0 +1,46 @@
+Alaska,Alberta,Territoire du Nord Ouest,Kamchatka;
+Alberta,Alaska,Territoire du Nord Ouest,Ontario,Etat de l'Ouest;
+Amérique centrale,Etat de l'Ouest,Venezuela;
+Etat de l'Est,Etat de l'Ouest,Ontario,Québec;
+Groenland,Territoire du Nord Ouest,Ontario,Québec,Islande;
+Territoire du Nord-Ouest,Alaska,Groenland,Ontario,Alberta;
+Ontario, Territoire du Nord Ouest, Groenland, Québec, Etat de l'Est,Etat de l'Ouest,Alberta;
+Québec,Ontario,Groenland,Etat de l'Est;
+Etat de l'Ouest,Alberta,Ontario, Etat de l'Est,Amérique centrale;
+Argentine,Perou,Brésil;
+Perou,Brésil,Argentine,Venezuela;
+Brésil,Venezuela,Afrique du Nord,Argentine,Perou;
+Venezuela,Amérique centrale,Brésil,Perou;
+Grande Bretagne,Islande,Scandinavie,Europe du Nord,Europe de l'Ouest;
+Islande,Groenland,Grande Bretagne;
+Europe du Nord,Grande Bretagne,Ukraine,Europe du Sud,Europe de l'Ouest;
+Scandinavie,Grande Bretagne,Ukraine;
+Europe du Sud,Europe de l'Ouest,Europe du Nord,Ukraine,Égypte,Afrique du Nord;
+Ukraine,Scandinavie,Oural,Afghanistan,Moyen-Orient,Europe du Sud,Europe du Nord;
+Europe de l'Ouest, Grande Bretagne, Europe du Nord, Europe du Sud, Afrique du Nord;
+Congo,Afrique du Nord,Égypte,Afrique de l'Est,Afrique du Sud;
+Afrique de l'Est,Égypte,Madagascar,Afrique du Sud,Congo;
+Égypte,Europe du Sud,Moyen-Orient,Afrique de l'Est,Congo,Afrique du Nord;
+Madagascar,Afrique de l'Est,Afrique du Sud;
+Afrique du Nord,Europe de l'Ouest,Europe du Sud,Égypte,Congo,Brésil;
+Afrique du Sud,Congo,Afrique de l'Est,Madagascar;
+Afghanistan,Ukraine,Oural,Chine,Inde,Moyen-Orient;
+Chine,Afghanistan,Sibérie,Mongolie,Siam,Inde;
+Inde, Moyen-Orient, Afghanistan, Chine, Siam;
+Tchita, Sibérie, Irkoutsk, Kamchatka, Mongolie;
+Japon,Kamchatka,Mongolie;
+Kamchatka,Irkoutsk,Alaska,Japon,Mongolie;
+Moyen-Orient,Ukraine,Afghanistan,Inde,Égypte,Afrique de l'Est;
+Mongolie,Sibérie,Tchita,Kamchatka,Japon,Chine;
+Siam, Inde, Chine, Indonésie;
+Sibérie,Oural,Irkoutsk,Tchita,Mongolie,Chine;
+Oural,Ukraine,Sibérie,Afghanistan;
+Irkoutsk,Sibérie,Kamchatka,Tchita;
+Est de l'Australie,Nouvelle-Guinée,Ouest de l'Australie;
+Indonésie,Siam,Nouvelle-Guinée,Ouest de l'Australie;
+Est de l'Australie,Nouvelle-Guinée,Indonésie,Est de l'Australie,Ouest de l'Australie;
+Ouest de l'Australie,Indonésie,Nouvelle-Guinée,Est de l'Australie;
+
+
+
+
