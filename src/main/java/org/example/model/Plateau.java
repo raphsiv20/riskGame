@@ -23,6 +23,8 @@ public class Plateau extends AbstractModel {
     private List<CarteTerritoire> cartesTerritoires;
     private List<Joueur> joueurs;
 
+    private List<Equipe> equipes;
+
 
     /*------------*/
     /* Constructeur */
@@ -37,12 +39,9 @@ public class Plateau extends AbstractModel {
         this.continentsGame = new ArrayList<>();
         this.cartesTerritoires = new ArrayList<>();
         this.joueurs = new ArrayList<>();
-
+        this.equipes = new ArrayList<>();
 
         this.readFiles();
-
-        this.continentsGame.forEach(continent -> System.out.println(continent.getContinentName()));
-
 
         this.setTerritoire(3, 0, new Territoire(TypeTerritoire.VIDE));
         this.setTerritoire(4, 0, new Territoire(TypeTerritoire.VIDE));
@@ -86,11 +85,10 @@ public class Plateau extends AbstractModel {
     /*------------*/
 
     /**
-     * The method creates 3 String[] from the files countries.txt, adjacencies.txt and continents.txt.
-     * Those String[] are given to a method to then create the TerritorY and Continent objects with the initPlateau
+     * The method creates 5 String[] from the files countries.txt, adjacencies.txt, continents.txt, joueurs.txt, equipes.txt.
+     * Those String[] are given to a method to then create the Territory, Continent, Joueur, Equipe objects with the initPlateau
      */
     public void readFiles() {
-        List<String[]> listsCountryContAdj = new ArrayList<>();
         BufferedReader reader;
         StringBuilder stringBuilder;
         String line;
@@ -126,7 +124,28 @@ public class Plateau extends AbstractModel {
             }
             input = stringBuilder.toString();
             String[] continentsArray = input.split(";");
-            this.initPlateau(countriesArray, adjacenciesArray, continentsArray);
+
+            // Reads players file
+            reader = new BufferedReader(new FileReader("src/main/java/org/example/model/joueurs.txt"));
+            stringBuilder = new StringBuilder();
+            while((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            input = stringBuilder.toString();
+            // Splits the text in the file into an array
+            String[] playersArray = input.split(";");
+
+            // Reads teams file
+            reader = new BufferedReader(new FileReader("src/main/java/org/example/model/equipes.txt"));
+            stringBuilder = new StringBuilder();
+            while((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            input = stringBuilder.toString();
+            // Splits the text in the file into an array
+            String[] equipesArray = input.split(";");
+
+            this.initPlateau(countriesArray, adjacenciesArray, continentsArray, playersArray, equipesArray);
 
         } catch (FileNotFoundException error) {
             System.out.println(error.getMessage());
@@ -136,10 +155,12 @@ public class Plateau extends AbstractModel {
 
     }
 
-    public void initPlateau(String[] territoires, String[] territoiresVoisins, String[] continents) {
+    public void initPlateau(String[] territoires, String[] territoiresVoisins, String[] continents, String[] joueurs, String[] equipes) {
         this.addTerritories(territoires);
         this.addTerritoryNextTerritories(territoiresVoisins);
         this.addContinent(continents);
+        this.addEquipe(equipes);
+        this.addJoueurs(joueurs);
     }
 
     public void addTerritories(String[] territoires) {
@@ -190,6 +211,20 @@ public class Plateau extends AbstractModel {
         }
     }
 
+    public void addJoueurs(String[] joueurs) {
+        String[] joueursArray;
+        for (int i = 0; i < joueurs.length; i++) {
+            joueursArray = joueurs[i].split(",");
+            this.joueurs.add(new Joueur(Integer.parseInt(joueursArray[0]), joueursArray[1], joueursArray[2], this.getEquipeByName(joueursArray[3])));
+        }
+    }
+
+    public void addEquipe(String[] equipes) {
+        this.equipes = Arrays.stream(equipes)
+                .map(Equipe::new)
+                .toList();
+    }
+
     public void addContinent(String[] continents) {
         for (int i = 0; i < continents.length; i++) {
             String[] continentsArray = continents[i].split(",");
@@ -208,9 +243,27 @@ public class Plateau extends AbstractModel {
                .filter(territoire -> territoire.getTerritoireName().equals(territoryName.stripLeading()))
                .toList().get(0);
     }
+
+    /**
+     *
+     * @param countryName
+     * @return
+     */
     public CarteTerritoire getACarteTerritoireByTerritoireName(String countryName) {
         return this.cartesTerritoires.stream()
                 .filter(carteTerritoire -> carteTerritoire.getTerritoire().getTerritoireName().equals(countryName))
+                .toList().get(0);
+    }
+
+    public Joueur getAJoueurById(int joueurId) {
+        return this.joueurs.stream()
+                .filter(joueur -> joueur.getIdJoueur() == (joueurId))
+                .toList().get(0);
+    }
+
+    public Equipe getEquipeByName(String nomEquipe) {
+        return this.equipes.stream()
+                .filter(equipe -> equipe.getNomEquipe().equals(nomEquipe))
                 .toList().get(0);
     }
 
