@@ -207,6 +207,7 @@ public class RiskView extends JFrame implements Observateur {
 
             }
         }
+        actualiseLblJoueur();
     }
 
     public void actualiseLblJoueur() {
