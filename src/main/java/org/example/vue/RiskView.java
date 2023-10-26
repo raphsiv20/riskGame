@@ -33,6 +33,7 @@ public class RiskView extends JFrame implements Observateur {
     private JLabel labelVoisins = new javax.swing.JLabel();
     private javax.swing.JTextArea labelCarteTerritoire;
     JButton boutonEchangerCarte = new JButton("Échanger carte");
+    private int joueurActif = 0;
 
 
 
@@ -93,6 +94,18 @@ public class RiskView extends JFrame implements Observateur {
                         labelPhaseJeu.setText(model.getPhaseTour());
                         break;
                     case "Phase de renforcement" :
+                        if (joueurActif == joueurs.size() - 1) {
+                            joueurActif = 0;
+                        } else {
+                            joueurActif += 1;
+                        }
+                        JOptionPane.showMessageDialog(
+                                Frame.getFrames()[0],
+                                "A toi de jouer " + joueurs.get(joueurActif).getNomJoueur(),
+                                "Tour suivant",
+                                JOptionPane.PLAIN_MESSAGE
+                        );
+
                         labelCarteTerritoire.setVisible(true);
                         incr = incr + 1;
                         model.setPhaseTour("Phase de déploiement des troupes");
@@ -102,11 +115,10 @@ public class RiskView extends JFrame implements Observateur {
                             labelNbTour.setText("Tour " + model.getNumTour());
                             incr = 0;
                         }
-                        if (joueurActifIndex >= joueurs.size()-1) {
-                            joueurActifIndex = 0;
+                        if (joueurActifIndex >= joueurs.size() - 1) {
+                            joueurActifIndex = 0;  // Reviens au premier joueur
                             dessinerJeu();
-                        }
-                        else {
+                        } else {
                             joueurActifIndex += 1;
                             dessinerJeu();
                         }
@@ -117,6 +129,7 @@ public class RiskView extends JFrame implements Observateur {
                 }
             }
         });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(

@@ -42,6 +42,7 @@ public class PlateauControler extends AbstractControler {
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, 10, 1);
         JSpinner spinner = new JSpinner(spinnerModel);
 
+
         int bouton = JOptionPane.showOptionDialog(
                 Frame.getFrames()[0],
                 spinner,
