@@ -203,4 +203,14 @@ public abstract class AbstractModel implements Observable {
         observateurs.add(o);
     }
 
+    public Territoire getTerritoireActif() {
+        Territoire res = null;
+        for (Territoire territoireActuel : this.getTerritoiresGame()) {
+            if (territoireActuel.isActif()) {
+                res = territoireActuel;
+            }
+        }
+        return res;
+    }
+
 }
