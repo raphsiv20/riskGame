@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class Plateau extends AbstractModel {
 
@@ -51,7 +52,7 @@ public class Plateau extends AbstractModel {
         System.out.println("----------------------------------\n");
         this.getContinentsGame().forEach(continent -> continent.getTerritoiresContinent().forEach(territoire -> System.out.println(continent.getContinentName() + ": " + territoire.getTerritoireName())));
         System.out.println("----------------------------------\n");
-        this.getJoueurs().forEach(joueur -> System.out.println(joueur.getPrenomJoueur()));
+        this.getEquipes().forEach(equipe -> equipe.getJoueursEquipe().forEach(joue -> System.out.println(joue.getNomJoueur() + ": " + joue.getEquipeJoueur().getNomEquipe())));
         System.out.println("----------------------------------\n");
 
 
@@ -176,6 +177,7 @@ public class Plateau extends AbstractModel {
         this.addContinent(continents);
         this.addEquipe(equipes);
         this.addJoueurs(joueurs);
+        this.attribuerEquipePartie();
     }
     @Override
     public void addTerritories(String[] territoires) {
@@ -290,9 +292,17 @@ public class Plateau extends AbstractModel {
                 .toList().get(0);
     }
 
+    @Override
+    public void attribuerEquipePartie() {
+        Random random = new Random();
+        for (Equipe equipe : this.getEquipes()) {
+            this.getJoueursPartie().add(equipe.getJoueursEquipe().get(random.nextInt(4)));
+        }
+    }
     /**
      * Affecte / retourne le type d'un territoire donnee.
      */
+
 
     @Override
     public TypeTerritoire getTypeTerritoire(int x, int y) {
