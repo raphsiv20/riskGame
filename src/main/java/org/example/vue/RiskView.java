@@ -376,10 +376,14 @@ public class RiskView extends JFrame implements Observateur {
         labelSoldatsDispo.setText("Nombre de soldat a déployer : "+ model.getJoueurActif().getSoldatsADeployer());
         labelTerritoire.setText("Territoire actif : " +model.getTerritoireActif().getTerritoireName());
         labelNbTroupeTerritoire.setText("Nombre de soldat sur le territoire : " +model.getTerritoireActif().getSoldats());
-        labelOccupantTerritoire.setText("Joueur occupant le territoire : "+model.getTerritoireActif().getJoueurOccupant());
+        if (model.getTerritoireActif().getJoueurOccupant() != null) {
+            labelOccupantTerritoire.setText("Joueur occupant le territoire : " + model.getTerritoireActif().getJoueurOccupant().getNomJoueur());
+        } else {
+            labelOccupantTerritoire.setText("Joueur occupant le territoire : personne");
+        }
         String voisins = "";
         for (Territoire territoireActuel : model.getTerritoireActif().getTerritoiresAdjacents()) {
-            voisins += territoireActuel.getTerritoireName() + ", ";
+            voisins += territoireActuel.getTerritoireName() + "\n";
         }
         labelVoisins.setText("Territoires voisins : "+voisins);
         repaint();

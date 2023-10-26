@@ -237,4 +237,6 @@ public abstract class AbstractModel implements Observable {
         return res;
     }
 
+    public abstract CarteTerritoire obtenirCarteTerritoire();
+
 }

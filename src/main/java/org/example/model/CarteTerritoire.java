@@ -4,9 +4,20 @@ public class CarteTerritoire {
     private Territoire territoire;
     private String typeCarte;
 
+    private Joueur joueurDetenantLaCarte;
+
     public CarteTerritoire(Territoire territoire, String typeCarte) {
         this.territoire = territoire;
         this.typeCarte = typeCarte;
+        this.joueurDetenantLaCarte = null;
+    }
+
+    public Joueur getJoueurDetenantLaCarte() {
+        return joueurDetenantLaCarte;
+    }
+
+    public void setJoueurDetenantLaCarte(Joueur joueurDetenantLaCarte) {
+        this.joueurDetenantLaCarte = joueurDetenantLaCarte;
     }
 
     public Territoire getTerritoire() {
@@ -20,4 +31,5 @@ public class CarteTerritoire {
     public String getTypeCarte() {
         return typeCarte;
     }
+
 }

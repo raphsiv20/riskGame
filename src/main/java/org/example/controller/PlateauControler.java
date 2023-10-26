@@ -73,6 +73,7 @@ public class PlateauControler extends AbstractControler {
             territoireClique.setSoldats(territoireClique.getSoldats() + nbTroupes);
 
             model.getJoueurActif().removeSoldatsAdeployer(nbTroupes);
+            model.getJoueurActif().addTerritoire(territoireClique);
 
             if (model.getJoueurActif().getSoldatsADeployer() == 0) {
                 model.setPhaseTour("Phase de bataille");
