@@ -1,32 +1,51 @@
 package org.example.model;
 import java.util.ArrayList;
-import java.sql.*;
+
 import static org.example.controller.Gestion_BDD.insertNombreTerritoire;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Joueur {
     private Equipe equipeJoueur;
     private String nomJoueur;
     private String prenomJoueur;
-
     private List<Territoire> territoiresOccupes;
     private List<Continent> continentsConquis;
     private int troupeDisponible;
     private ArrayList<CarteTerritoire> listeCarteTerritoire;
+    private boolean actif;
 
-    private int idJoueur;
-
-    public Joueur(String nomJoueur, String prenomJoueur, Equipe nomEquipe, int idJoueur){
-
+    public Joueur(String nomJoueur, String prenomJoueur, Equipe equipeJoueur) {
         this.nomJoueur = nomJoueur;
         this.prenomJoueur = prenomJoueur;
         this.equipeJoueur = equipeJoueur;
         this.territoiresOccupes = new ArrayList<>();
         this.continentsConquis = new ArrayList<>();
+        this.listeCarteTerritoire = new ArrayList<>();
+        this.equipeJoueur.addJoueur(this);
+        this.actif = false;
+    }
+
+    public boolean getAtif() {
+        return this.actif;
+    }
+
+    public void setActif (boolean actif) {
+        this.actif = actif;
+    }
+
+    public void addSoldatsAdeployer(int nouveauxSoldatsAdeployer){
+        this.soldatsADeployer += nouveauxSoldatsAdeployer;
+    }
+
+    /**
+     *
+     * @param soldatsDeployés le nombre de soldats que le joueur souhaite déployer
+     */
+    public void removeSoldatsAdeployer(int soldatsDeployés) {
+        this.soldatsADeployer -= soldatsDeployés;
+
         listeCarteTerritoire = new ArrayList<CarteTerritoire>();
-        this.idJoueur = idJoueur;
     }
 
     public Equipe getEquipeJoueur() {
@@ -45,7 +64,6 @@ public class Joueur {
         this.nomJoueur = nomJoueur;
     }
 
-
     public String getPrenomJoueur() {
         return prenomJoueur;
     }
@@ -53,12 +71,12 @@ public class Joueur {
     public void setPrenomJoueur(String prenomJoueur) {
         this.prenomJoueur = prenomJoueur;
     }
-  
-    public int getTroupeDisponible(){
+
+    public int getTroupeDisponible() {
         return this.troupeDisponible;
     }
 
-    public void SetTroupeDisponible(int nombre){
+    public void SetTroupeDisponible(int nombre) {
         this.troupeDisponible = nombre;
     }
 
@@ -76,14 +94,5 @@ public class Joueur {
 
     public void setContinentsConquis(List<Continent> continentsConquis) {
         this.continentsConquis = continentsConquis;
-    }
-
-    public void gagnerTerritoire(Territoire territoire){
-        this.territoiresOccupes.add(territoire);
-        insertNombreTerritoire(this.idJoueur);
-    }
-
-    public void perdreTerritoire(Territoire territoire){
-        this.territoiresOccupes.remove(territoire);
     }
 }
