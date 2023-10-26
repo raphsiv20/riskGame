@@ -90,6 +90,10 @@ public class RiskView extends JFrame implements Observateur {
         bouton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 switch (model.getPhaseTour()) {
+                    case "Phase initiale" :
+                        model.setPhaseTour("Phase de déploiement des troupes");
+                        labelPhaseJeu.setText(model.getPhaseTour());
+                        break;
                     case "Phase de bataille" :
                         labelCarteTerritoire.setVisible(false);
                         model.setPhaseTour("Phase de renforcement");
@@ -388,10 +392,11 @@ public class RiskView extends JFrame implements Observateur {
     }
 
     public void update() {
-        int nombreSoldatTotalplace = 0;
-        for (int i = 0; i <joueurs.size(); i++) {
-            nombreSoldatTotalplace += joueurs.get(i).getSoldatsADeployer();
-        }
+        if (model.getPhaseTour() == "Phase initiale") {
+            int nombreSoldatTotalplace = 0;
+            for (int i = 0; i < joueurs.size(); i++) {
+                nombreSoldatTotalplace += joueurs.get(i).getSoldatsADeployer();
+            }
             if (nombreSoldatTotalplace != nombreSoldatTotal) {
                 joueurActifIndex = (joueurActifIndex + 1) % joueurs.size();
                 Joueur joueurActif = joueurs.get(joueurActifIndex);
@@ -404,8 +409,8 @@ public class RiskView extends JFrame implements Observateur {
                     }
                 }
                 nombreSoldatTotal = nombreSoldatTotalplace;
+            }
         }
-
 
         labelPhaseJeu.setText(model.getPhaseTour());
         labelSoldatsDispo.setText("Nombre de soldat a déployer : "+ model.getJoueurActif().getSoldatsADeployer());
