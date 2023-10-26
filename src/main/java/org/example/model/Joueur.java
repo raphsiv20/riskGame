@@ -16,7 +16,7 @@ public class Joueur {
     private ArrayList<CarteTerritoire> listeCarteTerritoire;
     private boolean actif;
 
-    public Joueur(String nomJoueur, String prenomJoueur, Equipe equipeJoueur, int idJoueur) {
+    public Joueur(String nomJoueur, String prenomJoueur, Equipe equipeJoueur, int idJoueur, int soldatsADeployer) {
         this.idJoueur = idJoueur;
         this.nomJoueur = nomJoueur;
         this.prenomJoueur = prenomJoueur;
@@ -26,6 +26,7 @@ public class Joueur {
         this.listeCarteTerritoire = new ArrayList<>();
         this.equipeJoueur.addJoueur(this);
         this.actif = false;
+        this.soldatsADeployer = soldatsADeployer;
     }
 
     public boolean getAtif() {
