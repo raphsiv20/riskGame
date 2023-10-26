@@ -17,6 +17,7 @@ import java.util.Random;
 import org.example.model.Joueur;
 
 public class PlateauControler extends AbstractControler {
+    private static int[] battleResult = {};
 
     public PlateauControler(AbstractModel model) {
         super(model);
@@ -124,6 +125,7 @@ public class PlateauControler extends AbstractControler {
     }
 
     private void bataille(Territoire territoireClique) {
+
         List<Territoire> AdjacentsTerritoire = territoireClique.getTerritoiresAdjacents();
         List<Territoire> Adjacents = new ArrayList<>();
 
@@ -148,15 +150,16 @@ public class PlateauControler extends AbstractControler {
         if (result == JOptionPane.OK_OPTION) {
             String selectedTerritoireName = (String) comboBox.getSelectedItem();
             Territoire selectedTerritoire = null;
-
-            // trouver territoire choisi
-            for (Territoire t : Adjacents) {
-                if (t.getTerritoireName().equals(selectedTerritoireName)) {
-                    selectedTerritoire = t;
-                    territoireCible = selectedTerritoire;
-                    break;
-                }
-            }
+//
+//            // trouver territoire choisi
+//            for (Territoire t : Adjacents) {
+//                if (t.getTerritoireName().equals(selectedTerritoireName)) {
+//                    selectedTerritoire = t;
+//                    territoireCible = selectedTerritoire;
+//                    break;
+//                }
+//            }
+            territoireCible = model.getTerritoireByName(selectedTerritoireName);
 
             if (selectedTerritoire != null) {
 
@@ -167,14 +170,37 @@ public class PlateauControler extends AbstractControler {
                 System.out.println("nb armies: " + nbSoldatsAtta + " def " + nbSoldatsDefen);
                 if (resultatAttaque) {
                     territoireCible.setJoueurOccupant(model.getJoueurActif());
-                    /********/
+                    int nbSoldatReste = territoireClique.getSoldats() - battleResult[0];
+                    int nbSoldatDeplacer = 1;
+
+                    SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, nbSoldatReste - 1, 1);
+                    JSpinner spinner = new JSpinner(spinnerModel);
+
+                    int bouton = JOptionPane.showOptionDialog(
+                            Frame.getFrames()[0],
+                            spinner,
+                            "Combien de troupes voulez-vous déplacer ?",
+                            JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.PLAIN_MESSAGE,
+                            null,
+                            null,
+                            0
+                    );
+
+                    if (bouton == 0) {
+                        nbSoldatDeplacer = (int) spinnerModel.getValue();
+                    }
+
+                    territoireClique.setSoldats(nbSoldatReste - nbSoldatDeplacer);
+                    territoireCible.setSoldats(nbSoldatDeplacer);
                 }
             } else {
-                System.out.println("choisir un d'autre territoire!");
+                territoireCible.setSoldats(territoireCible.getSoldats() - battleResult[1]);
+                int nb = territoireClique.getSoldats() - battleResult[0];
+                if (nb <= 0) nb = 1;
+                territoireClique.setSoldats(1);
             }
         }
-
-
     }
 
     private void renforcement(Territoire territoireSource) {
@@ -251,8 +277,10 @@ public class PlateauControler extends AbstractControler {
             System.out.println("Attacker's dice roll: " + arrayToString(attackerRoll));
             System.out.println("Defender's dice roll: " + arrayToString(defenderRoll));
 
-            // 比较结果
-            int[] battleResult = compareDice(attackerRoll, defenderRoll, attackerArmies, defenderArmies);
+            // clean result
+            Arrays.fill(battleResult, 0);
+            // comparer
+            battleResult = compareDice(attackerRoll, defenderRoll, attackerArmies, defenderArmies);
             System.out.println("Battle result: Attacker loses " + battleResult[0] + " armies, Defender loses " + battleResult[1] + " armies.");
             boolean attaqueReusi = false;
             if (defenderDice - battleResult[1] <= 0)
