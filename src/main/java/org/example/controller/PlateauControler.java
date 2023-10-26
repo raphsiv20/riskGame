@@ -65,7 +65,7 @@ public class PlateauControler extends AbstractControler {
             int nbTroupes = (int) spinnerModel.getValue();
             System.out.println(nbTroupes);
             territoireClique.setSoldats(nbTroupes);
-            territoireClique.setJoueurOccupant(model.getJoueurActif());
+//            territoireClique.setJoueurOccupant(model.getJoueurs());
 //            System.out.println("Joueur : " + model.getJoueurActif().getNomJoueur());
 
             model.getJoueurActif().removeSoldatsAdeployer(nbTroupes);
@@ -89,22 +89,52 @@ public class PlateauControler extends AbstractControler {
     }
 
     private void bataille(Territoire territoireClique) {
-       List<Territoire> Adjacents = territoireClique.getTerritoiresAdjacents();
-       for (Territoire t : Adjacents) {
-           System.out.println(t.getTerritoireName());
-       }
-//        System.out.println("Cible : " + territoireCible.getTerritoireName() + " source : " + territoireSource.getTerritoireName());
-//        if (territoireCible != null && territoireClique != null) {
-//            int nbSoldatsAttaqueur = territoireClique.getSoldats();
-//            int nbSoldatsDefendeur = territoireCible.getSoldats();
-//
-//            System.out.println("nb armies : " + nbSoldatsAttaqueur + " asdf " + nbSoldatsDefendeur);
-//
-//            boolean resultatBataille  = faireBataille(nbSoldatsAttaqueur, nbSoldatsDefendeur);
-//            System.out.println("resultat bataille : " + resultatBataille);
-//        }
+        List<Territoire> Adjacents = territoireClique.getTerritoiresAdjacents();
+
+        Territoire territoireCible = null;
+        // string vector avec territoire adjacent
+        String[] adjacentTerritories = new String[Adjacents.size()];
+        for (int i = 0; i < Adjacents.size(); i++) {
+            adjacentTerritories[i] = Adjacents.get(i).getTerritoireName();
+        }
+
+        JComboBox<String> comboBox = new JComboBox<>(adjacentTerritories);
+
+        // result territoire attaque
+        int result = JOptionPane.showConfirmDialog(null, comboBox, "Choisir terrtoire à attaquer!", JOptionPane.OK_CANCEL_OPTION);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String selectedTerritoireName = (String) comboBox.getSelectedItem();
+            Territoire selectedTerritoire = null;
+
+            // trouver territoire choisi
+            for (Territoire t : Adjacents) {
+                if (t.getTerritoireName().equals(selectedTerritoireName)) {
+                    selectedTerritoire = t;
+                    territoireCible = selectedTerritoire;
+                    break;
+                }
+            }
+
+            if (selectedTerritoire != null) {
+
+                System.out.println("Vous avez choisr attaquer : " + selectedTerritoire.getTerritoireName());
+                int nbSoldatsAtta = territoireClique.getSoldats();
+                int nbSoldatsDefen = territoireCible.getSoldats();
+                boolean resultatAttaque = faireBataille(nbSoldatsAtta, nbSoldatsDefen);
+                System.out.println("nb armies: " + nbSoldatsAtta + " def " + nbSoldatsDefen);
+                if (resultatAttaque) {
+                    territoireCible.setJoueurOccupant(model.getJoueurActif());
+                    /********/
+                }
+            } else {
+                System.out.println("choisir un d'autre territoire!");
+            }
+        }
+
 
     }
+
 
     private void renforcement(Territoire territoireSource) {
         //Boite de dialogue pour le nombre de joueur à déplacer
