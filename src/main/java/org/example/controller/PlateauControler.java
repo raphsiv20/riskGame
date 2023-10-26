@@ -1,7 +1,9 @@
 package org.example.controller;
 
 import org.example.model.AbstractModel;
+import org.example.model.Joueur;
 import org.example.model.Territoire;
+import org.example.model.TypeTerritoire;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
@@ -25,9 +27,17 @@ public class PlateauControler extends AbstractControler {
     public void cliqueSur(int x, int y) {
         Territoire territoireClique = this.model.getTerritoire(x,y);
         territoireClique.setActif(true);
-        model.demandeMiseAjourVue();
+        if (!territoireClique.getTypeTerritoire().equals(TypeTerritoire.VIDE)) {
+            model.demandeMiseAjourVue();
+        }
+        else {
+            return;
+        }
 
         switch (model.getPhaseTour()) {
+            case "Phase initiale" :
+                this.initiale(territoireClique);
+                break;
             case "Phase de déploiement des troupes" :
                 this.deploiementTroupe(territoireClique);
                 break;
@@ -45,7 +55,7 @@ public class PlateauControler extends AbstractControler {
     private void deploiementTroupe(Territoire territoireClique) {
 
         //boite de dialogue deploiement troupe
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, 10, 1);
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, model.getJoueurActif().getSoldatsADeployer(), 1);
         JSpinner spinner = new JSpinner(spinnerModel);
 
 
@@ -63,29 +73,54 @@ public class PlateauControler extends AbstractControler {
 
         if (bouton == 0) {
             int nbTroupes = (int) spinnerModel.getValue();
-            System.out.println(nbTroupes);
-            territoireClique.setSoldats(nbTroupes);
-            territoireClique.setJoueurOccupant(this.model.getJoueurActif());
-//            System.out.println("Joueur : " + model.getJoueurActif().getNomJoueur());
+            territoireClique.setSoldats(territoireClique.getSoldats() + nbTroupes);
 
             model.getJoueurActif().removeSoldatsAdeployer(nbTroupes);
 
             if (model.getJoueurActif().getSoldatsADeployer() == 0) {
                 model.setPhaseTour("Phase de bataille");
-                model.demandeMiseAjourVue();
             }
+            model.demandeMiseAjourVue();
         }
 
     }
 
-    private ArrayList<Territoire> getDeuxTerrtoire(Territoire territoireClique) {
-        int nb = 2;
-        ArrayList<Territoire> list = new ArrayList<>();
-        while (nb >= 2) {
-            list.add(model.getTerritoireActif());
-            nb--;
+    private void initiale(Territoire territoireClique) {
+        //boite de dialogue deploiement troupe
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, 1, 1);
+        JSpinner spinner = new JSpinner(spinnerModel);
+
+        int bouton = JOptionPane.showOptionDialog(
+                Frame.getFrames()[0],
+                spinner,
+                "Combien de troupes déployer?",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                0
+        );
+
+
+        if (bouton == 0) {
+            int nbTroupes = (int) spinnerModel.getValue();
+            territoireClique.setSoldats(territoireClique.getSoldats() + nbTroupes);
+
+            model.getJoueurActif().removeSoldatsAdeployer(nbTroupes);
+
+            if (model.getJoueursPartie().indexOf(model.getJoueurActif())+1 == model.getJoueursPartie().size() ) {
+                model.getJoueurActif().setActif(false);
+                model.getJoueursPartie().get(0).setActif(true);
+            }
+            else {
+                Joueur ancienActif = model.getJoueurActif();
+                model.getJoueursPartie().get(model.getJoueursPartie().indexOf(model.getJoueurActif()) + 1).setActif(true);
+                ancienActif.setActif(false);
+            }
+
         }
-        return list;
+        model.demandeMiseAjourVue();
+
     }
 
     private void bataille(Territoire territoireClique) {
@@ -141,7 +176,6 @@ public class PlateauControler extends AbstractControler {
 
 
     }
-
 
     private void renforcement(Territoire territoireSource) {
         //Boite de dialogue pour le nombre de joueur à déplacer
@@ -205,7 +239,6 @@ public class PlateauControler extends AbstractControler {
             );
         }
     }
-
 
     public static boolean faireBataille(int attackerArmies, int defenderArmies) {
         try {
@@ -281,9 +314,4 @@ public class PlateauControler extends AbstractControler {
         }
         return sb.toString();
     }
-
-
-
-
-
 }
