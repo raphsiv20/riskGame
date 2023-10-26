@@ -149,6 +149,22 @@ public class Joueur {
     }
 
     public void gainSoldats() {
-        this.addSoldatsAdeployer(this.territoiresOccupes.size()%3);
-}
+        int newSoldats = 0;
+        if (!continentsConquis.isEmpty()) {
+            for (Continent continent: continentsConquis) {
+                newSoldats += continent.getBonusContinent();
+            }
+        }
+        this.addSoldatsAdeployer(this.territoiresOccupes.size()%3 + newSoldats);
+    }
+
+    //une methode boolean avec echange possible et ensuite
+
+    public boolean echangeCartePossible() {
+        int nbFantassins = 0;
+        int nbCavaliers = 0;
+        int nbCanons = 0;
+        return false;
+    }
+
 }
