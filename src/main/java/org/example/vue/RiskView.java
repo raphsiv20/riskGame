@@ -91,6 +91,10 @@ public class RiskView extends JFrame implements Observateur {
         bouton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 switch (model.getPhaseTour()) {
+                    case "Phase initiale" :
+                        model.setPhaseTour("Phase de déploiement des troupes");
+                        labelPhaseJeu.setText(model.getPhaseTour());
+                        break;
                     case "Phase de bataille" :
                         labelCarteTerritoire.setVisible(false);
                         model.setPhaseTour("Phase de renforcement");
