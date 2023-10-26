@@ -22,8 +22,5 @@
 22,Lee,Ji-hoon,DRX;
 23,Park,Hye-jin,DRX;
 24,Choi,Min-ji,DRX;
-25,Smith,John,FaZe;
-26,Johnson,Emma,FaZe;
-27,Lee,David,FaZe;
-28,Garcia,Maria,FaZe;
+
 
