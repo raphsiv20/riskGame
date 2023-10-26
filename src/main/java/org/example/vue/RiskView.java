@@ -13,6 +13,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import static org.example.ressourcesImg.RessourcesImages.AFGHANISTAN;
+import static org.example.ressourcesImg.RessourcesImages.ALASKA;
+
 
 public class RiskView extends JFrame implements Observateur {
 
@@ -33,6 +36,7 @@ public class RiskView extends JFrame implements Observateur {
     private JLabel labelVoisins = new javax.swing.JLabel();
     private javax.swing.JTextArea labelCarteTerritoire;
     JButton boutonEchangerCarte = new JButton("Échanger carte");
+    private int joueurActif = 0;
 
 
 
@@ -88,6 +92,18 @@ public class RiskView extends JFrame implements Observateur {
                         labelPhaseJeu.setText(model.getPhaseTour());
                         break;
                     case "Phase de renforcement" :
+                        if (joueurActif == joueurs.size() - 1) {
+                            joueurActif = 0;
+                        } else {
+                            joueurActif += 1;
+                        }
+                        JOptionPane.showMessageDialog(
+                                Frame.getFrames()[0],
+                                "A toi de jouer " + joueurs.get(joueurActif).getNomJoueur(),
+                                "Tour suivant",
+                                JOptionPane.PLAIN_MESSAGE
+                        );
+
                         labelCarteTerritoire.setVisible(true);
                         incr = incr + 1;
                         model.setPhaseTour("Phase de déploiement des troupes");
@@ -99,7 +115,7 @@ public class RiskView extends JFrame implements Observateur {
                         }
                         if (joueurActifIndex >= joueurs.size()-1) {
                             joueurActifIndex = 0;
-                            actualiseLblJoueur();
+                            dessinerJeu();
                         }
                         else {
                             joueurActifIndex += 1;
@@ -111,6 +127,7 @@ public class RiskView extends JFrame implements Observateur {
                 }
             }
         });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -166,6 +183,38 @@ public class RiskView extends JFrame implements Observateur {
 
     // dessine le plateau de jeu
     public void dessinerJeu() {
+        labelJoueur.setText("Joueurs :" + '\n');
+        labelCarteTerritoire.setText("Voici vos cartes territoires posséedés" + '\n');
+        for (int i = 0; i < joueurs.size(); i++) {
+            String nomJoueur = joueurs.get(i).getNomJoueur();
+            int Infanterie = 0;
+            int Cavalerie = 0;
+            int Artillerie = 0;
+            if (i == joueurActifIndex) {
+                labelJoueur.setText(labelJoueur.getText() + "\u2794" + nomJoueur + "\n");
+                for (int j = 0; j < joueurs.get(i).getCarteTerritoires().size(); j++) {
+                    labelCarteTerritoire.setText(labelCarteTerritoire.getText() + "Carte de type " + joueurs.get(i).getCarteTerritoires().get(j).getTypeCarte().toString()+ "\n");
+                    if (joueurs.get(i).getCarteTerritoires().get(j).getTypeCarte() == "Infanterie"){
+                        Infanterie += 1;
+                        System.out.println(Infanterie);
+                    }
+                    else if (joueurs.get(i).getCarteTerritoires().get(j).getTypeCarte() == "Cavalerie"){
+                        Cavalerie += 1;
+                    }
+                    else {
+                        Artillerie += 1;
+                    }
+                }
+                if (Infanterie == 3 || Cavalerie == 3 || Artillerie == 3){
+                    labelCarteTerritoire.add(boutonEchangerCarte);
+                }
+                ;
+            }
+            else {
+                labelJoueur.setText(labelJoueur.getText() + nomJoueur + "\n");
+            }
+        }
+
         int h = this.panelJeu.getWidth();
         int l = this.panelJeu.getHeight();
         int x, y, cote;
@@ -185,23 +234,131 @@ public class RiskView extends JFrame implements Observateur {
                     case VIDE :
                         panelJeu.drawTerritoireVide(x+xP*cote, y+yP*cote, cote);
                         break;
-                    case AMNORD :
-                        panelJeu.drawTerritoireAmNord(x+xP*cote, y+yP*cote, cote);
+                    case AFGHANISTAN:
+                        panelJeu.drawTerritoireAFGHANISTAN(x+xP*cote, y+yP*cote, cote);
                         break;
-                    case AMSUD :
-                        panelJeu.drawTerritoireAmSud(x+xP*cote, y+yP*cote, cote);
+                    case AFRIQUE_DE_L_EST:
+                        panelJeu.drawTerritoireAFRIQUEEST(x+xP*cote, y+yP*cote, cote);
                         break;
-                    case EU :
-                        panelJeu.drawTerritoireEU(x+xP*cote, y+yP*cote, cote);
+                    case AFRIQUE_DU_SUD:
+                        panelJeu.drawTerritoireAFRIQUESUD(x+xP*cote, y+yP*cote, cote);
                         break;
-                    case AFRIQUE :
-                        panelJeu.drawTerritoireAfrique(x+xP*cote, y+yP*cote, cote);
+                    case AFRIQUE_DU_NORD:
+                        panelJeu.drawTerritoireAFRIQUENORD(x+xP*cote, y+yP*cote, cote);
                         break;
-                    case ASIE :
-                        panelJeu.drawTerritoireAsie(x+xP*cote, y+yP*cote, cote);
+                    case ALASKA:
+                        panelJeu.drawTerritoireALASKA(x+xP*cote, y+yP*cote, cote);
                         break;
-                    case AUST :
-                        panelJeu.drawTerritoireAust(x+xP*cote, y+yP*cote, cote);
+                    case ALBERTA:
+                        panelJeu.drawTerritoireALBERTA(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case AMERIQUE_CENTRALE:
+                        panelJeu.drawTerritoireAMCENTRALE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case ARGENTINE:
+                        panelJeu.drawTerritoireARGENTINA(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case BRESIL:
+                        panelJeu.drawTerritoireBRESIL(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case CHINE:
+                        panelJeu.drawTerritoireCHINA(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case CONGO:
+                        panelJeu.drawTerritoireCONGO(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case EGYPTE:
+                        panelJeu.drawTerritoireEGYPTE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case EST_DE_L_AUSTRALIE:
+                        panelJeu.drawTerritoireESTAUSTRALIE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case EST_DES_ETATS_UNIS:
+                        panelJeu.drawTerritoireESTETATSUNIS(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case EUROPE_DU_NORD:
+                        panelJeu.drawTerritoireEUROPENORD(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case EUROPE_DE_L_OUEST:
+                        panelJeu.drawTerritoireEUROPEOUEST(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case EUROPE_DU_SUD:
+                        panelJeu.drawTerritoireEUROPESUD(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case GRANDE_BRETAGNE:
+                        panelJeu.drawTerritoireGRANDEBRETAGNE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case GROENLAND:
+                        panelJeu.drawTerritoireGROENLAND(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case INDE:
+                        panelJeu.drawTerritoireINDE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case INDONESIE:
+                        panelJeu.drawTerritoireINDONESIE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case IRKOUTSK:
+                        panelJeu.drawTerritoireIRKUTSK(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case ISLANDE:
+                        panelJeu.drawTerritoireISLANDE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case JAPON:
+                        panelJeu.drawTerritoireJAPON(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case KAMCHATKA:
+                        panelJeu.drawTerritoireKAMCHATKA(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case MADAGASCAR:
+                        panelJeu.drawTerritoireMADAGASCAR(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case MONGOLIE:
+                        panelJeu.drawTerritoireMONGOLIA(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case MOYEN_ORIENT:
+                        panelJeu.drawTerritoireMOYENORIENT(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case NOUVELLE_GUINEE:
+                        panelJeu.drawTerritoireNOUVELLEGUINEE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case ONTARIO:
+                        panelJeu.drawTerritoireONTARIO(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case OUEST_DE_L_AUSTRALIE:
+                        panelJeu.drawTerritoireOUESTAUSTRALIE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case OUEST_DES_ETATS_UNIS:
+                        panelJeu.drawTerritoireOUESTETATSUNIS(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case OURAL:
+                        panelJeu.drawTerritoireOURAL(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case PEROU:
+                        panelJeu.drawTerritoirePEROU(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case QUEBEC:
+                        panelJeu.drawTerritoireQUEBEC(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case SCANDINAVIE:
+                        panelJeu.drawTerritoireSCANDINAVIA(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case SIAM:
+                        panelJeu.drawTerritoireSIAM(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case SIBERIE:
+                        panelJeu.drawTerritoireSIBERIE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case TERRITOIRE_DU_NORD_OUEST:
+                        panelJeu.drawTerritoireTERRITOIRENORDOUEST(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case UKRAINE:
+                        panelJeu.drawTerritoireUKRAINE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case VENEZUELA:
+                        panelJeu.drawTerritoireVENEZUELA(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case TCHITA:
+                        panelJeu.drawTerritoireYAKUSTK(x+xP*cote, y+yP*cote, cote);
                         break;
                 }
 
