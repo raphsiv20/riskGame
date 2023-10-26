@@ -21,6 +21,8 @@ public abstract class AbstractModel implements Observable {
     private List<Continent> continentsGame;
     private List<CarteTerritoire> cartesTerritoires;
     private List<Joueur> joueurs;
+
+    private List<Joueur> joueursPartie;
     private Tour tours;
     private List<Equipe> equipes;
     private String phaseTour;
@@ -36,6 +38,7 @@ public abstract class AbstractModel implements Observable {
         this.equipes = new ArrayList<>();
         this.tours = new Tour(1);
         observateurs = new ArrayList<>();
+        this.joueursPartie = new ArrayList<>();
     }
 
     public String getPhaseTour() {
@@ -53,7 +56,27 @@ public abstract class AbstractModel implements Observable {
     public int getHauteur() {
         return this.hauteur;
     }
+    public abstract void attribuerEquipePartie();
 
+    public ArrayList<Observateur> getObservateurs() {
+        return observateurs;
+    }
+
+    public void setObservateurs(ArrayList<Observateur> observateurs) {
+        this.observateurs = observateurs;
+    }
+
+    public void setTerritoires(Territoire[][] territoires) {
+        this.territoires = territoires;
+    }
+
+    public List<Joueur> getJoueursPartie() {
+        return joueursPartie;
+    }
+
+    public void setJoueursPartie(List<Joueur> joueursPartie) {
+        this.joueursPartie = joueursPartie;
+    }
 
     public boolean partieTerminer() {
         return this.partieTerminer;
