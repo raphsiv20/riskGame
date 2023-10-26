@@ -37,6 +37,9 @@ public class RiskView extends JFrame implements Observateur {
     private javax.swing.JTextArea labelCarteTerritoire;
     JButton boutonEchangerCarte = new JButton("Échanger carte");
     private int joueurActif = 0;
+    private boolean validationOK = false;
+
+    private int nombreSoldatTotal = 120;
 
 
 
@@ -121,7 +124,7 @@ public class RiskView extends JFrame implements Observateur {
                         }
                         else {
                             joueurActifIndex += 1;
-                            actualiseLblJoueur();
+                            actualiseLabelCarteTerritoireJoueur();
                         }
                         break;
                     default :
@@ -366,10 +369,10 @@ public class RiskView extends JFrame implements Observateur {
 
             }
         }
-        actualiseLblJoueur();
+        actualiseLabelCarteTerritoireJoueur();
     }
 
-    public void actualiseLblJoueur() {
+    public void actualiseLabelCarteTerritoireJoueur() {
         labelJoueur.setText("Joueurs :" + '\n');
         labelCarteTerritoire.setText("Voici vos cartes territoires posséedés" + '\n');
         for (int i = 0; i < joueurs.size(); i++) {
@@ -404,16 +407,24 @@ public class RiskView extends JFrame implements Observateur {
     }
 
     public void update() {
-        actualiseLblJoueur();
-        /*
-        for (Joueur joueurActuel : joueurs) {
-            if (joueurActuel.getAtif()) {
-                labelJoueur.setText(labelJoueur.getText() + "\u2794" + joueurActuel.getNomJoueur() + "\n");
-            }
-            else {
-                labelJoueur.setText(labelJoueur.getText() + joueurActuel.getNomJoueur() + "\n");
-            }
-        }*/
+        int nombreSoldatTotalplace = 0;
+        for (int i = 0; i <joueurs.size(); i++) {
+            nombreSoldatTotalplace += joueurs.get(i).getSoldatsADeployer();
+        }
+            if (nombreSoldatTotalplace != nombreSoldatTotal) {
+                joueurActifIndex = (joueurActifIndex + 1) % joueurs.size();
+                Joueur joueurActif = joueurs.get(joueurActifIndex);
+
+                for (Joueur joueurActuel : joueurs) {
+                    if (joueurActuel == joueurActif) {
+                        labelJoueur.setText(labelJoueur.getText() + "\u2794" + joueurActuel.getNomJoueur() + "\n");
+                    } else {
+                        labelJoueur.setText(labelJoueur.getText() + joueurActuel.getNomJoueur() + "\n");
+                    }
+                }
+                nombreSoldatTotal = nombreSoldatTotalplace;
+        }
+
 
         labelPhaseJeu.setText(model.getPhaseTour());
         labelSoldatsDispo.setText("Nombre de soldat a déployer : "+ model.getJoueurActif().getSoldatsADeployer());
