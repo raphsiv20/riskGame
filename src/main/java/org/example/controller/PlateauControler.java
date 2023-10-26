@@ -7,6 +7,8 @@ import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.Random;
 
 public class PlateauControler extends AbstractControler {
 
@@ -70,12 +72,91 @@ public class PlateauControler extends AbstractControler {
     }
 
     private void bataille(Territoire territoireClique) {
+        int nbSoldatAttaque = territoireClique.getSoldats();
+
+        int nbSoldatDefendeur = territoireClique.getSoldats();
+
+        System.out.println("nb soldats ---->>  attacker :  " +  nbSoldatAttaque + " defender : " + nbSoldatDefendeur);
+
+        boolean result = faireBataille(nbSoldatAttaque, nbSoldatDefendeur); // resultat bataille
+
+        System.out.println("result attack: " + result);
 
     }
 
     private void renforcement(Territoire territoireClique) {
 
 
+    }
+
+    public static boolean faireBataille(int attackerArmies, int defenderArmies){
+//        int attackerArmies = 5; // nb attaqueur
+//        int defenderArmies = 2; // nb defneceur
+
+        int attackerDice = Math.min(attackerArmies - 1, 3); // nb des attaqueur
+        int defenderDice = Math.min(defenderArmies, 2); // nb de defenceur
+
+        int[] attackerRoll = rollDice(attackerDice);
+        int[] defenderRoll = rollDice(defenderDice);
+
+        System.out.println("Attacker's dice roll: " + arrayToString(attackerRoll));
+        System.out.println("Defender's dice roll: " + arrayToString(defenderRoll));
+
+        // comparer resultats des dés
+        int[] battleResult = compareDice(attackerRoll, defenderRoll, attackerArmies, defenderArmies);
+        System.out.println("Battle result: Attacker loses " + battleResult[0] + " armies, Defender loses " + battleResult[1] + " armies.");
+        boolean attaqueReusi = false;
+        if (defenderDice - battleResult[1] <= 0)
+            attaqueReusi = true;
+        System.out.println("Attaque reussi : " + attaqueReusi);
+        return attaqueReusi;
+    }
+    // lacner des
+    public static int[] rollDice(int numDice) {
+        int[] result = new int[numDice];
+        Random rand = new Random();
+        for (int i = 0; i < numDice; i++) {
+            result[i] = rand.nextInt(6) + 1; // random interger de 1 -> 6
+        }
+        Arrays.sort(result);
+        for (int i = 0; i < numDice / 2; i++) {
+            int temp = result[i];
+            result[i] = result[numDice - i - 1];
+            result[numDice - i - 1] = temp;
+        }
+        return result;
+    }
+
+    // comparer
+    public static int[] compareDice(int[] attackerRoll, int[] defenderRoll, int attackerArmies, int defenderArmies) {
+        int[] result = new int[2]; // result[0] troupes loss by attacker , result[1] troueps loss by defender
+
+        while (attackerArmies >= 1 && defenderArmies >= 1) {
+            for (int i = 0; i < Math.min(attackerRoll.length, defenderRoll.length); i++) {
+                if (attackerRoll[i] > defenderRoll[i]) {
+                    result[1]++; // defender loss un troupes
+                    defenderArmies--;
+                } else {
+                    result[0]++; // Attacker loss un troupes
+                    attackerArmies--;
+                }
+                System.out.println(Arrays.toString(result));
+            }
+        }
+
+        return result;
+    }
+
+    // int vector --> String
+    public static String arrayToString(int[] arr) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < arr.length; i++) {
+            sb.append(arr[i]);
+            if (i < arr.length - 1) {
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
     }
 
 }
