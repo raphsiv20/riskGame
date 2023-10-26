@@ -17,8 +17,10 @@ public abstract class AbstractModel {
     private List<Continent> continentsGame;
     private List<CarteTerritoire> cartesTerritoires;
     private List<Joueur> joueurs;
+    private List<Joueur> joueursPartie;
     private Tour tours;
     private List<Equipe> equipes;
+
     public AbstractModel(int hauteur, int largeur) {
         this.hauteur = 10;
         this.largeur = 7;
@@ -30,6 +32,7 @@ public abstract class AbstractModel {
         this.joueurs = new ArrayList<>();
         this.equipes = new ArrayList<>();
         this.tours = new Tour(1);
+        this.joueursPartie = new ArrayList<>();
     }
 
     public abstract TypeTerritoire getTypeTerritoire(int x, int y);
@@ -92,6 +95,7 @@ public abstract class AbstractModel {
     public abstract Continent getContinentByName(String continentName);
 
     public abstract Territoire getTerritoireByName(String territoryName);
+    public abstract void attribuerEquipePartie();
 
     /**
      *
@@ -160,5 +164,17 @@ public abstract class AbstractModel {
 
     public void setEquipes(List<Equipe> equipes) {
         this.equipes = equipes;
+    }
+
+    public void setTerritoires(Territoire[][] territoires) {
+        this.territoires = territoires;
+    }
+
+    public List<Joueur> getJoueursPartie() {
+        return joueursPartie;
+    }
+
+    public void setJoueursPartie(List<Joueur> joueursPartie) {
+        this.joueursPartie = joueursPartie;
     }
 }

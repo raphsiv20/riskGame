@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class Plateau extends AbstractModel {
 
@@ -45,12 +46,13 @@ public class Plateau extends AbstractModel {
         this.readFiles();
 
         System.out.println("----------------------------------\n");
-        this.getCartesTerritoires().forEach(carteTerritoire -> System.out.println(carteTerritoire.getTerritoire().getTerritoireName() +" " +carteTerritoire.getTypeCarte()));
+        this.getTerritoiresGame().forEach(territoire -> System.out.println(territoire.getTypeTerritoire()));
         System.out.println("----------------------------------\n");
         this.getEquipes().forEach(equipe -> equipe.getJoueursEquipe().forEach(joueur -> System.out.println(equipe.getNomEquipe() + ": " + joueur.getNomJoueur())));
         System.out.println("----------------------------------\n");
         this.getContinentsGame().forEach(continent -> continent.getTerritoiresContinent().forEach(territoire -> System.out.println(continent.getContinentName() + ": " + territoire.getTerritoireName())));
-
+        System.out.println("----------------------------------\n");
+        this.getJoueursPartie().forEach(joueur -> System.out.println(joueur.getNomJoueur()));
 
         this.setTerritoire(3, 0, new Territoire(TypeTerritoire.VIDE));
         this.setTerritoire(4, 0, new Territoire(TypeTerritoire.VIDE));
@@ -172,6 +174,7 @@ public class Plateau extends AbstractModel {
         this.addContinent(continents);
         this.addEquipe(equipes);
         this.addJoueurs(joueurs);
+        this.attribuerEquipePartie();
     }
     @Override
     public void addTerritories(String[] territoires) {
@@ -181,34 +184,178 @@ public class Plateau extends AbstractModel {
             this.getCartesTerritoires().add(new CarteTerritoire(this.getTerritoiresGame().get(i), countriesArray[1]));
 
             switch (countriesArray[4]) {
-                case "Amérique du Nord" -> {
-                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.AMNORD);
+                case "ALASKA":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.ALASKA);
                     this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
-                }
-                case "Amérique du Sud" -> {
-                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.AMSUD);
+                    break;
+                case "ALBERTA":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.ALBERTA);
                     this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
-                }
-                case "Europe" -> {
-                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.EU);
+                    break;
+                case "AMERIQUE_CENTRALE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.AMERIQUE_CENTRALE);
                     this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
-                }
-                case "Afrique" -> {
-                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.AFRIQUE);
+                    break;
+                case "EST_DES_ETATS_UNIS":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.EST_DES_ETATS_UNIS);
                     this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
-                }
-                case "Asie" -> {
-                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.ASIE);
+                    break;
+                case "GROENLAND":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.GROENLAND);
                     this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
-                }
-                default -> {
-                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.AUST);
+                    break;
+                case "TERRITOIRE_DU_NORD_OUEST":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.TERRITOIRE_DU_NORD_OUEST);
                     this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
-                }
-
+                    break;
+                case "ONTARIO":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.ONTARIO);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "QUEBEC":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.QUEBEC);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "OUEST_DES_ETATS_UNIS":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.OUEST_DES_ETATS_UNIS);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "ARGENTINE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.ARGENTINE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "PEROU":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.PEROU);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "BRESIL":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.BRESIL);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "VENEZUELA":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.VENEZUELA);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "GRANDE_BRETAGNE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.GRANDE_BRETAGNE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "ISLANDE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.ISLANDE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "EUROPE_DU_NORD":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.EUROPE_DU_NORD);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "SCANDINAVIE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.SCANDINAVIE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "EUROPE_DU_SUD":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.EUROPE_DU_SUD);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "UKRAINE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.UKRAINE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "EUROPE_DE_L_OUEST":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.EUROPE_DE_L_OUEST);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "CONGO":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.CONGO);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "AFRIQUE_DE_L_EST":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.AFRIQUE_DE_L_EST);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "EGYPTE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.EGYPTE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "MADAGASCAR":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.MADAGASCAR);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "AFRIQUE_DU_NORD":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.AFRIQUE_DU_NORD);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "AFRIQUE_DU_SUD":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.AFRIQUE_DU_SUD);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "AFGHANISTAN":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.AFGHANISTAN);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "CHINE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.CHINE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "INDE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.INDE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "TCHITA":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.TCHITA);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "JAPON":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.JAPON);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "KAMCHATKA":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.KAMCHATKA);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "MOYEN_ORIENT":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.MOYEN_ORIENT);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "MONGOLIE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.MONGOLIE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "SIAM":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.SIAM);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "SIBERIE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.SIBERIE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "OURAL":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.OURAL);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "IRKOUTSK":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.IRKOUTSK);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "EST_DE_L_AUSTRALIE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.EST_DE_L_AUSTRALIE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "INDONESIE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.INDONESIE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "NOUVELLE_GUINEE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.NOUVELLE_GUINEE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
+                case "OUEST_DE_L_AUSTRALIE":
+                    this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.OUEST_DE_L_AUSTRALIE);
+                    this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
+                    break;
             }
         }
     }
+
 
     @Override
     public void addTerritoryNextTerritories(String[] territoiresVoisins) {
@@ -284,6 +431,14 @@ public class Plateau extends AbstractModel {
         return this.getEquipes().stream()
                 .filter(equipe -> equipe.getNomEquipe().equals(nomEquipe))
                 .toList().get(0);
+    }
+
+    @Override
+    public void attribuerEquipePartie() {
+        Random random = new Random();
+        for (Equipe equipe: this.getEquipes()) {
+            this.getJoueursPartie().add(equipe.getJoueursEquipe().get(random.nextInt(4)));
+        }
     }
 
     /**
