@@ -1,5 +1,9 @@
 package org.example.model;
 
+
+import java.util.List;
+
+
 import java.util.List;
 
 public class Continent {
@@ -31,4 +35,5 @@ public class Continent {
     public void setJoueurOccupant(Joueur joueurOccupant) {
         this.joueurOccupant = joueurOccupant;
     }
+
 }

@@ -3,8 +3,7 @@ package org.example.controller;
 import org.example.model.AbstractModel;
 import org.example.model.Plateau;
 
-public abstract class
-AbstractControler {
+public abstract class AbstractControler {
     protected AbstractModel model;
     private String phaseTour;
 
@@ -22,6 +21,6 @@ AbstractControler {
     }
 
     public void setPhaseTour(String phase) {
-        this.phaseTour = phase;
+        this.phaseTour=phase;
     }
 }
