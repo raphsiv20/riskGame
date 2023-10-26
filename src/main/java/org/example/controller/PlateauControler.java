@@ -140,7 +140,7 @@ public class PlateauControler extends AbstractControler {
     private void bataille(Territoire territoireClique) {
 
         if (territoireClique.getJoueurOccupant() != model.getJoueurActif()) {
-            JOptionPane.showMessageDialog(null, "vous ne prossede pas cet territoire" + territoireClique.getJoueurOccupant().getNomJoueur(), "Message d'information", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "vous ne prossedez pas cet territoire" + territoireClique.getJoueurOccupant().getNomJoueur(), "Message d'information", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
@@ -177,8 +177,45 @@ public class PlateauControler extends AbstractControler {
                 System.out.println("Vous avez choisr attaquer : " + territoireCible.getTerritoireName());
                 int nbSoldatsAtta = territoireClique.getSoldats();
                 int nbSoldatsDefen = territoireCible.getSoldats();
-                boolean resultatAttaque = faireBataille(nbSoldatsAtta, nbSoldatsDefen);
-                System.out.println("nb armies: " + nbSoldatsAtta + " def " + nbSoldatsDefen);
+
+                // choisir nb des attaqueur
+                SpinnerNumberModel attackerSpinnerModel = new SpinnerNumberModel(1, 1, Math.min(3, nbSoldatsAtta), 1);
+                JSpinner attackerSpinner = new JSpinner(attackerSpinnerModel);
+
+                int attackerDiceCount = (int) JOptionPane.showOptionDialog(
+                        Frame.getFrames()[0],
+                        attackerSpinner,
+                        "Choisissez nb de dés (attaqueur)",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        null,
+                        0
+                );
+
+                int nbAttackerDice = (int) attackerSpinnerModel.getValue();
+
+                // choisir nb des defendeur
+                SpinnerNumberModel defenderSpinnerModel = new SpinnerNumberModel(1, 1, Math.min(2, nbSoldatsDefen), 1);
+                JSpinner defenderSpinner = new JSpinner(defenderSpinnerModel);
+
+                int defenderDiceCount = (int) JOptionPane.showOptionDialog(
+                        Frame.getFrames()[0],
+                        defenderSpinner,
+                        "Choisissez nb de dés (defendeur)",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        null,
+                        0
+                );
+
+                int nbDefenderDice = (int) defenderSpinnerModel.getValue();
+
+                System.out.println("nb des : " + nbAttackerDice + nbDefenderDice);
+
+                boolean resultatAttaque = faireBataille(nbSoldatsAtta, nbAttackerDice, nbSoldatsDefen, nbDefenderDice);
+
                 if (resultatAttaque) {
                     territoireCible.setJoueurOccupant(model.getJoueurActif());
                     int nbSoldatReste = territoireClique.getSoldats() - battleResult[0];
@@ -208,10 +245,11 @@ public class PlateauControler extends AbstractControler {
                     territoireCible.setSoldats(territoireCible.getSoldats() - battleResult[1]);
                     int nb = territoireClique.getSoldats() - battleResult[0];
                     if (nb <= 0) nb = 1;
-                    territoireClique.setSoldats(1);
+                    territoireClique.setSoldats(nb);
                 }
             }
         }
+
     }
 
     private void renforcement(Territoire territoireSource) {
@@ -277,26 +315,38 @@ public class PlateauControler extends AbstractControler {
         }
     }
 
-    public static boolean faireBataille(int attackerArmies, int defenderArmies) {
+    public static boolean faireBataille(int attackerArmies, int attackerDice, int defenderArmies, int defenderDice) {
         try {
-            int attackerDice = Math.min(attackerArmies - 1, 3);
-            int defenderDice = Math.min(defenderArmies, 2);
 
             int[] attackerRoll = rollDice(attackerDice);
             int[] defenderRoll = rollDice(defenderDice);
 
-            System.out.println("Attacker's dice roll: " + arrayToString(attackerRoll));
-            System.out.println("Defender's dice roll: " + arrayToString(defenderRoll));
+            String resultatDes = "Attacker's dice roll: " + arrayToString(attackerRoll) + "Defender's dice roll: " + arrayToString(defenderRoll);
+
+            //resultat des
+            JOptionPane.showMessageDialog(
+                    Frame.getFrames()[0],
+                    resultatDes,
+                    "Resultat des",
+                    JOptionPane.PLAIN_MESSAGE
+            );
 
             // clean result
             Arrays.fill(battleResult, 0);
             // comparer
-            battleResult = compareDice(attackerRoll, defenderRoll, attackerArmies, defenderArmies);
-            System.out.println("Battle result: Attacker loses " + battleResult[0] + " armies, Defender loses " + battleResult[1] + " armies.");
+            battleResult = compareDice(attackerRoll, defenderRoll, attackerDice, defenderDice);
+
             boolean attaqueReusi = false;
             if (defenderDice - battleResult[1] <= 0)
                 attaqueReusi = true;
-            System.out.println("Attaque réussie : " + attaqueReusi);
+            System.out.println();
+            String resultatBat = "Attaque réussie : " + attaqueReusi +" Attacker loses " + battleResult[0] + " armies, Defender loses " + battleResult[1] + " armies.";
+            JOptionPane.showMessageDialog(
+                    Frame.getFrames()[0],
+                    resultatBat,
+                    "Resultat bataille",
+                    JOptionPane.PLAIN_MESSAGE
+            );
             return attaqueReusi;
         } catch (ArithmeticException e) {
             // 捕获异常后的处理
