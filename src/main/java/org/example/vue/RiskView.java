@@ -4,6 +4,7 @@ import org.example.controller.AbstractControler;
 import org.example.model.AbstractModel;
 import org.example.model.Equipe;
 import org.example.model.Joueur;
+import org.example.model.Territoire;
 import org.example.observer.Observateur;
 
 import javax.swing.*;
@@ -24,7 +25,12 @@ public class RiskView extends JFrame implements Observateur {
     private int incr;
     private JLabel labelNbTour = new javax.swing.JLabel();
     private javax.swing.JTextArea labelJoueur = new JTextArea();
-    JLabel labelPhaseJeu = new javax.swing.JLabel();
+    private JLabel labelPhaseJeu = new javax.swing.JLabel();
+    private JLabel labelSoldatsDispo = new javax.swing.JLabel();
+    private JLabel labelTerritoire = new javax.swing.JLabel();
+    private JLabel labelOccupantTerritoire = new javax.swing.JLabel();
+    private JLabel labelNbTroupeTerritoire = new javax.swing.JLabel();
+    private JLabel labelVoisins = new javax.swing.JLabel();
 
 
 
@@ -59,15 +65,21 @@ public class RiskView extends JFrame implements Observateur {
         model.setPhaseTour("Phase de déploiement des troupes");
         labelPhaseJeu.setText(model.getPhaseTour());
 
+        labelSoldatsDispo.setText("Nombre de soldat a déployer : " + model.getJoueurActif().getSoldatsADeployer());
+
+        labelTerritoire.setText("Territoire actif : ");
+
+        labelOccupantTerritoire.setText("Joueur occupant le territoire : ");
+
+        labelNbTroupeTerritoire.setText("Nombre de soldat sur le territoire : ");
+
+        labelVoisins.setText("Territoires voisins : ");
+
         //bouton phase de jeu
         JButton bouton = new JButton("Passer a la phase de jeu suivante");
         bouton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 switch (model.getPhaseTour()) {
-                    case "Phase de déploiement des troupes" :
-                        model.setPhaseTour("Phase de bataille");
-                        labelPhaseJeu.setText(model.getPhaseTour());
-                        break;
                     case "Phase de bataille" :
                         model.setPhaseTour("Phase de renforcement");
                         labelPhaseJeu.setText(model.getPhaseTour());
@@ -102,23 +114,42 @@ public class RiskView extends JFrame implements Observateur {
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelNbTour, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelNbTour, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addComponent(labelJoueur, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelJoueur, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(bouton)
                         .addComponent(labelPhaseJeu)
+                        .addComponent(labelSoldatsDispo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(labelTerritoire, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(labelOccupantTerritoire, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(labelNbTroupeTerritoire, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(labelVoisins, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                                .addComponent(labelJoueur, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(labelJoueur, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(bouton)
-                                .addComponent(labelPhaseJeu)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(labelNbTour))
-                        .addComponent(labelJoueur))
+                        .addGroup(layout.createSequentialGroup()
+                        .addComponent(labelNbTour)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelPhaseJeu)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelSoldatsDispo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelTerritoire)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(labelOccupantTerritoire)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(labelNbTroupeTerritoire)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(labelVoisins)
+                        )
+        )
 
         ;
 
@@ -185,6 +216,15 @@ public class RiskView extends JFrame implements Observateur {
 
     public void update() {
         labelPhaseJeu.setText(model.getPhaseTour());
+        labelSoldatsDispo.setText("Nombre de soldat a déployer : "+ model.getJoueurActif().getSoldatsADeployer());
+        labelTerritoire.setText("Territoire actif : " +model.getTerritoireActif().getTerritoireName());
+        labelNbTroupeTerritoire.setText("Nombre de soldat sur le territoire : " +model.getTerritoireActif().getSoldats());
+        labelOccupantTerritoire.setText("Joueur occupant le territoire : "+model.getTerritoireActif().getJoueurOccupant());
+        String voisins = "";
+        for (Territoire territoireActuel : model.getTerritoireActif().getTerritoiresAdjacents()) {
+            voisins += territoireActuel.getTerritoireName() + ", ";
+        }
+        labelVoisins.setText("Territoires voisins : "+voisins);
         repaint();
     }
 }

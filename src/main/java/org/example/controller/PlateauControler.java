@@ -18,11 +18,8 @@ public class PlateauControler extends AbstractControler {
     @Override
     public void cliqueSur(int x, int y) {
         Territoire territoireClique = this.model.getTerritoire(x,y);
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("Vous avez cliqué sur le territoire ").append(territoireClique.getTerritoireName()).append("\nVoici ses territoires adjacents: \n");
-        territoireClique.getTerritoiresAdjacents().forEach(territoire -> sb.append(territoire.getTerritoireName()).append("\n"));
-        JOptionPane.showMessageDialog(Frame.getFrames()[0], sb);
+        territoireClique.setActif(true);
+        model.demandeMiseAjourVue();
 
         switch (model.getPhaseTour()) {
             case "Phase de déploiement des troupes" :
@@ -35,24 +32,20 @@ public class PlateauControler extends AbstractControler {
                 this.renforcement(territoireClique);
                 break;
         }
+
+        territoireClique.setActif(false);
     }
 
     private void deploiementTroupe(Territoire territoireClique) {
 
         //boite de dialogue deploiement troupe
-        NumberFormat format = NumberFormat.getInstance();
-        NumberFormatter formatter = new NumberFormatter(format);
-        formatter.setValueClass(Integer.class);
-        formatter.setMinimum(0);
-        formatter.setMaximum(model.getJoueurActif().getSoldatsADeployer());
-        formatter.setAllowsInvalid(false);
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, 10, 1);
+        JSpinner spinner = new JSpinner(spinnerModel);
 
-        JFormattedTextField textField = new JFormattedTextField(formatter);
-
-        int nbTroupes = JOptionPane.showOptionDialog(
+        int bouton = JOptionPane.showOptionDialog(
                 Frame.getFrames()[0],
-                textField,
-                "Combien de troupes deployer?",
+                spinner,
+                "Combien de troupes déployer?",
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
                 null,
@@ -60,13 +53,18 @@ public class PlateauControler extends AbstractControler {
                 0
         );
 
-        territoireClique.setSoldats(nbTroupes);
 
-        model.getJoueurActif().removeSoldatsAdeployer(nbTroupes);
+        if (bouton == 0) {
+            int nbTroupes = (int) spinnerModel.getValue();
+            System.out.println(nbTroupes);
+            territoireClique.setSoldats(nbTroupes);
 
-        if (model.getJoueurActif().getSoldatsADeployer() == 0) {
-            model.setPhaseTour("Phase de bataille");
-            model.demandeMiseAjourVue();
+            model.getJoueurActif().removeSoldatsAdeployer(nbTroupes);
+
+            if (model.getJoueurActif().getSoldatsADeployer() == 0) {
+                model.setPhaseTour("Phase de bataille");
+                model.demandeMiseAjourVue();
+            }
         }
 
     }
