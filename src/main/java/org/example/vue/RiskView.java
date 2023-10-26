@@ -64,8 +64,10 @@ public class RiskView extends JFrame implements Observateur {
         model.setNumTour(1);
         labelNbTour.setText("Tour "+ model.getNumTour());
         labelCarteTerritoire = new javax.swing.JTextArea();
+        labelCarteTerritoire.setEditable(false);
         labelCarteTerritoire.setVisible(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        labelJoueur.setEditable(false);
 
         // label phase de jeu
         model.setPhaseTour("Phase initiale");
