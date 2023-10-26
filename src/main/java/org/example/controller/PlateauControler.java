@@ -65,7 +65,7 @@ public class PlateauControler extends AbstractControler {
             int nbTroupes = (int) spinnerModel.getValue();
             System.out.println(nbTroupes);
             territoireClique.setSoldats(nbTroupes);
-//            territoireClique.setJoueurOccupant(model.getJoueurs());
+            territoireClique.setJoueurOccupant(this.model.getJoueurActif());
 //            System.out.println("Joueur : " + model.getJoueurActif().getNomJoueur());
 
             model.getJoueurActif().removeSoldatsAdeployer(nbTroupes);
@@ -89,7 +89,14 @@ public class PlateauControler extends AbstractControler {
     }
 
     private void bataille(Territoire territoireClique) {
-        List<Territoire> Adjacents = territoireClique.getTerritoiresAdjacents();
+        List<Territoire> AdjacentsTerritoire = territoireClique.getTerritoiresAdjacents();
+        List<Territoire> Adjacents = new ArrayList<>();
+
+        for (Territoire t : AdjacentsTerritoire) {
+            if (t.getJoueurOccupant().equals(model.getJoueurActif())) {
+                Adjacents.add(t);
+            }
+        }
 
         Territoire territoireCible = null;
         // string vector avec territoire adjacent
