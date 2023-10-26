@@ -14,15 +14,10 @@ public class Main {
         AbstractModel model = new Plateau(10, 7);
         AbstractControler controler = new PlateauControler(model);
         RiskView v = new RiskView(model,controler);
-<<<<<<< HEAD
         v.ModifierNbSoldats(5,4, 20);
         while(!model.partieTerminer()){
             controler.calculerStepSuivant();
         }
-
-
-=======
         model.addObservateur(v);
->>>>>>> NM
     }
 }
