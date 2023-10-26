@@ -81,7 +81,7 @@ public class Plateau extends AbstractModel {
         this.setTerritoire(8, 6, new Territoire(TypeTerritoire.VIDE));
         this.setTerritoire(9, 6, new Territoire(TypeTerritoire.VIDE));
 
-        this.getJoueurs().get(0).setActif(true);
+        this.getJoueursPartie().get(0).setActif(true);
     }
 
     /*------------*/
@@ -443,12 +443,5 @@ public class Plateau extends AbstractModel {
         return this.getTerritoires()[x][y].getTypeTerritoire();
     }
 
-    @Override
-    public CarteTerritoire obtenirCarteTerritoire() {
-        List<CarteTerritoire> carteTerritoiresRestantes =  this.getCartesTerritoires().stream()
-                .filter(carteTerritoire -> carteTerritoire.getJoueurDetenantLaCarte() != null)
-                .toList();
-        Random randomCarte = new Random();
-        return carteTerritoiresRestantes.get(randomCarte.nextInt(carteTerritoiresRestantes.size()));
-    }
-}
+
+ }

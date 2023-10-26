@@ -68,7 +68,7 @@ public class RiskView extends JFrame implements Observateur {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         // label phase de jeu
-        model.setPhaseTour("Phase de déploiement des troupes");
+        model.setPhaseTour("Phase initiale");
         labelPhaseJeu.setText(model.getPhaseTour());
 
         labelSoldatsDispo.setText("Nombre de soldat a déployer : " + model.getJoueurActif().getSoldatsADeployer());
@@ -86,11 +86,6 @@ public class RiskView extends JFrame implements Observateur {
         bouton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 switch (model.getPhaseTour()) {
-                    case "Phase de déploiement des troupes" :
-                        labelCarteTerritoire.setVisible(false);
-                        model.setPhaseTour("Phase de bataille");
-                        labelPhaseJeu.setText(model.getPhaseTour());
-                        break;
                     case "Phase de bataille" :
                         labelCarteTerritoire.setVisible(false);
                         model.setPhaseTour("Phase de renforcement");
@@ -118,17 +113,17 @@ public class RiskView extends JFrame implements Observateur {
                             labelNbTour.setText("Tour " + model.getNumTour());
                             incr = 0;
                         }
-                        if (joueurActifIndex >= joueurs.size() - 1) {
-                            joueurActifIndex = 0;  // Reviens au premier joueur
+                        if (joueurActifIndex >= joueurs.size()-1) {
+                            joueurActifIndex = 0;
                             dessinerJeu();
-                        } else {
+                        }
+                        else {
                             joueurActifIndex += 1;
-                            dessinerJeu();
+                            actualiseLblJoueur();
                         }
                         break;
                     default :
-                        model.setPhaseTour("Phase de déploiement des troupes");
-                        labelPhaseJeu.setText(model.getPhaseTour());
+                        break;
                 }
             }
         });
@@ -138,7 +133,6 @@ public class RiskView extends JFrame implements Observateur {
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labelNbTour, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addComponent(labelJoueur, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
@@ -155,9 +149,11 @@ public class RiskView extends JFrame implements Observateur {
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-                                .addComponent(labelJoueur, GroupLayout.PREFERRED_SIZE, 150 , GroupLayout.PREFERRED_SIZE)
-                                .addComponent(bouton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                .addComponent(labelCarteTerritoire, GroupLayout.PREFERRED_SIZE, 150 , GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelJoueur, GroupLayout.PREFERRED_SIZE, 120 , GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(bouton))
                         .addGroup(layout.createSequentialGroup()
                         .addComponent(labelNbTour)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -174,7 +170,6 @@ public class RiskView extends JFrame implements Observateur {
                                         .addComponent(labelNbTroupeTerritoire)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(labelVoisins)
-                                        .addComponent(labelCarteTerritoire, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
 
                         )
         )
@@ -369,21 +364,63 @@ public class RiskView extends JFrame implements Observateur {
 
             }
         }
+        actualiseLblJoueur();
+    }
+
+    public void actualiseLblJoueur() {
+        labelJoueur.setText("Joueurs :" + '\n');
+        labelCarteTerritoire.setText("Voici vos cartes territoires posséedés" + '\n');
+        for (int i = 0; i < joueurs.size(); i++) {
+            String nomJoueur = joueurs.get(i).getNomJoueur();
+            int Infanterie = 0;
+            int Cavalerie = 0;
+            int Artillerie = 0;
+            if (i == joueurActifIndex) {
+                labelJoueur.setText(labelJoueur.getText() + "\u2794" + nomJoueur + "\n");
+                for (int j = 0; j < joueurs.get(i).getListeCarteTerritoire().size(); j++) {
+                    labelCarteTerritoire.setText(labelCarteTerritoire.getText() + "Carte de type " + joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte().toString()+ "\n");
+                    if (joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte() == "Infanterie"){
+                        Infanterie += 1;
+                        System.out.println(Infanterie);
+                    }
+                    else if (joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte() == "Cavalerie"){
+                        Cavalerie += 1;
+                    }
+                    else {
+                        Artillerie += 1;
+                    }
+                }
+                if (Infanterie == 3 || Cavalerie == 3 || Artillerie == 3){
+                    labelCarteTerritoire.add(boutonEchangerCarte);
+                }
+                ;
+            }
+            else {
+                labelJoueur.setText(labelJoueur.getText() + nomJoueur + "\n");
+            }
+        }
     }
 
     public void update() {
+        actualiseLblJoueur();
+        /*
+        for (Joueur joueurActuel : joueurs) {
+            if (joueurActuel.getAtif()) {
+                labelJoueur.setText(labelJoueur.getText() + "\u2794" + joueurActuel.getNomJoueur() + "\n");
+            }
+            else {
+                labelJoueur.setText(labelJoueur.getText() + joueurActuel.getNomJoueur() + "\n");
+            }
+        }*/
+
         labelPhaseJeu.setText(model.getPhaseTour());
         labelSoldatsDispo.setText("Nombre de soldat a déployer : "+ model.getJoueurActif().getSoldatsADeployer());
         labelTerritoire.setText("Territoire actif : " +model.getTerritoireActif().getTerritoireName());
         labelNbTroupeTerritoire.setText("Nombre de soldat sur le territoire : " +model.getTerritoireActif().getSoldats());
-        if (model.getTerritoireActif().getJoueurOccupant() != null) {
-            labelOccupantTerritoire.setText("Joueur occupant le territoire : " + model.getTerritoireActif().getJoueurOccupant().getNomJoueur());
-        } else {
-            labelOccupantTerritoire.setText("Joueur occupant le territoire : personne");
-        }
+        labelOccupantTerritoire.setText("Joueur occupant le territoire : "+model.getTerritoireActif().getJoueurOccupant());
         String voisins = "";
         for (Territoire territoireActuel : model.getTerritoireActif().getTerritoiresAdjacents()) {
-            voisins += territoireActuel.getTerritoireName() + "\n";
+            voisins += territoireActuel.getTerritoireName() + ", ";
         }
         labelVoisins.setText("Territoires voisins : "+voisins);
         repaint();
