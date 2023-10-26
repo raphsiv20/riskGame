@@ -130,6 +130,17 @@ public class RiskView extends JFrame implements Observateur {
                             joueurActifIndex += 1;
                             actualiseLabelCarteTerritoireJoueur();
                         }
+
+                        if (model.getJoueursPartie().indexOf(model.getJoueurActif())+1 == model.getJoueursPartie().size() ) {
+                            model.getJoueurActif().setActif(false);
+                            model.getJoueursPartie().get(0).setActif(true);
+                        }
+                        else {
+                            Joueur ancienActif = model.getJoueurActif();
+                            model.getJoueursPartie().get(model.getJoueursPartie().indexOf(model.getJoueurActif()) + 1).setActif(true);
+                            ancienActif.setActif(false);
+                        }
+
                         break;
                     default :
                         break;
