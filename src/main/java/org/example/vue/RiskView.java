@@ -140,6 +140,8 @@ public class RiskView extends JFrame implements Observateur {
                             ancienActif.setActif(false);
                         }
 
+                        labelSoldatsDispo.setText("Nombre de soldat a déployer : "  + model.getJoueurActif().getSoldatsADeployer());
+
                         break;
                     default :
                         break;

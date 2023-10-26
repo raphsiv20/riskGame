@@ -34,7 +34,7 @@ public class PlateauControler extends AbstractControler {
         else {
             return;
         }
-        System.out.println(model.getPhaseTour());
+
         switch (model.getPhaseTour()) {
             case "Phase initiale" :
                 this.initiale(territoireClique);
@@ -48,6 +48,12 @@ public class PlateauControler extends AbstractControler {
             case "Phase de renforcement" :
                 this.renforcement(territoireClique);
                 break;
+        }
+        if (!territoireClique.getTypeTerritoire().equals(TypeTerritoire.VIDE)) {
+            model.demandeMiseAjourVue();
+        }
+        else {
+            return;
         }
 
         territoireClique.setActif(false);
@@ -108,8 +114,7 @@ public class PlateauControler extends AbstractControler {
         }
         else {
             if (model.getJoueurActif().getSoldatsADeployer() == 0) {
-                int nbSoldatBonus = 3;
-                model.getJoueurActif().setSoldatsADeployer(nbSoldatBonus);
+                model.getJoueurActif().gainSoldats();
             }
         }
 
@@ -346,7 +351,7 @@ public class PlateauControler extends AbstractControler {
                     result[0]++; // Attacker loss un troupes
                     attackerArmies--;
                 }
-                System.out.println(Arrays.toString(result));
+                //System.out.println(Arrays.toString(result));
             }
         }
 
