@@ -100,7 +100,7 @@ public class PlateauControler extends AbstractControler {
                 0
         );
 
-        String territoireCible =;
+        Territoire territoireCible = model.getTerritoireActif();
         List<Territoire> territoiresAdjacents = territoireSource.getTerritoiresAdjacents();
         if(nbTroupes < territoireSource.getSoldats()){
             if(territoireSource.getSoldats() - nbTroupes >=  1){

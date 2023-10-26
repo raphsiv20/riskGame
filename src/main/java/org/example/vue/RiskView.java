@@ -194,13 +194,13 @@ public class RiskView extends JFrame implements Observateur {
             int Artillerie = 0;
             if (i == joueurActifIndex) {
                 labelJoueur.setText(labelJoueur.getText() + "\u2794" + nomJoueur + "\n");
-                for (int j = 0; j < joueurs.get(i).getCarteTerritoires().size(); j++) {
-                    labelCarteTerritoire.setText(labelCarteTerritoire.getText() + "Carte de type " + joueurs.get(i).getCarteTerritoires().get(j).getTypeCarte().toString()+ "\n");
-                    if (joueurs.get(i).getCarteTerritoires().get(j).getTypeCarte() == "Infanterie"){
+                for (int j = 0; j < joueurs.get(i).getListeCarteTerritoire().size(); j++) {
+                    labelCarteTerritoire.setText(labelCarteTerritoire.getText() + "Carte de type " + joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte().toString()+ "\n");
+                    if (joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte() == "Infanterie"){
                         Infanterie += 1;
                         System.out.println(Infanterie);
                     }
-                    else if (joueurs.get(i).getCarteTerritoires().get(j).getTypeCarte() == "Cavalerie"){
+                    else if (joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte() == "Cavalerie"){
                         Cavalerie += 1;
                     }
                     else {
