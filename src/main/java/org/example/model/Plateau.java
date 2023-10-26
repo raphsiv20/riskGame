@@ -375,7 +375,7 @@ public class Plateau extends AbstractModel {
         String[] joueursArray;
         for (int i = 0; i < joueurs.length; i++) {
             joueursArray = joueurs[i].split(",");
-            this.getJoueurs().add(new Joueur(joueursArray[1], joueursArray[2], this.getEquipeByName(joueursArray[3]),Integer.parseInt(joueursArray[0]) ));
+            this.getJoueurs().add(new Joueur(joueursArray[1], joueursArray[2], this.getEquipeByName(joueursArray[3]),Integer.parseInt(joueursArray[0]), 20));
         }
     }
 

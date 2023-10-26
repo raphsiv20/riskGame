@@ -1,5 +1,8 @@
 package org.example.model;
 
+import org.example.observer.Observable;
+import org.example.observer.Observateur;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -8,7 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class AbstractModel {
+public abstract class AbstractModel implements Observable {
+    private ArrayList<Observateur> observateurs;
     private int hauteur;
     private int largeur;
     private Territoire[][] territoires;
@@ -17,9 +21,11 @@ public abstract class AbstractModel {
     private List<Continent> continentsGame;
     private List<CarteTerritoire> cartesTerritoires;
     private List<Joueur> joueurs;
+
     private List<Joueur> joueursPartie;
     private Tour tours;
     private List<Equipe> equipes;
+    private String phaseTour;
 
     public AbstractModel(int hauteur, int largeur) {
         this.hauteur = 10;
@@ -32,7 +38,16 @@ public abstract class AbstractModel {
         this.joueurs = new ArrayList<>();
         this.equipes = new ArrayList<>();
         this.tours = new Tour(1);
+        observateurs = new ArrayList<>();
         this.joueursPartie = new ArrayList<>();
+    }
+
+    public String getPhaseTour() {
+        return this.phaseTour;
+    }
+
+    public void setPhaseTour(String phase) {
+        this.phaseTour = phase;
     }
 
     public abstract TypeTerritoire getTypeTerritoire(int x, int y);
@@ -42,7 +57,27 @@ public abstract class AbstractModel {
     public int getHauteur() {
         return this.hauteur;
     }
+    public abstract void attribuerEquipePartie();
 
+    public ArrayList<Observateur> getObservateurs() {
+        return observateurs;
+    }
+
+    public void setObservateurs(ArrayList<Observateur> observateurs) {
+        this.observateurs = observateurs;
+    }
+
+    public void setTerritoires(Territoire[][] territoires) {
+        this.territoires = territoires;
+    }
+
+    public List<Joueur> getJoueursPartie() {
+        return joueursPartie;
+    }
+
+    public void setJoueursPartie(List<Joueur> joueursPartie) {
+        this.joueursPartie = joueursPartie;
+    }
 
     public boolean partieTerminer() {
         return this.partieTerminer;
@@ -95,7 +130,6 @@ public abstract class AbstractModel {
     public abstract Continent getContinentByName(String continentName);
 
     public abstract Territoire getTerritoireByName(String territoryName);
-    public abstract void attribuerEquipePartie();
 
     /**
      *
@@ -166,15 +200,41 @@ public abstract class AbstractModel {
         this.equipes = equipes;
     }
 
-    public void setTerritoires(Territoire[][] territoires) {
-        this.territoires = territoires;
+    public Joueur getJoueurActif() {
+        Joueur res = null;
+        for (Joueur jouerActuel : this.getJoueurs()) {
+            if (jouerActuel.getAtif()) {
+                res = jouerActuel;
+            }
+        }
+        return res;
     }
 
-    public List<Joueur> getJoueursPartie() {
-        return joueursPartie;
+    @Override
+    public void demandeMiseAjourVue(){
+        for(Observateur o : observateurs){
+            o.update();
+        }
     }
 
-    public void setJoueursPartie(List<Joueur> joueursPartie) {
-        this.joueursPartie = joueursPartie;
+    @Override
+    public void removeObservateur(Observateur o){
+        observateurs.remove(o);
     }
+
+    @Override
+    public void addObservateur(Observateur o){
+        observateurs.add(o);
+    }
+
+    public Territoire getTerritoireActif() {
+        Territoire res = null;
+        for (Territoire territoireActuel : this.getTerritoiresGame()) {
+            if (territoireActuel.isActif()) {
+                res = territoireActuel;
+            }
+        }
+        return res;
+    }
+
 }
