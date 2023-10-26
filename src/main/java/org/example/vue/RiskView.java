@@ -79,6 +79,7 @@ public class RiskView extends JFrame implements Observateur {
 
         //bouton phase de jeu
         JButton bouton = new JButton("Passer a la phase de jeu suivante");
+
         bouton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 switch (model.getPhaseTour()) {

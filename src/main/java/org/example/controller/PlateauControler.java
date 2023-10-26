@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import com.mysql.cj.exceptions.ExceptionInterceptor;
 import org.example.model.AbstractModel;
 import org.example.model.Territoire;
 
@@ -23,6 +24,7 @@ public class PlateauControler extends AbstractControler {
         territoireClique.setActif(true);
         model.demandeMiseAjourVue();
 
+
         switch (model.getPhaseTour()) {
             case "Phase de déploiement des troupes" :
                 this.deploiementTroupe(territoireClique);
@@ -34,7 +36,6 @@ public class PlateauControler extends AbstractControler {
                 this.renforcement(territoireClique);
                 break;
         }
-
         territoireClique.setActif(false);
     }
 
@@ -72,16 +73,29 @@ public class PlateauControler extends AbstractControler {
     }
 
     private void bataille(Territoire territoireClique) {
-        int nbSoldatAttaque = territoireClique.getSoldats();
 
-        int nbSoldatDefendeur = territoireClique.getSoldats();
+        if (territoireClique != null) {
+            Territoire previousTerritoire = territoireClique;
+            Territoire territoireDefender = model.;
 
-        System.out.println("nb soldats ---->>  attacker :  " +  nbSoldatAttaque + " defender : " + nbSoldatDefendeur);
+            System.out.println("attacker territoire: " + lastCliqueTerritoire.getTerritoireName() + territoireClique);
 
-        boolean result = faireBataille(nbSoldatAttaque, nbSoldatDefendeur); // resultat bataille
+            int nbSoldatAttaque = previousTerritoire.getSoldats();
+            int nbSoldatDefendeur = territoireDefender.getSoldats();
 
-        System.out.println("result attack: " + result);
+            System.out.println("nb soldats ---->>  attacker :  " + nbSoldatAttaque + " defender : " + nbSoldatDefendeur);
 
+            int confirmerAttaque = JOptionPane.showConfirmDialog(null, "Confirmer attaquer?", "confirmer", JOptionPane.YES_NO_OPTION);
+
+            if (confirmerAttaque == JOptionPane.YES_OPTION) {
+                boolean result = faireBataille(nbSoldatAttaque, nbSoldatDefendeur); // resultat bataille
+                System.out.println("result attack: " + result);
+            } else {
+                System.out.println("Annuler attaquer");
+                // a compler annuler ataquer
+            }
+
+        }
     }
 
     private void renforcement(Territoire territoireClique) {
@@ -89,28 +103,33 @@ public class PlateauControler extends AbstractControler {
 
     }
 
-    public static boolean faireBataille(int attackerArmies, int defenderArmies){
-//        int attackerArmies = 5; // nb attaqueur
-//        int defenderArmies = 2; // nb defneceur
+    public static boolean faireBataille(int attackerArmies, int defenderArmies) {
+        try {
+            int attackerDice = Math.min(attackerArmies - 1, 3);
+            int defenderDice = Math.min(defenderArmies, 2);
 
-        int attackerDice = Math.min(attackerArmies - 1, 3); // nb des attaqueur
-        int defenderDice = Math.min(defenderArmies, 2); // nb de defenceur
+            int[] attackerRoll = rollDice(attackerDice);
+            int[] defenderRoll = rollDice(defenderDice);
 
-        int[] attackerRoll = rollDice(attackerDice);
-        int[] defenderRoll = rollDice(defenderDice);
+            System.out.println("Attacker's dice roll: " + arrayToString(attackerRoll));
+            System.out.println("Defender's dice roll: " + arrayToString(defenderRoll));
 
-        System.out.println("Attacker's dice roll: " + arrayToString(attackerRoll));
-        System.out.println("Defender's dice roll: " + arrayToString(defenderRoll));
-
-        // comparer resultats des dés
-        int[] battleResult = compareDice(attackerRoll, defenderRoll, attackerArmies, defenderArmies);
-        System.out.println("Battle result: Attacker loses " + battleResult[0] + " armies, Defender loses " + battleResult[1] + " armies.");
-        boolean attaqueReusi = false;
-        if (defenderDice - battleResult[1] <= 0)
-            attaqueReusi = true;
-        System.out.println("Attaque reussi : " + attaqueReusi);
-        return attaqueReusi;
+            // 比较结果
+            int[] battleResult = compareDice(attackerRoll, defenderRoll, attackerArmies, defenderArmies);
+            System.out.println("Battle result: Attacker loses " + battleResult[0] + " armies, Defender loses " + battleResult[1] + " armies.");
+            boolean attaqueReusi = false;
+            if (defenderDice - battleResult[1] <= 0)
+                attaqueReusi = true;
+            System.out.println("Attaque réussie : " + attaqueReusi);
+            return attaqueReusi;
+        } catch (ArithmeticException e) {
+            // 捕获异常后的处理
+            System.out.println("Nb armies 0! Error!!!");
+            e.printStackTrace();
+            return false;
+        }
     }
+
     // lacner des
     public static int[] rollDice(int numDice) {
         int[] result = new int[numDice];
