@@ -24,8 +24,6 @@ public class RiskView extends JFrame implements Observateur {
     private AbstractControler controler;
     private PanelJeu panelJeu;
     private java.util.List<Joueur> joueurs;
-    private int joueurActifIndex = 0;
-    private int incr;
     private JLabel labelNbTour = new javax.swing.JLabel();
     private javax.swing.JTextArea labelJoueur = new JTextArea();
     private JLabel labelPhaseJeu = new javax.swing.JLabel();
@@ -47,7 +45,6 @@ public class RiskView extends JFrame implements Observateur {
         this.model = model;
         this.controler = controler;
         this.joueurs = model.getJoueursPartie();
-        this.incr = 0;
 
         initComponents();
         this.mouseListener = new MouseListener(controler);
@@ -93,11 +90,13 @@ public class RiskView extends JFrame implements Observateur {
                     case "Phase initiale" :
                         model.setPhaseTour("Phase de déploiement des troupes");
                         labelPhaseJeu.setText(model.getPhaseTour());
+                        actualiseLabelCarteTerritoireJoueur();
                         break;
                     case "Phase de bataille" :
                         labelCarteTerritoire.setVisible(false);
                         model.setPhaseTour("Phase de renforcement");
                         labelPhaseJeu.setText(model.getPhaseTour());
+                        actualiseLabelCarteTerritoireJoueur();
                         break;
                     case "Phase de renforcement" :
                         if (joueurActif == joueurs.size() - 1) {
@@ -113,22 +112,8 @@ public class RiskView extends JFrame implements Observateur {
                         );
 
                         labelCarteTerritoire.setVisible(true);
-                        incr = incr + 1;
                         model.setPhaseTour("Phase de déploiement des troupes");
                         labelPhaseJeu.setText(model.getPhaseTour());
-                        if (incr == 4) {
-                            model.setNumTour(model.getNumTour() + 1);
-                            labelNbTour.setText("Tour " + model.getNumTour());
-                            incr = 0;
-                        }
-                        if (joueurActifIndex >= joueurs.size()-1) {
-                            joueurActifIndex = 0;
-                            dessinerJeu();
-                        }
-                        else {
-                            joueurActifIndex += 1;
-                            actualiseLabelCarteTerritoireJoueur();
-                        }
 
                         if (model.getJoueursPartie().indexOf(model.getJoueurActif())+1 == model.getJoueursPartie().size() ) {
                             model.getJoueurActif().setActif(false);
@@ -142,6 +127,7 @@ public class RiskView extends JFrame implements Observateur {
 
                         labelSoldatsDispo.setText("Nombre de soldat a déployer : "  + model.getJoueurActif().getSoldatsADeployer());
 
+                        actualiseLabelCarteTerritoireJoueur();
                         break;
                     default :
                         break;
@@ -220,20 +206,6 @@ public class RiskView extends JFrame implements Observateur {
 
     // dessine le plateau de jeu
     public void dessinerJeu() {
-        labelJoueur.setText("Joueurs :" + '\n');
-        labelCarteTerritoire.setText("Voici vos cartes territoires posséedés" + '\n');
-        for (int i = 0; i < joueurs.size(); i++) {
-            String nomJoueur = joueurs.get(i).getNomJoueur();
-            if (i == joueurActifIndex) {
-                labelJoueur.setText(labelJoueur.getText() + "\u2794" + nomJoueur + "\n");
-                for ( int j = 0; j <joueurs.get(i).getListeCarteTerritoire().size(); j++ ) {
-                    labelCarteTerritoire.setText(joueurs.get(i).getListeCarteTerritoire().get(j).toString());
-                }
-            }
-            else {
-                labelJoueur.setText(labelJoueur.getText() + nomJoueur + "\n");
-            }
-        }
 
         int h = this.panelJeu.getWidth();
         int l = this.panelJeu.getHeight();
@@ -390,39 +362,28 @@ public class RiskView extends JFrame implements Observateur {
     public void actualiseLabelCarteTerritoireJoueur() {
         labelJoueur.setText("Joueurs :" + '\n');
         labelCarteTerritoire.setText("Voici vos cartes territoires posséedés" + '\n');
-        for (int i = 0; i < joueurs.size(); i++) {
-            String nomJoueur = joueurs.get(i).getNomJoueur();
-            int Infanterie = 0;
-            int Cavalerie = 0;
-            int Artillerie = 0;
-            if (i == joueurActifIndex) {
-                labelJoueur.setText(labelJoueur.getText() + "\u2794" + nomJoueur + "\n");
-            }
-            else {
-                labelJoueur.setText(labelJoueur.getText() + nomJoueur + "\n");
+        Joueur joueurActif = model.getJoueurActif();
+
+        for (Joueur joueurActuel : joueurs) {
+            if (joueurActuel == joueurActif) {
+                labelJoueur.setText(labelJoueur.getText() + "\u2794" + joueurActuel.getNomJoueur() + "\n");
+                for (int j = 0; j < model.getJoueurActif().getListeCarteTerritoire().size(); j++) {
+                    labelCarteTerritoire.setText(labelCarteTerritoire.getText() + model.getJoueurActif().getListeCarteTerritoire().get(j).getTypeCarte() + '\n');
+                }
+            } else {
+                labelJoueur.setText(labelJoueur.getText() + joueurActuel.getNomJoueur() + "\n");
             }
         }
     }
 
     public void update() {
-        if (model.getPhaseTour() == "Phase initiale") {
-            int nombreSoldatTotalplace = 0;
-            for (int i = 0; i < joueurs.size(); i++) {
-                nombreSoldatTotalplace += joueurs.get(i).getSoldatsADeployer();
-            }
-            if (nombreSoldatTotalplace != nombreSoldatTotal) {
-                joueurActifIndex = (joueurActifIndex + 1) % joueurs.size();
-                Joueur joueurActif = joueurs.get(joueurActifIndex);
 
-                for (Joueur joueurActuel : joueurs) {
-                    if (joueurActuel == joueurActif) {
-                        labelJoueur.setText(labelJoueur.getText() + "\u2794" + joueurActuel.getNomJoueur() + "\n");
-                    } else {
-                        labelJoueur.setText(labelJoueur.getText() + joueurActuel.getNomJoueur() + "\n");
-                    }
-                }
-                nombreSoldatTotal = nombreSoldatTotalplace;
-            }
+        if (model.getPhaseTour() == "Phase de bataille") {
+            labelCarteTerritoire.setVisible(false);
+        }
+
+        if (model.getPhaseTour() == "Phase de déploiement des troupes") {
+            labelCarteTerritoire.setVisible(true);
         }
 
         labelPhaseJeu.setText(model.getPhaseTour());
@@ -441,6 +402,7 @@ public class RiskView extends JFrame implements Observateur {
             voisins += territoireActuel.getTerritoireName() + ", ";
         }
         labelVoisins.setText("<html>Territoires voisins : <br>"+voisins.replace(", ", "<br>") + "</html>" );
+        actualiseLabelCarteTerritoireJoueur();
         repaint();
     }
 }
