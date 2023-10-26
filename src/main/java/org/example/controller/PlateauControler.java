@@ -139,11 +139,16 @@ public class PlateauControler extends AbstractControler {
 
     private void bataille(Territoire territoireClique) {
 
+        if (territoireClique.getJoueurOccupant() != model.getJoueurActif()) {
+            JOptionPane.showMessageDialog(null, "vous ne prossede pas cet territoire" + territoireClique.getJoueurOccupant().getNomJoueur(), "Message d'information", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
         List<Territoire> AdjacentsTerritoire = territoireClique.getTerritoiresAdjacents();
         List<Territoire> Adjacents = new ArrayList<>();
 
         for (Territoire t : AdjacentsTerritoire) {
-            if (t.getJoueurOccupant().equals(model.getJoueurActif())) {
+            if (!t.getJoueurOccupant().equals(model.getJoueurActif())) {
                 Adjacents.add(t);
             }
         }
@@ -163,20 +168,13 @@ public class PlateauControler extends AbstractControler {
         if (result == JOptionPane.OK_OPTION) {
             String selectedTerritoireName = (String) comboBox.getSelectedItem();
             Territoire selectedTerritoire = null;
-//
-//            // trouver territoire choisi
-//            for (Territoire t : Adjacents) {
-//                if (t.getTerritoireName().equals(selectedTerritoireName)) {
-//                    selectedTerritoire = t;
-//                    territoireCible = selectedTerritoire;
-//                    break;
-//                }
-//            }
+
             territoireCible = model.getTerritoireByName(selectedTerritoireName);
+            System.out.println("territoire cible " + territoireCible.getTerritoireName());
 
-            if (selectedTerritoire != null) {
+            if (territoireCible != null) {
 
-                System.out.println("Vous avez choisr attaquer : " + selectedTerritoire.getTerritoireName());
+                System.out.println("Vous avez choisr attaquer : " + territoireCible.getTerritoireName());
                 int nbSoldatsAtta = territoireClique.getSoldats();
                 int nbSoldatsDefen = territoireCible.getSoldats();
                 boolean resultatAttaque = faireBataille(nbSoldatsAtta, nbSoldatsDefen);
@@ -206,12 +204,12 @@ public class PlateauControler extends AbstractControler {
 
                     territoireClique.setSoldats(nbSoldatReste - nbSoldatDeplacer);
                     territoireCible.setSoldats(nbSoldatDeplacer);
+                } else {
+                    territoireCible.setSoldats(territoireCible.getSoldats() - battleResult[1]);
+                    int nb = territoireClique.getSoldats() - battleResult[0];
+                    if (nb <= 0) nb = 1;
+                    territoireClique.setSoldats(1);
                 }
-            } else {
-                territoireCible.setSoldats(territoireCible.getSoldats() - battleResult[1]);
-                int nb = territoireClique.getSoldats() - battleResult[0];
-                if (nb <= 0) nb = 1;
-                territoireClique.setSoldats(1);
             }
         }
     }
