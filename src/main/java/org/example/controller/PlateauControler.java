@@ -97,6 +97,9 @@ public class PlateauControler extends AbstractControler {
     }
 
     private void deploiementTroupe(Territoire territoireClique) {
+        int nbSoldatBonus = 3;
+        model.getJoueurActif().addSoldatsAdeployer(nbSoldatBonus);
+
         if (territoireClique.getJoueurOccupant() != model.getJoueurActif()) {
             JOptionPane.showMessageDialog(null, "Ce territoire est déjà occupé par le joueur " + territoireClique.getJoueurOccupant().getNomJoueur(), "Message d'information", JOptionPane.INFORMATION_MESSAGE);
             return;
