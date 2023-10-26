@@ -5,10 +5,6 @@
  */
 package org.example.model;
 
-/**
- *
- * @author david
- */
 public enum TypeTerritoire {
     VIDE,
     AMNORD,

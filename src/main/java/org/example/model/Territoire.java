@@ -17,6 +17,7 @@ public class Territoire {
 	private String territoireContinentStr;
 	private int x;
 	private int y;
+	private boolean actif;
 
 	/*------------*/
 	/* Constructeur */
@@ -28,6 +29,7 @@ public class Territoire {
 		this.joueurOccupant = null;
 		this.soldats = 0;
 		this.territoireContinentStr = territoireContinentStr;
+		this.actif = false;
 	}
 
 	public Territoire(TypeTerritoire typeTerritoire) {
@@ -77,24 +79,22 @@ public class Territoire {
 	public int getX() {
 		return x;
 	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
 	public int getY() {
 		return y;
 	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
-
 	public String getTerritoireName() {
 		return territoireName;
 	}
 
-	public void setTerritoireName(String territoireName) {
-		this.territoireName = territoireName;
+	public String getTerritoireContinentStr() {
+		return territoireContinentStr;
+	}
+
+	public boolean isActif() {
+		return actif;
+	}
+
+	public void setActif(boolean actif) {
+		this.actif = actif;
 	}
 }
