@@ -1,12 +1,11 @@
 package org.example.controller;
-
 import org.example.model.AbstractModel;
 import org.example.model.Territoire;
-
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.example.model.Joueur;
@@ -63,6 +62,11 @@ public class PlateauControler extends AbstractControler {
             System.out.println(nbTroupes);
             territoireClique.setSoldats(nbTroupes);
 
+            if(model.getJoueurActif().getTerritoiresOccupes().contains(territoireClique)){
+                System.out.println("Chouine");
+            }else {
+                model.getJoueurActif().getTerritoiresOccupes().add(territoireClique);
+            }
             model.getJoueurActif().removeSoldatsAdeployer(nbTroupes);
 
             if (model.getJoueurActif().getSoldatsADeployer() == 0) {
@@ -100,8 +104,45 @@ public class PlateauControler extends AbstractControler {
                 0
         );
 
-        Territoire territoireCible = model.getTerritoireActif();
+        ArrayList<String> territoiresJoueur = new ArrayList<String>();
+        for(Territoire elem : model.getJoueurActif().getTerritoiresOccupes()){
+            territoiresJoueur.add(elem.getTerritoireName());
+        }
+
+        System.out.println(model.getJoueurActif().getTerritoiresOccupes());
+        /*System.out.println("Eh oh c'est la gros C'EST LA LA EH OH");
+        System.out.println(territoiresJoueur);
+        System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+        System.out.println(territoireSource.getTerritoiresAdjacents());
+        System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+*/
+
+        Object[] territoiresArray = territoiresJoueur.toArray();
+        // Afficher la boîte de dialogue avec la liste déroulante
+        String territoireCibleNom = (String) JOptionPane.showInputDialog(
+                Frame.getFrames()[0],
+                "Sélectionnez le territoire cible :",
+                "Choix du territoire cible",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                territoiresArray,
+                0
+        );
+
+            // Le code ici sera exécuté si l'utilisateur a sélectionné une option
+            Territoire territoireCible = model.getTerritoireByName(territoireCibleNom);
+            System.out.println("Territoire cible sélectionné : " + territoireCibleNom + " VersionObjet : " + territoireCible);
+
+
+        /*// Récupérer le territoire cible en fonction du nom sélectionné
+        Territoire territoireCible = territoiresAdjacentsEligibles.stream().filter(territoire -> territoire.getNom().equals(territoireCibleNom)).findFirst().orElse(null);
+*/
         List<Territoire> territoiresAdjacents = territoireSource.getTerritoiresAdjacents();
+        System.out.println("test");
+        System.out.println(territoireSource);
+        System.out.println("test");
+        System.out.println(territoiresAdjacents);
+
         if(nbTroupes < territoireSource.getSoldats()){
             if(territoireSource.getSoldats() - nbTroupes >=  1){
                 if(model.getJoueurActif().getTerritoiresOccupes().contains(territoireCible)){
@@ -110,7 +151,10 @@ public class PlateauControler extends AbstractControler {
                             territoiresAdjacents.remove(ter);
                         } else {
                             for (Territoire terA : ter.getTerritoiresAdjacents()) {
+                                System.out.println("LISTE : " +model.getJoueurActif().getTerritoiresOccupes());
+                                System.out.println("terA : " +terA);
                                 territoiresAdjacents.add(terA);
+                                System.out.println("LISTE : " +model.getJoueurActif().getTerritoiresOccupes());
                                 territoiresAdjacents.remove(ter);
                             }
                         }
@@ -134,8 +178,8 @@ public class PlateauControler extends AbstractControler {
         }else {
             JOptionPane.showMessageDialog(
                     Frame.getFrames()[0],
+                    "Vous n'avez pas assez de troupe veuillez sélectionner un montant valable de soldat à déplacer",
                     "Choix du nombre de soldats à dépacer",
-                    "Vous n'avez pas assez de troupe veuillez sélectionner un montant valable de soldat à déplacer ",
                     JOptionPane.PLAIN_MESSAGE
             );
         }
