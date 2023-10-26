@@ -45,6 +45,11 @@ public class Plateau extends AbstractModel {
         this.tours = new Tour(1);*/
         this.readFiles();
 
+        this.getJoueursPartie().get(0).addCarteTerritoire(this.getACarteTerritoireByTerritoireName("Alaska"));
+        this.getJoueursPartie().get(0).addCarteTerritoire(this.getACarteTerritoireByTerritoireName("Alberta"));
+        this.getJoueursPartie().get(0).addCarteTerritoire(this.getACarteTerritoireByTerritoireName("Argentine"));
+
+
 
         this.setTerritoire(3, 0, new Territoire(TypeTerritoire.VIDE));
         this.setTerritoire(4, 0, new Territoire(TypeTerritoire.VIDE));

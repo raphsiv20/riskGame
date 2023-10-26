@@ -130,16 +130,11 @@ public abstract class AbstractModel implements Observable {
 
     public abstract Territoire getTerritoireByName(String territoryName);
 
-    /**
-     *
-     * @param countryName
-     * @return
-     */
-    public abstract CarteTerritoire getACarteTerritoireByTerritoireName(String countryName);
 
     public abstract Joueur getAJoueurById(int joueurId);
 
     public abstract Equipe getEquipeByName(String nomEquipe);
+    public abstract CarteTerritoire getACarteTerritoireByTerritoireName(String countryName);
 
 
     public void setPartieTerminer(boolean partieTerminer) {

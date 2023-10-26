@@ -35,7 +35,6 @@ public class RiskView extends JFrame implements Observateur {
     private JLabel labelNbTroupeTerritoire = new javax.swing.JLabel();
     private JLabel labelVoisins = new javax.swing.JLabel();
     private javax.swing.JTextArea labelCarteTerritoire;
-    JButton boutonEchangerCarte = new JButton("Échanger carte");
     private int joueurActif = 0;
     private boolean validationOK = false;
 
@@ -133,6 +132,16 @@ public class RiskView extends JFrame implements Observateur {
             }
         });
 
+        //bouton echanger carte
+        JButton boutonCarte = new JButton("Echanger carte");
+        boutonCarte.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (model.getJoueurActif().echangeCartePossible()){
+                    model.getJoueurActif().echangerCarteTerritoires();
+                }
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -145,6 +154,7 @@ public class RiskView extends JFrame implements Observateur {
                         .addComponent(labelJoueur, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
                         .addComponent(labelCarteTerritoire, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(bouton)
+                        .addComponent(boutonCarte)
                         .addComponent(labelPhaseJeu)
                         .addComponent(labelSoldatsDispo,javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE)
                         .addComponent(labelTerritoire,javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE)
@@ -160,7 +170,8 @@ public class RiskView extends JFrame implements Observateur {
                                 .addGap(450)
                                 .addComponent(labelJoueur, GroupLayout.PREFERRED_SIZE, 110 , GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(bouton))
+                                .addComponent(bouton)
+                                .addComponent(boutonCarte))
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(280)
                                 .addComponent(labelCarteTerritoire, GroupLayout.PREFERRED_SIZE, 150 , GroupLayout.PREFERRED_SIZE))
@@ -196,28 +207,11 @@ public class RiskView extends JFrame implements Observateur {
         labelCarteTerritoire.setText("Voici vos cartes territoires posséedés" + '\n');
         for (int i = 0; i < joueurs.size(); i++) {
             String nomJoueur = joueurs.get(i).getNomJoueur();
-            int Infanterie = 0;
-            int Cavalerie = 0;
-            int Artillerie = 0;
             if (i == joueurActifIndex) {
                 labelJoueur.setText(labelJoueur.getText() + "\u2794" + nomJoueur + "\n");
-                for (int j = 0; j < joueurs.get(i).getListeCarteTerritoire().size(); j++) {
-                    labelCarteTerritoire.setText(labelCarteTerritoire.getText() + "Carte de type " + joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte().toString()+ "\n");
-                    if (joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte() == "Infanterie"){
-                        Infanterie += 1;
-                        System.out.println(Infanterie);
-                    }
-                    else if (joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte() == "Cavalerie"){
-                        Cavalerie += 1;
-                    }
-                    else {
-                        Artillerie += 1;
-                    }
+                for ( int j = 0; j <joueurs.get(i).getListeCarteTerritoire().size(); j++ ) {
+                    labelCarteTerritoire.setText(joueurs.get(i).getListeCarteTerritoire().get(j).toString());
                 }
-                if (Infanterie == 3 || Cavalerie == 3 || Artillerie == 3){
-                    labelCarteTerritoire.add(boutonEchangerCarte);
-                }
-                ;
             }
             else {
                 labelJoueur.setText(labelJoueur.getText() + nomJoueur + "\n");
@@ -386,23 +380,6 @@ public class RiskView extends JFrame implements Observateur {
             int Artillerie = 0;
             if (i == joueurActifIndex) {
                 labelJoueur.setText(labelJoueur.getText() + "\u2794" + nomJoueur + "\n");
-                for (int j = 0; j < joueurs.get(i).getListeCarteTerritoire().size(); j++) {
-                    labelCarteTerritoire.setText(labelCarteTerritoire.getText() + "Carte de type " + joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte().toString()+ "\n");
-                    if (joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte() == "Infanterie"){
-                        Infanterie += 1;
-                        System.out.println(Infanterie);
-                    }
-                    else if (joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte() == "Cavalerie"){
-                        Cavalerie += 1;
-                    }
-                    else {
-                        Artillerie += 1;
-                    }
-                }
-                if (Infanterie == 3 || Cavalerie == 3 || Artillerie == 3){
-                    labelCarteTerritoire.add(boutonEchangerCarte);
-                }
-                ;
             }
             else {
                 labelJoueur.setText(labelJoueur.getText() + nomJoueur + "\n");
