@@ -38,8 +38,6 @@ public class RiskView extends JFrame implements Observateur {
 
 
 
-    private int[][] nbSoldats;
-
     public RiskView(AbstractModel model, AbstractControler controler) {
         this.model = model;
         this.controler = controler;
@@ -51,8 +49,6 @@ public class RiskView extends JFrame implements Observateur {
         this.panelJeu.addMouseListener(this.mouseListener);
 
         setVisible(true);
-
-        nbSoldats = new int[model.getHauteur()][model.getLargeur()];
     }
 
 
@@ -84,7 +80,6 @@ public class RiskView extends JFrame implements Observateur {
 
         //bouton phase de jeu
         JButton bouton = new JButton("Passer a la phase de jeu suivante");
-
         bouton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 switch (model.getPhaseTour()) {
@@ -140,9 +135,9 @@ public class RiskView extends JFrame implements Observateur {
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelNbTour, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelNbTour, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addComponent(labelJoueur, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
                         .addComponent(labelCarteTerritoire, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(bouton)
@@ -161,7 +156,7 @@ public class RiskView extends JFrame implements Observateur {
                                 .addComponent(bouton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                         .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelNbTour)
+                                .addComponent(labelNbTour)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(labelPhaseJeu)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -170,13 +165,13 @@ public class RiskView extends JFrame implements Observateur {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(labelTerritoire)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(labelOccupantTerritoire)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(labelNbTroupeTerritoire)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(labelVoisins)
-                                        .addComponent(labelCarteTerritoire, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelOccupantTerritoire)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelNbTroupeTerritoire)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelVoisins)
+                                .addComponent(labelCarteTerritoire, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
 
                         )
         )
@@ -186,6 +181,7 @@ public class RiskView extends JFrame implements Observateur {
         pack();
 
     }
+
 
     // dessine le plateau de jeu
     public void dessinerJeu() {
@@ -238,25 +234,25 @@ public class RiskView extends JFrame implements Observateur {
             for(int yP=0; yP<model.getLargeur();yP++){
                 switch(model.getTypeTerritoire(xP, yP)){
                     case VIDE :
-                        panelJeu.drawTerritoireVide(x+xP*cote, y+yP*cote, cote, nbSoldats[xP][yP]);
+                        panelJeu.drawTerritoireVide(x+xP*cote, y+yP*cote, cote);
                         break;
                     case AMNORD :
-                        panelJeu.drawTerritoireAmNord(x+xP*cote, y+yP*cote, cote, nbSoldats[xP][yP]);
+                        panelJeu.drawTerritoireAmNord(x+xP*cote, y+yP*cote, cote);
                         break;
                     case AMSUD :
-                        panelJeu.drawTerritoireAmSud(x+xP*cote, y+yP*cote, cote, nbSoldats[xP][yP]);
+                        panelJeu.drawTerritoireAmSud(x+xP*cote, y+yP*cote, cote);
                         break;
                     case EU :
-                        panelJeu.drawTerritoireEU(x+xP*cote, y+yP*cote, cote, nbSoldats[xP][yP]);
+                        panelJeu.drawTerritoireEU(x+xP*cote, y+yP*cote, cote);
                         break;
                     case AFRIQUE :
-                        panelJeu.drawTerritoireAfrique(x+xP*cote, y+yP*cote, cote, nbSoldats[xP][yP]);
+                        panelJeu.drawTerritoireAfrique(x+xP*cote, y+yP*cote, cote);
                         break;
                     case ASIE :
-                        panelJeu.drawTerritoireAsie(x+xP*cote, y+yP*cote, cote, nbSoldats[xP][yP]);
+                        panelJeu.drawTerritoireAsie(x+xP*cote, y+yP*cote, cote);
                         break;
                     case AUST :
-                        panelJeu.drawTerritoireAust(x+xP*cote, y+yP*cote, cote, nbSoldats[xP][yP]);
+                        panelJeu.drawTerritoireAust(x+xP*cote, y+yP*cote, cote);
                         break;
                 }
 
