@@ -46,13 +46,15 @@ public class Plateau extends AbstractModel {
         this.readFiles();
 
         System.out.println("----------------------------------\n");
-        this.getTerritoiresGame().forEach(territoire -> System.out.println(territoire.getTypeTerritoire()));
+        this.getCartesTerritoires().forEach(carteTerritoire -> System.out.println(carteTerritoire.getTerritoire().getTerritoireName() +" " +carteTerritoire.getTypeCarte()));
         System.out.println("----------------------------------\n");
         this.getEquipes().forEach(equipe -> equipe.getJoueursEquipe().forEach(joueur -> System.out.println(equipe.getNomEquipe() + ": " + joueur.getNomJoueur())));
         System.out.println("----------------------------------\n");
         this.getContinentsGame().forEach(continent -> continent.getTerritoiresContinent().forEach(territoire -> System.out.println(continent.getContinentName() + ": " + territoire.getTerritoireName())));
         System.out.println("----------------------------------\n");
-        this.getJoueursPartie().forEach(joueur -> System.out.println(joueur.getNomJoueur()));
+        this.getEquipes().forEach(equipe -> equipe.getJoueursEquipe().forEach(joue -> System.out.println(joue.getNomJoueur() + ": " + joue.getEquipeJoueur().getNomEquipe())));
+        System.out.println("----------------------------------\n");
+
 
         this.setTerritoire(3, 0, new Territoire(TypeTerritoire.VIDE));
         this.setTerritoire(4, 0, new Territoire(TypeTerritoire.VIDE));
@@ -89,6 +91,7 @@ public class Plateau extends AbstractModel {
         this.setTerritoire(8, 6, new Territoire(TypeTerritoire.VIDE));
         this.setTerritoire(9, 6, new Territoire(TypeTerritoire.VIDE));
 
+        this.getJoueurs().get(0).setActif(true);
     }
 
     /*------------*/
@@ -352,10 +355,10 @@ public class Plateau extends AbstractModel {
                     this.getTerritoiresGame().get(i).setTypeTerritoire(TypeTerritoire.OUEST_DE_L_AUSTRALIE);
                     this.setTerritoire(Integer.parseInt(countriesArray[2]), Integer.parseInt(countriesArray[3]), this.getTerritoiresGame().get(i));
                     break;
+
             }
         }
     }
-
 
     @Override
     public void addTerritoryNextTerritories(String[] territoiresVoisins) {
@@ -436,14 +439,14 @@ public class Plateau extends AbstractModel {
     @Override
     public void attribuerEquipePartie() {
         Random random = new Random();
-        for (Equipe equipe: this.getEquipes()) {
+        for (Equipe equipe : this.getEquipes()) {
             this.getJoueursPartie().add(equipe.getJoueursEquipe().get(random.nextInt(4)));
         }
     }
-
     /**
      * Affecte / retourne le type d'un territoire donnee.
      */
+
 
     @Override
     public TypeTerritoire getTypeTerritoire(int x, int y) {

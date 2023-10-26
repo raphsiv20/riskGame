@@ -228,7 +228,7 @@ public abstract class AbstractModel implements Observable {
     }
 
     public Territoire getTerritoireActif() {
-        Territoire res = null;
+        Territoire res = new Territoire(TypeTerritoire.VIDE);
         for (Territoire territoireActuel : this.getTerritoiresGame()) {
             if (territoireActuel.isActif()) {
                 res = territoireActuel;
