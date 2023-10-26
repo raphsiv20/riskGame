@@ -6,16 +6,18 @@ import static org.example.controller.Gestion_BDD.insertNombreTerritoire;
 import java.util.List;
 
 public class Joueur {
+    private int idJoueur;
     private Equipe equipeJoueur;
     private String nomJoueur;
     private String prenomJoueur;
     private List<Territoire> territoiresOccupes;
     private List<Continent> continentsConquis;
-    private int troupeDisponible;
+    private int soldatsADeployer;
     private ArrayList<CarteTerritoire> listeCarteTerritoire;
     private boolean actif;
 
-    public Joueur(String nomJoueur, String prenomJoueur, Equipe equipeJoueur) {
+    public Joueur(String nomJoueur, String prenomJoueur, Equipe equipeJoueur, int idJoueur) {
+        this.idJoueur = idJoueur;
         this.nomJoueur = nomJoueur;
         this.prenomJoueur = prenomJoueur;
         this.equipeJoueur = equipeJoueur;
@@ -72,13 +74,7 @@ public class Joueur {
         this.prenomJoueur = prenomJoueur;
     }
 
-    public int getTroupeDisponible() {
-        return this.troupeDisponible;
-    }
 
-    public void SetTroupeDisponible(int nombre) {
-        this.troupeDisponible = nombre;
-    }
 
     public List<Territoire> getTerritoiresOccupes() {
         return territoiresOccupes;
@@ -94,5 +90,33 @@ public class Joueur {
 
     public void setContinentsConquis(List<Continent> continentsConquis) {
         this.continentsConquis = continentsConquis;
+    }
+
+    public int getSoldatsADeployer() {
+        return soldatsADeployer;
+    }
+
+    public void setSoldatsADeployer(int soldatsADeployer) {
+        this.soldatsADeployer = soldatsADeployer;
+    }
+
+    public ArrayList<CarteTerritoire> getListeCarteTerritoire() {
+        return listeCarteTerritoire;
+    }
+
+    public void setListeCarteTerritoire(ArrayList<CarteTerritoire> listeCarteTerritoire) {
+        this.listeCarteTerritoire = listeCarteTerritoire;
+    }
+
+    public boolean isActif() {
+        return actif;
+    }
+
+    public int getIdJoueur() {
+        return idJoueur;
+    }
+
+    public void setIdJoueur(int idJoueur) {
+        this.idJoueur = idJoueur;
     }
 }
