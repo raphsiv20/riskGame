@@ -30,7 +30,7 @@ public class PlateauControler extends AbstractControler {
         else {
             return;
         }
-
+        System.out.println(model.getPhaseTour());
         switch (model.getPhaseTour()) {
             case "Phase initiale" :
                 this.initiale(territoireClique);
@@ -97,12 +97,16 @@ public class PlateauControler extends AbstractControler {
     }
 
     private void deploiementTroupe(Territoire territoireClique) {
-        int nbSoldatBonus = 3;
-        model.getJoueurActif().addSoldatsAdeployer(nbSoldatBonus);
 
         if (territoireClique.getJoueurOccupant() != model.getJoueurActif()) {
             JOptionPane.showMessageDialog(null, "Ce territoire est déjà occupé par le joueur " + territoireClique.getJoueurOccupant().getNomJoueur(), "Message d'information", JOptionPane.INFORMATION_MESSAGE);
             return;
+        }
+        else {
+            if (model.getJoueurActif().getSoldatsADeployer() == 0) {
+                int nbSoldatBonus = 3;
+                model.getJoueurActif().setSoldatsADeployer(nbSoldatBonus);
+            }
         }
 
         //boite de dialogue deploiement troupe
