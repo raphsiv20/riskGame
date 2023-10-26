@@ -34,7 +34,7 @@ public class PlateauControler extends AbstractControler {
         else {
             return;
         }
-
+        System.out.println(model.getPhaseTour());
         switch (model.getPhaseTour()) {
             case "Phase initiale" :
                 this.initiale(territoireClique);
@@ -101,9 +101,16 @@ public class PlateauControler extends AbstractControler {
     }
 
     private void deploiementTroupe(Territoire territoireClique) {
+
         if (territoireClique.getJoueurOccupant() != model.getJoueurActif()) {
             JOptionPane.showMessageDialog(null, "Ce territoire est déjà occupé par le joueur " + territoireClique.getJoueurOccupant().getNomJoueur(), "Message d'information", JOptionPane.INFORMATION_MESSAGE);
             return;
+        }
+        else {
+            if (model.getJoueurActif().getSoldatsADeployer() == 0) {
+                int nbSoldatBonus = 3;
+                model.getJoueurActif().setSoldatsADeployer(nbSoldatBonus);
+            }
         }
 
         //boite de dialogue deploiement troupe
@@ -178,56 +185,15 @@ public class PlateauControler extends AbstractControler {
                 int nbSoldatsAtta = territoireClique.getSoldats();
                 int nbSoldatsDefen = territoireCible.getSoldats();
 
-                // choisir nb des attaqueur
-                SpinnerNumberModel attackerSpinnerModel = new SpinnerNumberModel(1, 1, Math.min(3, nbSoldatsAtta), 1);
-                JSpinner attackerSpinner = new JSpinner(attackerSpinnerModel);
+                if (nbSoldatsAtta > 1){
+                    // choisir nb des attaqueur
+                    SpinnerNumberModel attackerSpinnerModel = new SpinnerNumberModel(1, 1, Math.min(3, nbSoldatsAtta), 1);
+                    JSpinner attackerSpinner = new JSpinner(attackerSpinnerModel);
 
-                int attackerDiceCount = (int) JOptionPane.showOptionDialog(
-                        Frame.getFrames()[0],
-                        attackerSpinner,
-                        "Choisissez nb de dés (attaqueur)",
-                        JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.PLAIN_MESSAGE,
-                        null,
-                        null,
-                        0
-                );
-
-                int nbAttackerDice = (int) attackerSpinnerModel.getValue();
-
-                // choisir nb des defendeur
-                SpinnerNumberModel defenderSpinnerModel = new SpinnerNumberModel(1, 1, Math.min(2, nbSoldatsDefen), 1);
-                JSpinner defenderSpinner = new JSpinner(defenderSpinnerModel);
-
-                int defenderDiceCount = (int) JOptionPane.showOptionDialog(
-                        Frame.getFrames()[0],
-                        defenderSpinner,
-                        "Choisissez nb de dés (defendeur)",
-                        JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.PLAIN_MESSAGE,
-                        null,
-                        null,
-                        0
-                );
-
-                int nbDefenderDice = (int) defenderSpinnerModel.getValue();
-
-                System.out.println("nb des : " + nbAttackerDice + nbDefenderDice);
-
-                boolean resultatAttaque = faireBataille(nbSoldatsAtta, nbAttackerDice, nbSoldatsDefen, nbDefenderDice);
-
-                if (resultatAttaque) {
-                    territoireCible.setJoueurOccupant(model.getJoueurActif());
-                    int nbSoldatReste = territoireClique.getSoldats() - battleResult[0];
-                    int nbSoldatDeplacer = 1;
-
-                    SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, nbSoldatReste - 1, 1);
-                    JSpinner spinner = new JSpinner(spinnerModel);
-
-                    int bouton = JOptionPane.showOptionDialog(
+                    int attackerDiceCount = (int) JOptionPane.showOptionDialog(
                             Frame.getFrames()[0],
-                            spinner,
-                            "Combien de troupes voulez-vous déplacer ?",
+                            attackerSpinner,
+                            "Choisissez nb de dés (attaqueur)",
                             JOptionPane.OK_CANCEL_OPTION,
                             JOptionPane.PLAIN_MESSAGE,
                             null,
@@ -235,18 +201,72 @@ public class PlateauControler extends AbstractControler {
                             0
                     );
 
-                    if (bouton == 0) {
-                        nbSoldatDeplacer = (int) spinnerModel.getValue();
-                    }
+                    int nbAttackerDice = (int) attackerSpinnerModel.getValue();
 
-                    territoireClique.setSoldats(nbSoldatReste - nbSoldatDeplacer);
-                    territoireCible.setSoldats(nbSoldatDeplacer);
-                } else {
-                    territoireCible.setSoldats(territoireCible.getSoldats() - battleResult[1]);
-                    int nb = territoireClique.getSoldats() - battleResult[0];
-                    if (nb <= 0) nb = 1;
-                    territoireClique.setSoldats(nb);
+                    // choisir nb des defendeur
+                    SpinnerNumberModel defenderSpinnerModel = new SpinnerNumberModel(1, 1, Math.min(2, nbSoldatsDefen), 1);
+                    JSpinner defenderSpinner = new JSpinner(defenderSpinnerModel);
+
+                    int defenderDiceCount = (int) JOptionPane.showOptionDialog(
+                            Frame.getFrames()[0],
+                            defenderSpinner,
+                            "Choisissez nb de dés (defendeur)",
+                            JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.PLAIN_MESSAGE,
+                            null,
+                            null,
+                            0
+                    );
+
+                    int nbDefenderDice = (int) defenderSpinnerModel.getValue();
+
+                    System.out.println("nb des : " + nbAttackerDice + nbDefenderDice);
+
+                    boolean resultatAttaque = faireBataille(nbSoldatsAtta, nbAttackerDice, nbSoldatsDefen, nbDefenderDice);
+
+                    if (resultatAttaque) {
+                        territoireCible.setJoueurOccupant(model.getJoueurActif());
+                        int nbSoldatReste = territoireClique.getSoldats() - battleResult[0];
+                        int nbSoldatDeplacer = 1;
+
+                        if (nbSoldatReste > 1) {
+                            SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 1, nbSoldatReste - 1, 1);
+                            JSpinner spinner = new JSpinner(spinnerModel);
+
+                            int bouton = JOptionPane.showOptionDialog(
+                                    Frame.getFrames()[0],
+                                    spinner,
+                                    "Combien de troupes voulez-vous déplacer ?",
+                                    JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.PLAIN_MESSAGE,
+                                    null,
+                                    null,
+                                    0
+                            );
+
+                            if (bouton == 0) {
+                                nbSoldatDeplacer = (int) spinnerModel.getValue();
+                            }
+
+                            territoireClique.setSoldats(nbSoldatReste - nbSoldatDeplacer);
+                            territoireCible.setSoldats(nbSoldatDeplacer);
+                        }
+                    } else {
+                        territoireCible.setSoldats(territoireCible.getSoldats() - battleResult[1]);
+                        int nb = territoireClique.getSoldats() - battleResult[0];
+                        if (nb <= 0) nb = 1;
+                        territoireClique.setSoldats(nb);
+                    }
                 }
+                else {
+                    JOptionPane.showMessageDialog(
+                            Frame.getFrames()[0],
+                            "Vous ne possédez pas assi soldats pour attaquer",
+                            "Besoin de reforcer!!!",
+                            JOptionPane.PLAIN_MESSAGE
+                    );
+                }
+
             }
         }
 
@@ -380,12 +400,12 @@ public class PlateauControler extends AbstractControler {
             for (int i = 0; i < Math.min(attackerRoll.length, defenderRoll.length); i++) {
                 if (attackerRoll[i] > defenderRoll[i]) {
                     result[1]++; // defender loss un troupes
-                    defenderArmies--;
                 } else {
                     result[0]++; // Attacker loss un troupes
-                    attackerArmies--;
                 }
                 System.out.println(Arrays.toString(result));
+                defenderArmies--;
+                attackerArmies--;
             }
         }
 
@@ -403,4 +423,5 @@ public class PlateauControler extends AbstractControler {
         }
         return sb.toString();
     }
+
 }
