@@ -1,11 +1,14 @@
 package org.example.controller;
+
 import org.example.model.AbstractModel;
+import org.example.model.Joueur;
 import org.example.model.Territoire;
+import org.example.model.TypeTerritoire;
+
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.example.model.Joueur;
@@ -21,9 +24,17 @@ public class PlateauControler extends AbstractControler {
     public void cliqueSur(int x, int y) {
         Territoire territoireClique = this.model.getTerritoire(x,y);
         territoireClique.setActif(true);
-        model.demandeMiseAjourVue();
+        if (!territoireClique.getTypeTerritoire().equals(TypeTerritoire.VIDE)) {
+            model.demandeMiseAjourVue();
+        }
+        else {
+            return;
+        }
 
         switch (model.getPhaseTour()) {
+            case "Phase initiale" :
+                this.initiale(territoireClique);
+                break;
             case "Phase de déploiement des troupes" :
                 this.deploiementTroupe(territoireClique);
                 break;
@@ -38,10 +49,64 @@ public class PlateauControler extends AbstractControler {
         territoireClique.setActif(false);
     }
 
+    private void initiale(Territoire territoireClique) {
+        if (territoireClique.getJoueurOccupant() != null) {
+            JOptionPane.showMessageDialog(null, "Ce territoire est déjà occupé par le joueur " + territoireClique.getJoueurOccupant().getNomJoueur(), "Message d'information", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        //boite de dialogue phase initiale troupe
+
+        int bouton = JOptionPane.showConfirmDialog(
+                Frame.getFrames()[0],
+                "Deployer un soldat ici?",
+                "Phase initiale",
+                JOptionPane.YES_NO_OPTION
+        );
+
+
+        if (bouton == JOptionPane.YES_NO_OPTION) {
+            territoireClique.setSoldats(territoireClique.getSoldats() + 1);
+
+            model.getJoueurActif().removeSoldatsAdeployer(1);
+
+            model.getJoueurActif().addTerritoire(territoireClique);
+            if (model.getJoueursPartie().indexOf(model.getJoueurActif())+1 == model.getJoueursPartie().size() ) {
+                model.getJoueurActif().setActif(false);
+                model.getJoueursPartie().get(0).setActif(true);
+            }
+            else {
+                Joueur ancienActif = model.getJoueurActif();
+                model.getJoueursPartie().get(model.getJoueursPartie().indexOf(model.getJoueurActif()) + 1).setActif(true);
+                ancienActif.setActif(false);
+            }
+        }
+
+        int territoireOccupe = 0;
+        for (Territoire territoireActuel : model.getTerritoiresGame()) {
+            if (territoireActuel.getJoueurOccupant() != null) {
+                territoireOccupe += 1;
+            }
+        }
+        if (territoireOccupe == 42) {
+            model.setPhaseTour("Phase de déploiement des troupes");
+        }
+
+        model.demandeMiseAjourVue();
+
+    }
+
     private void deploiementTroupe(Territoire territoireClique) {
+        int nbSoldatBonus = 3;
+        model.getJoueurActif().addSoldatsAdeployer(nbSoldatBonus);
+
+        if (territoireClique.getJoueurOccupant() != model.getJoueurActif()) {
+            JOptionPane.showMessageDialog(null, "Ce territoire est déjà occupé par le joueur " + territoireClique.getJoueurOccupant().getNomJoueur(), "Message d'information", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
 
         //boite de dialogue deploiement troupe
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, 10, 1);
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, model.getJoueurActif().getSoldatsADeployer(), 1);
         JSpinner spinner = new JSpinner(spinnerModel);
 
 
@@ -59,20 +124,14 @@ public class PlateauControler extends AbstractControler {
 
         if (bouton == 0) {
             int nbTroupes = (int) spinnerModel.getValue();
-            System.out.println(nbTroupes);
-            territoireClique.setSoldats(nbTroupes);
+            territoireClique.setSoldats(territoireClique.getSoldats() + nbTroupes);
 
-            if(model.getJoueurActif().getTerritoiresOccupes().contains(territoireClique)){
-                System.out.println("Chouine");
-            }else {
-                model.getJoueurActif().getTerritoiresOccupes().add(territoireClique);
-            }
             model.getJoueurActif().removeSoldatsAdeployer(nbTroupes);
 
             if (model.getJoueurActif().getSoldatsADeployer() == 0) {
                 model.setPhaseTour("Phase de bataille");
-                model.demandeMiseAjourVue();
             }
+            model.demandeMiseAjourVue();
         }
 
     }
@@ -104,45 +163,8 @@ public class PlateauControler extends AbstractControler {
                 0
         );
 
-        ArrayList<String> territoiresJoueur = new ArrayList<String>();
-        for(Territoire elem : model.getJoueurActif().getTerritoiresOccupes()){
-            territoiresJoueur.add(elem.getTerritoireName());
-        }
-
-        System.out.println(model.getJoueurActif().getTerritoiresOccupes());
-        /*System.out.println("Eh oh c'est la gros C'EST LA LA EH OH");
-        System.out.println(territoiresJoueur);
-        System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-        System.out.println(territoireSource.getTerritoiresAdjacents());
-        System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-*/
-
-        Object[] territoiresArray = territoiresJoueur.toArray();
-        // Afficher la boîte de dialogue avec la liste déroulante
-        String territoireCibleNom = (String) JOptionPane.showInputDialog(
-                Frame.getFrames()[0],
-                "Sélectionnez le territoire cible :",
-                "Choix du territoire cible",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                territoiresArray,
-                0
-        );
-
-            // Le code ici sera exécuté si l'utilisateur a sélectionné une option
-            Territoire territoireCible = model.getTerritoireByName(territoireCibleNom);
-            System.out.println("Territoire cible sélectionné : " + territoireCibleNom + " VersionObjet : " + territoireCible);
-
-
-        /*// Récupérer le territoire cible en fonction du nom sélectionné
-        Territoire territoireCible = territoiresAdjacentsEligibles.stream().filter(territoire -> territoire.getNom().equals(territoireCibleNom)).findFirst().orElse(null);
-*/
+        Territoire territoireCible = model.getTerritoireActif();
         List<Territoire> territoiresAdjacents = territoireSource.getTerritoiresAdjacents();
-        System.out.println("test");
-        System.out.println(territoireSource);
-        System.out.println("test");
-        System.out.println(territoiresAdjacents);
-
         if(nbTroupes < territoireSource.getSoldats()){
             if(territoireSource.getSoldats() - nbTroupes >=  1){
                 if(model.getJoueurActif().getTerritoiresOccupes().contains(territoireCible)){
@@ -151,10 +173,7 @@ public class PlateauControler extends AbstractControler {
                             territoiresAdjacents.remove(ter);
                         } else {
                             for (Territoire terA : ter.getTerritoiresAdjacents()) {
-                                System.out.println("LISTE : " +model.getJoueurActif().getTerritoiresOccupes());
-                                System.out.println("terA : " +terA);
                                 territoiresAdjacents.add(terA);
-                                System.out.println("LISTE : " +model.getJoueurActif().getTerritoiresOccupes());
                                 territoiresAdjacents.remove(ter);
                             }
                         }
@@ -178,8 +197,8 @@ public class PlateauControler extends AbstractControler {
         }else {
             JOptionPane.showMessageDialog(
                     Frame.getFrames()[0],
-                    "Vous n'avez pas assez de troupe veuillez sélectionner un montant valable de soldat à déplacer",
                     "Choix du nombre de soldats à dépacer",
+                    "Vous n'avez pas assez de troupe veuillez sélectionner un montant valable de soldat à déplacer ",
                     JOptionPane.PLAIN_MESSAGE
             );
         }

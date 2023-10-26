@@ -120,4 +120,51 @@ public class Joueur {
     public void setIdJoueur(int idJoueur) {
         this.idJoueur = idJoueur;
     }
+
+    public void addTerritoire(Territoire territoireConquis) {
+        this.territoiresOccupes.add(territoireConquis);
+        territoireConquis.setJoueurOccupant(this);
+    }
+
+    public void removeTerritoire(Territoire territoirePerdu) {
+        this.territoiresOccupes.remove(territoirePerdu);
+    }
+    public void addContinent(Continent continentConquis) {
+        this.continentsConquis.add(continentConquis);
+        continentConquis.setJoueurOccupant(this);
+    }
+
+    public void removeContinent(Continent continentPerdu) {
+        this.continentsConquis.remove(continentPerdu);
+    }
+
+    public void addCarteTerritoire(CarteTerritoire carteTerritoire) {
+        this.listeCarteTerritoire.add(carteTerritoire);
+        carteTerritoire.setJoueurDetenantLaCarte(this);
+    }
+
+    public void removeCarteTerritoire(CarteTerritoire carteTerritoire) {
+        this.listeCarteTerritoire.remove(carteTerritoire);
+        carteTerritoire.setJoueurDetenantLaCarte(null);
+    }
+
+    public void gainSoldats() {
+        int newSoldats = 0;
+        if (!continentsConquis.isEmpty()) {
+            for (Continent continent: continentsConquis) {
+                newSoldats += continent.getBonusContinent();
+            }
+        }
+        this.addSoldatsAdeployer(this.territoiresOccupes.size()%3 + newSoldats);
+    }
+
+    //une methode boolean avec echange possible et ensuite
+
+    public boolean echangeCartePossible() {
+        int nbFantassins = 0;
+        int nbCavaliers = 0;
+        int nbCanons = 0;
+        return false;
+    }
+
 }

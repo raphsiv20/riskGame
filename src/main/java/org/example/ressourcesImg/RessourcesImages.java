@@ -1,10 +1,17 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package org.example.ressourcesImg;
 
 import javax.swing.*;
 import java.awt.*;
 
+
+
 public class RessourcesImages {
-    public static Image AFGHANISTAN =new ImageIcon("src/main/java/org/example/img/afghanistan.png").getImage();
+    public static Image AFGHANISTAN =new ImageIcon ("src/main/java/org/example/img/afghanistan.png").getImage();
     public static Image AFRIQUEEST =new ImageIcon ("src/main/java/org/example/img/afriqueEst.png").getImage();
     public static Image AFRIQUESUD =new ImageIcon ("src/main/java/org/example/img/afriqueSud.png").getImage();
     public static Image AFRIQUENORD =new ImageIcon ("src/main/java/org/example/img/afriqueNord.png").getImage();
