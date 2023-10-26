@@ -49,7 +49,58 @@ public class PlateauControler extends AbstractControler {
         territoireClique.setActif(false);
     }
 
+    private void initiale(Territoire territoireClique) {
+        if (territoireClique.getJoueurOccupant() != null) {
+            JOptionPane.showMessageDialog(null, "Ce territoire est déjà occupé par le joueur " + territoireClique.getJoueurOccupant().getNomJoueur(), "Message d'information", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        //boite de dialogue phase initiale troupe
+
+        int bouton = JOptionPane.showConfirmDialog(
+                Frame.getFrames()[0],
+                "Deployer un soldat ici?",
+                "Phase initiale",
+                JOptionPane.YES_NO_OPTION
+        );
+
+
+        if (bouton == JOptionPane.YES_NO_OPTION) {
+            territoireClique.setSoldats(territoireClique.getSoldats() + 1);
+
+            model.getJoueurActif().removeSoldatsAdeployer(1);
+
+            model.getJoueurActif().addTerritoire(territoireClique);
+            if (model.getJoueursPartie().indexOf(model.getJoueurActif())+1 == model.getJoueursPartie().size() ) {
+                model.getJoueurActif().setActif(false);
+                model.getJoueursPartie().get(0).setActif(true);
+            }
+            else {
+                Joueur ancienActif = model.getJoueurActif();
+                model.getJoueursPartie().get(model.getJoueursPartie().indexOf(model.getJoueurActif()) + 1).setActif(true);
+                ancienActif.setActif(false);
+            }
+        }
+
+        int territoireOccupe = 0;
+        for (Territoire territoireActuel : model.getTerritoiresGame()) {
+            if (territoireActuel.getJoueurOccupant() != null) {
+                territoireOccupe += 1;
+            }
+        }
+        if (territoireOccupe == 42) {
+            model.setPhaseTour("Phase de déploiement des troupes");
+        }
+
+        model.demandeMiseAjourVue();
+
+    }
+
     private void deploiementTroupe(Territoire territoireClique) {
+        if (territoireClique.getJoueurOccupant() != model.getJoueurActif()) {
+            JOptionPane.showMessageDialog(null, "Ce territoire est déjà occupé par le joueur " + territoireClique.getJoueurOccupant().getNomJoueur(), "Message d'information", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
 
         //boite de dialogue deploiement troupe
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, model.getJoueurActif().getSoldatsADeployer(), 1);
@@ -79,44 +130,6 @@ public class PlateauControler extends AbstractControler {
             }
             model.demandeMiseAjourVue();
         }
-
-    }
-
-    private void initiale(Territoire territoireClique) {
-        //boite de dialogue deploiement troupe
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, 1, 1);
-        JSpinner spinner = new JSpinner(spinnerModel);
-
-        int bouton = JOptionPane.showOptionDialog(
-                Frame.getFrames()[0],
-                spinner,
-                "Combien de troupes déployer?",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                null,
-                0
-        );
-
-
-        if (bouton == 0) {
-            int nbTroupes = (int) spinnerModel.getValue();
-            territoireClique.setSoldats(territoireClique.getSoldats() + nbTroupes);
-
-            model.getJoueurActif().removeSoldatsAdeployer(nbTroupes);
-
-            if (model.getJoueursPartie().indexOf(model.getJoueurActif())+1 == model.getJoueursPartie().size() ) {
-                model.getJoueurActif().setActif(false);
-                model.getJoueursPartie().get(0).setActif(true);
-            }
-            else {
-                Joueur ancienActif = model.getJoueurActif();
-                model.getJoueursPartie().get(model.getJoueursPartie().indexOf(model.getJoueurActif()) + 1).setActif(true);
-                ancienActif.setActif(false);
-            }
-
-        }
-        model.demandeMiseAjourVue();
 
     }
 
