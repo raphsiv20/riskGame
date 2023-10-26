@@ -14,5 +14,6 @@ public class Main {
         AbstractModel model = new Plateau(10, 7);
         AbstractControler controler = new PlateauControler(model);
         RiskView v = new RiskView(model,controler);
+        model.addObservateur(v);
     }
 }

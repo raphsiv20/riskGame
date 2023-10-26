@@ -4,5 +4,5 @@ Optic;
 BDS;
 EnVy;
 DRX;
-FaZe;
+
 

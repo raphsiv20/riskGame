@@ -1,6 +1,8 @@
 package org.example.model;
-
 import java.util.ArrayList;
+
+import static org.example.controller.Gestion_BDD.insertNombreTerritoire;
+
 import java.util.List;
 
 public class Joueur {
@@ -11,6 +13,7 @@ public class Joueur {
     private List<Continent> continentsConquis;
     private int troupeDisponible;
     private ArrayList<CarteTerritoire> listeCarteTerritoire;
+    private boolean actif;
 
     public Joueur(String nomJoueur, String prenomJoueur, Equipe equipeJoueur) {
         this.nomJoueur = nomJoueur;
@@ -18,6 +21,30 @@ public class Joueur {
         this.equipeJoueur = equipeJoueur;
         this.territoiresOccupes = new ArrayList<>();
         this.continentsConquis = new ArrayList<>();
+        this.listeCarteTerritoire = new ArrayList<>();
+        this.equipeJoueur.addJoueur(this);
+        this.actif = false;
+    }
+
+    public boolean getAtif() {
+        return this.actif;
+    }
+
+    public void setActif (boolean actif) {
+        this.actif = actif;
+    }
+
+    public void addSoldatsAdeployer(int nouveauxSoldatsAdeployer){
+        this.soldatsADeployer += nouveauxSoldatsAdeployer;
+    }
+
+    /**
+     *
+     * @param soldatsDeployés le nombre de soldats que le joueur souhaite déployer
+     */
+    public void removeSoldatsAdeployer(int soldatsDeployés) {
+        this.soldatsADeployer -= soldatsDeployés;
+
         listeCarteTerritoire = new ArrayList<CarteTerritoire>();
     }
 
