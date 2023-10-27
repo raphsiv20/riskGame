@@ -445,7 +445,7 @@ public class RiskView extends JFrame implements Observateur {
         for (Territoire territoireActuel : model.getTerritoireActif().getTerritoiresAdjacents()) {
             voisins += territoireActuel.getTerritoireName() + ", ";
         }
-        labelVoisins.setText("<html>Territoires voisins : <br>"+voisins.replace(", ", "<br>") + "</html>" );
+        labelVoisins.setText("<html><font color='red'><b>Territoires voisins :<br></b></font>" + voisins.replace(", ", "<br>") + "</html>");
         repaint();
     }
 }
