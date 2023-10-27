@@ -150,13 +150,18 @@ public class Joueur {
     }
 
     public void gainSoldats() {
-        int newSoldats = 0;
-        if (!continentsConquis.isEmpty()) {
-            for (Continent continent: continentsConquis) {
-                newSoldats += continent.getBonusContinent();
-            }
+        if (this.territoiresOccupes.size()%3 < 3) {
+            this.addSoldatsAdeployer(3);
         }
-        this.addSoldatsAdeployer(this.territoiresOccupes.size()%3 + newSoldats);
+        else {
+            int newSoldats = 0;
+            if (!continentsConquis.isEmpty()) {
+                for (Continent continent : continentsConquis) {
+                    newSoldats += continent.getBonusContinent();
+                }
+            }
+            this.addSoldatsAdeployer(this.territoiresOccupes.size() % 3 + newSoldats);
+        }
     }
 
     //une methode boolean avec echange possible et ensuite
@@ -222,5 +227,6 @@ public class Joueur {
             return cartesEchangees;
         }
     }
+
 
 }

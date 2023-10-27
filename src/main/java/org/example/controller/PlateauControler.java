@@ -1,9 +1,6 @@
 package org.example.controller;
 
-import org.example.model.AbstractModel;
-import org.example.model.Joueur;
-import org.example.model.Territoire;
-import org.example.model.TypeTerritoire;
+import org.example.model.*;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
@@ -18,6 +15,8 @@ import org.example.model.Joueur;
 
 public class PlateauControler extends AbstractControler {
     private static int[] battleResult = {};
+
+    private ArrayList<String> carteTerritroie = new ArrayList<>();
 
     public PlateauControler(AbstractModel model) {
         super(model);
@@ -34,7 +33,7 @@ public class PlateauControler extends AbstractControler {
         else {
             return;
         }
-        System.out.println(model.getPhaseTour());
+
         switch (model.getPhaseTour()) {
             case "Phase initiale" :
                 this.initiale(territoireClique);
@@ -46,8 +45,15 @@ public class PlateauControler extends AbstractControler {
                 this.bataille(territoireClique);
                 break;
             case "Phase de renforcement" :
+                this.getCarteTerritoire();
                 this.renforcement(territoireClique);
                 break;
+        }
+        if (!territoireClique.getTypeTerritoire().equals(TypeTerritoire.VIDE)) {
+            model.demandeMiseAjourVue();
+        }
+        else {
+            return;
         }
 
         territoireClique.setActif(false);
@@ -96,8 +102,6 @@ public class PlateauControler extends AbstractControler {
             model.setPhaseTour("Phase de déploiement des troupes");
         }
 
-        model.demandeMiseAjourVue();
-
     }
 
     private void deploiementTroupe(Territoire territoireClique) {
@@ -108,8 +112,7 @@ public class PlateauControler extends AbstractControler {
         }
         else {
             if (model.getJoueurActif().getSoldatsADeployer() == 0) {
-                int nbSoldatBonus = 3;
-                model.getJoueurActif().setSoldatsADeployer(nbSoldatBonus);
+                model.getJoueurActif().gainSoldats();
             }
         }
 
@@ -139,7 +142,6 @@ public class PlateauControler extends AbstractControler {
             if (model.getJoueurActif().getSoldatsADeployer() == 0) {
                 model.setPhaseTour("Phase de bataille");
             }
-            model.demandeMiseAjourVue();
         }
 
     }
@@ -185,7 +187,7 @@ public class PlateauControler extends AbstractControler {
                 int nbSoldatsAtta = territoireClique.getSoldats();
                 int nbSoldatsDefen = territoireCible.getSoldats();
 
-                if (nbSoldatsAtta > 1){
+                if (nbSoldatsAtta > 1) {
                     // choisir nb des attaqueur
                     SpinnerNumberModel attackerSpinnerModel = new SpinnerNumberModel(1, 1, Math.min(3, nbSoldatsAtta), 1);
                     JSpinner attackerSpinner = new JSpinner(attackerSpinnerModel);
@@ -226,6 +228,12 @@ public class PlateauControler extends AbstractControler {
 
                     if (resultatAttaque) {
                         territoireCible.setJoueurOccupant(model.getJoueurActif());
+
+                        //Get carte territoire
+                        this.carteTerritroie.add(territoireCible.getTerritoireName());
+//                        model.getJoueurActif().addCarteTerritoire(model.getACarteTerritoireByTerritoireName(territoireCible.getTerritoireName()));
+//                        System.out.println("get carte : " + model.getACarteTerritoireByTerritoireName(territoireCible.getTerritoireName()).getTerritoire().getTerritoireName());
+
                         int nbSoldatReste = territoireClique.getSoldats() - battleResult[0];
                         int nbSoldatDeplacer = 0;
 
@@ -245,7 +253,7 @@ public class PlateauControler extends AbstractControler {
 
                         if (bouton == 0) {
                             nbSoldatDeplacer = (int) spinnerModel.getValue();
-                        }else {
+                        } else {
                             nbSoldatDeplacer = 1;
                         }
 
@@ -259,8 +267,7 @@ public class PlateauControler extends AbstractControler {
                         if (nb <= 0) nb = 1;
                         territoireClique.setSoldats(nb);
                     }
-                }
-                else {
+                } else {
                     JOptionPane.showMessageDialog(
                             Frame.getFrames()[0],
                             "Vous ne possèdez pas assi soldats pour attaquer",
@@ -271,8 +278,22 @@ public class PlateauControler extends AbstractControler {
 
             }
         }
-
     }
+
+    private void getCarteTerritoire() {
+        Random random = new Random();
+
+        // random index
+        int randomIndex = random.nextInt(this.carteTerritroie.size());
+
+        String randomTerritoire = this.carteTerritroie.get(randomIndex);
+
+        System.out.println("vous avez gagne carte : " + randomTerritoire);
+        model.getJoueurActif().addCarteTerritoire(model.getACarteTerritoireByTerritoireName(randomTerritoire));
+
+        this.carteTerritroie.clear();
+    }
+
 
     private void renforcement(Territoire territoireSource) {
         //Boite de dialogue pour le nombre de joueur à déplacer
@@ -337,6 +358,7 @@ public class PlateauControler extends AbstractControler {
         }
     }
 
+
     public static boolean faireBataille(int attackerArmies, int attackerDice, int defenderArmies, int defenderDice) {
         try {
 
@@ -363,6 +385,10 @@ public class PlateauControler extends AbstractControler {
                 attaqueReusi = true;
             System.out.println();
             String resultatBat = "Attaque réussie : " + attaqueReusi +" Attacker loses " + battleResult[0] + " armies, Defender loses " + battleResult[1] + " armies.";
+
+            if (attaqueReusi && battleResult[0] == 0) {
+                resultatBat = "Attaque réussie : " + attaqueReusi +" Attacker loses " + battleResult[0] + " armies, Defender loses " + defenderArmies + " armies.";
+            }
             JOptionPane.showMessageDialog(
                     Frame.getFrames()[0],
                     resultatBat,
@@ -425,5 +451,4 @@ public class PlateauControler extends AbstractControler {
         }
         return sb.toString();
     }
-
 }

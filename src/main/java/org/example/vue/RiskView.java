@@ -21,11 +21,7 @@ public class RiskView extends JFrame implements Observateur {
 
     private AbstractModel model;
     private MouseListener mouseListener;
-    private AbstractControler controler;
     private PanelJeu panelJeu;
-    private java.util.List<Joueur> joueurs;
-    private int joueurActifIndex = 0;
-    private int incr;
     private JLabel labelNbTour = new javax.swing.JLabel();
     private javax.swing.JTextArea labelJoueur = new JTextArea();
     private JLabel labelPhaseJeu = new javax.swing.JLabel();
@@ -36,18 +32,12 @@ public class RiskView extends JFrame implements Observateur {
     private JLabel labelVoisins = new javax.swing.JLabel();
     private javax.swing.JTextArea labelCarteTerritoire;
     private int joueurActif = 0;
-    private boolean validationOK = false;
-
-    private int nombreSoldatTotal = 120;
 
 
 
 
     public RiskView(AbstractModel model, AbstractControler controler) {
         this.model = model;
-        this.controler = controler;
-        this.joueurs = model.getJoueursPartie();
-        this.incr = 0;
 
         initComponents();
         this.mouseListener = new MouseListener(controler);
@@ -79,7 +69,7 @@ public class RiskView extends JFrame implements Observateur {
 
         labelTerritoire.setText("Territoire actif : ");
 
-        labelOccupantTerritoire.setText("Joueur occupant le territoire : ");
+        labelOccupantTerritoire.setText("Joueur occupant le territoire : Aucun");
 
         labelNbTroupeTerritoire.setText("Nombre de soldat sur le territoire : ");
 
@@ -93,42 +83,30 @@ public class RiskView extends JFrame implements Observateur {
                     case "Phase initiale" :
                         model.setPhaseTour("Phase de déploiement des troupes");
                         labelPhaseJeu.setText(model.getPhaseTour());
+                        update();
                         break;
                     case "Phase de bataille" :
                         labelCarteTerritoire.setVisible(false);
                         model.setPhaseTour("Phase de renforcement");
                         labelPhaseJeu.setText(model.getPhaseTour());
+                        update();
                         break;
                     case "Phase de renforcement" :
-                        if (joueurActif == joueurs.size() - 1) {
+                        if (joueurActif == model.getJoueursPartie().size() - 1) {
                             joueurActif = 0;
                         } else {
                             joueurActif += 1;
                         }
                         JOptionPane.showMessageDialog(
                                 Frame.getFrames()[0],
-                                "A toi de jouer " + joueurs.get(joueurActif).getNomJoueur(),
+                                "A toi de jouer " + model.getJoueursPartie().get(joueurActif).getNomJoueur(),
                                 "Tour suivant",
                                 JOptionPane.PLAIN_MESSAGE
                         );
 
                         labelCarteTerritoire.setVisible(true);
-                        incr = incr + 1;
                         model.setPhaseTour("Phase de déploiement des troupes");
                         labelPhaseJeu.setText(model.getPhaseTour());
-                        if (incr == 4) {
-                            model.setNumTour(model.getNumTour() + 1);
-                            labelNbTour.setText("Tour " + model.getNumTour());
-                            incr = 0;
-                        }
-                        if (joueurActifIndex >= joueurs.size()-1) {
-                            joueurActifIndex = 0;
-                            dessinerJeu();
-                        }
-                        else {
-                            joueurActifIndex += 1;
-                            actualiseLabelCarteTerritoireJoueur();
-                        }
 
                         if (model.getJoueursPartie().indexOf(model.getJoueurActif())+1 == model.getJoueursPartie().size() ) {
                             model.getJoueurActif().setActif(false);
@@ -140,6 +118,9 @@ public class RiskView extends JFrame implements Observateur {
                             ancienActif.setActif(false);
                         }
 
+                        labelSoldatsDispo.setText("Nombre de soldat a déployer : "  + model.getJoueurActif().getSoldatsADeployer());
+
+                        update();
                         break;
                     default :
                         break;
@@ -218,20 +199,6 @@ public class RiskView extends JFrame implements Observateur {
 
     // dessine le plateau de jeu
     public void dessinerJeu() {
-        labelJoueur.setText("Joueurs :" + '\n');
-        labelCarteTerritoire.setText("Voici vos cartes territoires posséedés" + '\n');
-        for (int i = 0; i < joueurs.size(); i++) {
-            String nomJoueur = joueurs.get(i).getNomJoueur();
-            if (i == joueurActifIndex) {
-                labelJoueur.setText(labelJoueur.getText() + "\u2794" + nomJoueur + "\n");
-                for ( int j = 0; j <joueurs.get(i).getListeCarteTerritoire().size(); j++ ) {
-                    labelCarteTerritoire.setText(joueurs.get(i).getListeCarteTerritoire().get(j).toString());
-                }
-            }
-            else {
-                labelJoueur.setText(labelJoueur.getText() + nomJoueur + "\n");
-            }
-        }
 
         int h = this.panelJeu.getWidth();
         int l = this.panelJeu.getHeight();
@@ -382,63 +349,56 @@ public class RiskView extends JFrame implements Observateur {
 
             }
         }
-        actualiseLabelCarteTerritoireJoueur();
-    }
-
-    public void actualiseLabelCarteTerritoireJoueur() {
-        labelJoueur.setText("Joueurs :" + '\n');
-        labelCarteTerritoire.setText("Voici vos cartes territoires posséedés" + '\n');
-        for (int i = 0; i < joueurs.size(); i++) {
-            String nomJoueur = joueurs.get(i).getNomJoueur();
-            int Infanterie = 0;
-            int Cavalerie = 0;
-            int Artillerie = 0;
-            if (i == joueurActifIndex) {
-                labelJoueur.setText(labelJoueur.getText() + "\u2794" + nomJoueur + "\n");
-            }
-            else {
-                labelJoueur.setText(labelJoueur.getText() + nomJoueur + "\n");
-            }
-        }
+        update();
     }
 
     public void update() {
-        if (model.getPhaseTour() == "Phase initiale") {
-            int nombreSoldatTotalplace = 0;
-            for (int i = 0; i < joueurs.size(); i++) {
-                nombreSoldatTotalplace += joueurs.get(i).getSoldatsADeployer();
-            }
-            if (nombreSoldatTotalplace != nombreSoldatTotal) {
-                joueurActifIndex = (joueurActifIndex + 1) % joueurs.size();
-                Joueur joueurActif = joueurs.get(joueurActifIndex);
 
-                for (Joueur joueurActuel : joueurs) {
-                    if (joueurActuel == joueurActif) {
-                        labelJoueur.setText(labelJoueur.getText() + "\u2794" + joueurActuel.getNomJoueur() + "\n");
-                    } else {
-                        labelJoueur.setText(labelJoueur.getText() + joueurActuel.getNomJoueur() + "\n");
-                    }
-                }
-                nombreSoldatTotal = nombreSoldatTotalplace;
-            }
+        if (model.getPhaseTour() == "Phase de bataille") {
+            labelCarteTerritoire.setVisible(false);
+        }
+
+        if (model.getPhaseTour() == "Phase de déploiement des troupes") {
+            labelCarteTerritoire.setVisible(true);
         }
 
         labelPhaseJeu.setText(model.getPhaseTour());
-        labelSoldatsDispo.setText("Nombre de soldat a déployer : "+ model.getJoueurActif().getSoldatsADeployer());
-        labelTerritoire.setText("Territoire actif : " +model.getTerritoireActif().getTerritoireName());
-        labelNbTroupeTerritoire.setText("Nombre de soldat sur le territoire : " +model.getTerritoireActif().getSoldats());
-        if (model.getTerritoireActif().getJoueurOccupant() == null) {
-
-            labelOccupantTerritoire.setText("Joueur occupant le territoire : Aucun");
+        labelSoldatsDispo.setText("Nombre de soldat a déployer : " + model.getJoueurActif().getSoldatsADeployer());
+        if (model.getTerritoireActif().getTerritoireName() != null) {
+            labelTerritoire.setText("Territoire actif : " + model.getTerritoireActif().getTerritoireName());
         }
-        else {
+
+        if (model.getTerritoireActif().getSoldats() != 0) {
+            labelNbTroupeTerritoire.setText("Nombre de soldat sur le territoire : " + model.getTerritoireActif().getSoldats());
+        }
+
+
+        if (model.getTerritoireActif().getJoueurOccupant() != null) {
             labelOccupantTerritoire.setText("Joueur occupant le territoire : " + model.getTerritoireActif().getJoueurOccupant().getNomJoueur());
         }
+
         String voisins = "";
-        for (Territoire territoireActuel : model.getTerritoireActif().getTerritoiresAdjacents()) {
-            voisins += territoireActuel.getTerritoireName() + ", ";
+        if (model.getTerritoireActif().getTerritoiresAdjacents() != null) {
+            for (Territoire territoireActuel : model.getTerritoireActif().getTerritoiresAdjacents()) {
+                voisins += territoireActuel.getTerritoireName() + ", ";
+            }
+            labelVoisins.setText("<html>Territoires voisins : <br>"+voisins.replace(", ", "<br>") + "</html>" );
         }
-        labelVoisins.setText("<html>Territoires voisins : <br>"+voisins.replace(", ", "<br>") + "</html>" );
+
+        labelJoueur.setText("Joueurs :" + '\n');
+        labelCarteTerritoire.setText("Voici vos cartes territoires posséedés" + '\n');
+        Joueur joueurActif = model.getJoueurActif();
+
+        for (Joueur joueurActuel : model.getJoueursPartie()) {
+            if (joueurActuel == joueurActif) {
+                labelJoueur.setText(labelJoueur.getText() + "\u2794" + joueurActuel.getNomJoueur() + "\n");
+                for (int j = 0; j < model.getJoueurActif().getListeCarteTerritoire().size(); j++) {
+                    labelCarteTerritoire.setText(labelCarteTerritoire.getText() + model.getJoueurActif().getListeCarteTerritoire().get(j).getTypeCarte() + '\n');
+                }
+            } else {
+                labelJoueur.setText(labelJoueur.getText() + joueurActuel.getNomJoueur() + "\n");
+            }
+        }
         repaint();
     }
 }
