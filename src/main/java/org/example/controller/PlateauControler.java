@@ -102,8 +102,6 @@ public class PlateauControler extends AbstractControler {
             model.setPhaseTour("Phase de déploiement des troupes");
         }
 
-        model.demandeMiseAjourVue();
-
     }
 
     private void deploiementTroupe(Territoire territoireClique) {
@@ -144,7 +142,6 @@ public class PlateauControler extends AbstractControler {
             if (model.getJoueurActif().getSoldatsADeployer() == 0) {
                 model.setPhaseTour("Phase de bataille");
             }
-            model.demandeMiseAjourVue();
         }
 
     }
