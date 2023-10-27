@@ -227,30 +227,32 @@ public class PlateauControler extends AbstractControler {
                     if (resultatAttaque) {
                         territoireCible.setJoueurOccupant(model.getJoueurActif());
                         int nbSoldatReste = territoireClique.getSoldats() - battleResult[0];
-                        int nbSoldatDeplacer = 1;
+                        int nbSoldatDeplacer = 0;
 
-                        if (nbSoldatReste > 1) {
-                            SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 1, nbSoldatReste - 1, 1);
-                            JSpinner spinner = new JSpinner(spinnerModel);
+                        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1, 1, nbSoldatReste - 1, 1);
+                        JSpinner spinner = new JSpinner(spinnerModel);
 
-                            int bouton = JOptionPane.showOptionDialog(
-                                    Frame.getFrames()[0],
-                                    spinner,
-                                    "Combien de troupes voulez-vous déplacer ?",
-                                    JOptionPane.OK_CANCEL_OPTION,
-                                    JOptionPane.PLAIN_MESSAGE,
-                                    null,
-                                    null,
-                                    0
-                            );
+                        int bouton = JOptionPane.showOptionDialog(
+                                Frame.getFrames()[0],
+                                spinner,
+                                "Combien de troupes voulez-vous déplacer ?",
+                                JOptionPane.OK_CANCEL_OPTION,
+                                JOptionPane.PLAIN_MESSAGE,
+                                null,
+                                null,
+                                0
+                        );
 
-                            if (bouton == 0) {
-                                nbSoldatDeplacer = (int) spinnerModel.getValue();
-                            }
-
-                            territoireClique.setSoldats(nbSoldatReste - nbSoldatDeplacer);
-                            territoireCible.setSoldats(nbSoldatDeplacer);
+                        if (bouton == 0) {
+                            nbSoldatDeplacer = (int) spinnerModel.getValue();
+                        }else {
+                            nbSoldatDeplacer = 1;
                         }
+
+                        System.out.println("nb soldats : " + nbSoldatReste + " a " + nbSoldatDeplacer);
+
+                        territoireClique.setSoldats(nbSoldatReste - nbSoldatDeplacer);
+                        territoireCible.setSoldats(nbSoldatDeplacer);
                     } else {
                         territoireCible.setSoldats(territoireCible.getSoldats() - battleResult[1]);
                         int nb = territoireClique.getSoldats() - battleResult[0];
@@ -261,7 +263,7 @@ public class PlateauControler extends AbstractControler {
                 else {
                     JOptionPane.showMessageDialog(
                             Frame.getFrames()[0],
-                            "Vous ne possédez pas assi soldats pour attaquer",
+                            "Vous ne possèdez pas assi soldats pour attaquer",
                             "Besoin de reforcer!!!",
                             JOptionPane.PLAIN_MESSAGE
                     );
