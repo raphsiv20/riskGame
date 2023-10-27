@@ -281,17 +281,19 @@ public class PlateauControler extends AbstractControler {
     }
 
     private void getCarteTerritoire() {
-        Random random = new Random();
+        if (!carteTerritroie.isEmpty()){
+            Random random = new Random();
 
-        // random index
-        int randomIndex = random.nextInt(this.carteTerritroie.size());
+            // random index
+            int randomIndex = random.nextInt(this.carteTerritroie.size());
 
-        String randomTerritoire = this.carteTerritroie.get(randomIndex);
+            String randomTerritoire = this.carteTerritroie.get(randomIndex);
 
-        System.out.println("vous avez gagne carte : " + randomTerritoire);
-        model.getJoueurActif().addCarteTerritoire(model.getACarteTerritoireByTerritoireName(randomTerritoire));
+            System.out.println("vous avez gagne carte : " + randomTerritoire);
+            model.getJoueurActif().addCarteTerritoire(model.getACarteTerritoireByTerritoireName(randomTerritoire));
 
-        this.carteTerritroie.clear();
+            this.carteTerritroie.clear();
+        }
     }
 
 
