@@ -19,6 +19,8 @@ import org.example.model.Joueur;
 public class PlateauControler extends AbstractControler {
     private static int[] battleResult = {};
 
+    private ArrayList<String> carteTerritroie = new ArrayList<>();
+
     public PlateauControler(AbstractModel model) {
         super(model);
         // TODO Auto-generated constructor stub
@@ -228,6 +230,12 @@ public class PlateauControler extends AbstractControler {
 
                     if (resultatAttaque) {
                         territoireCible.setJoueurOccupant(model.getJoueurActif());
+
+                        //Get carte territoire
+                        this.carteTerritroie.add(territoireCible.getTerritoireName());
+//                        model.getJoueurActif().addCarteTerritoire(model.getACarteTerritoireByTerritoireName(territoireCible.getTerritoireName()));
+//                        System.out.println("get carte : " + model.getACarteTerritoireByTerritoireName(territoireCible.getTerritoireName()).getTerritoire().getTerritoireName());
+
                         int nbSoldatReste = territoireClique.getSoldats() - battleResult[0];
                         int nbSoldatDeplacer = 0;
 
@@ -365,6 +373,10 @@ public class PlateauControler extends AbstractControler {
                 attaqueReusi = true;
             System.out.println();
             String resultatBat = "Attaque réussie : " + attaqueReusi +" Attacker loses " + battleResult[0] + " armies, Defender loses " + battleResult[1] + " armies.";
+
+            if (attaqueReusi && battleResult[0] == 0) {
+                resultatBat = "Attaque réussie : " + attaqueReusi +" Attacker loses " + battleResult[0] + " armies, Defender loses " + defenderArmies + " armies.";
+            }
             JOptionPane.showMessageDialog(
                     Frame.getFrames()[0],
                     resultatBat,
@@ -426,5 +438,19 @@ public class PlateauControler extends AbstractControler {
             }
         }
         return sb.toString();
+    }
+
+    private void getCarteTerritoire() {
+        Random random = new Random();
+
+        // random index
+        int randomIndex = random.nextInt(this.carteTerritroie.size());
+
+        String randomTerritoire = this.carteTerritroie.get(randomIndex);
+
+        System.out.println("vous avez gagne carte : " + randomTerritoire);
+        model.getJoueurActif().addCarteTerritoire(model.getACarteTerritoireByTerritoireName(randomTerritoire));
+
+        this.carteTerritroie.clear();
     }
 }
