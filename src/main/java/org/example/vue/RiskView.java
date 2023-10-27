@@ -372,6 +372,7 @@ public class RiskView extends JFrame implements Observateur {
             labelNbTroupeTerritoire.setText("Nombre de soldat sur le territoire : " + model.getTerritoireActif().getSoldats());
         }
 
+
         if (model.getTerritoireActif().getJoueurOccupant() != null) {
             labelOccupantTerritoire.setText("Joueur occupant le territoire : " + model.getTerritoireActif().getJoueurOccupant().getNomJoueur());
         }
