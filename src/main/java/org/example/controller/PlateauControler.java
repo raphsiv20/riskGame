@@ -16,6 +16,9 @@ import java.util.Random;
 
 import org.example.model.Joueur;
 
+import java.util.Arrays;
+import java.util.Random;
+
 public class PlateauControler extends AbstractControler {
     private static int[] battleResult = {};
 
