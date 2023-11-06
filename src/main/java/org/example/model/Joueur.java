@@ -16,6 +16,7 @@ public class Joueur {
     private int soldatsADeployer;
     private ArrayList<CarteTerritoire> listeCarteTerritoire;
     private boolean actif;
+    private int ptsConquerant;
 
     public Joueur(String nomJoueur, String prenomJoueur, Equipe equipeJoueur, int idJoueur, int soldatsADeployer) {
         this.idJoueur = idJoueur;
@@ -228,5 +229,11 @@ public class Joueur {
         }
     }
 
-
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Joueur joueur) {
+            return this.getIdJoueur() == joueur.getIdJoueur();
+        }
+        return false;
+    }
 }

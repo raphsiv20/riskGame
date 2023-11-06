@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class PlateauControler extends AbstractControler {
+    //TODO Do all bd related stuff
     private static int[] battleResult = {};
 
     private ArrayList<String> carteTerritroie = new ArrayList<>();
@@ -154,7 +155,7 @@ public class PlateauControler extends AbstractControler {
     private void bataille(Territoire territoireClique) {
 
         if (territoireClique.getJoueurOccupant() != model.getJoueurActif()) {
-            JOptionPane.showMessageDialog(null, "vous ne prossedez pas cet territoire" + territoireClique.getJoueurOccupant().getNomJoueur(), "Message d'information", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "vous ne prossedez pas cet territoire. C'est le territoire de " + territoireClique.getJoueurOccupant().getNomJoueur(), "Message d'information", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
@@ -162,6 +163,7 @@ public class PlateauControler extends AbstractControler {
         List<Territoire> Adjacents = new ArrayList<>();
 
         for (Territoire t : AdjacentsTerritoire) {
+            System.out.println(t.getTerritoireName());
             if (!t.getJoueurOccupant().equals(model.getJoueurActif())) {
                 Adjacents.add(t);
             }
@@ -407,6 +409,12 @@ public class PlateauControler extends AbstractControler {
         }
     }
 
+    public boolean isReinforcementPossible(Territoire territoireSource, Territoire territoireCible){
+        return false;
+    }
+
+
+
 
     public static boolean faireBataille(int attackerArmies, int attackerDice, int defenderArmies, int defenderDice) {
         try {
@@ -501,17 +509,4 @@ public class PlateauControler extends AbstractControler {
         return sb.toString();
     }
 
-    private void getCarteTerritoire() {
-        Random random = new Random();
-
-        // random index
-        int randomIndex = random.nextInt(this.carteTerritroie.size());
-
-        String randomTerritoire = this.carteTerritroie.get(randomIndex);
-
-        System.out.println("vous avez gagne carte : " + randomTerritoire);
-        model.getJoueurActif().addCarteTerritoire(model.getACarteTerritoireByTerritoireName(randomTerritoire));
-
-        this.carteTerritroie.clear();
-    }
 }
