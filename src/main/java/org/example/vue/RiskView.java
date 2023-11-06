@@ -148,7 +148,7 @@ public class RiskView extends JFrame implements Observateur {
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+                                .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, 10000, Short.MAX_VALUE)
                                 .addComponent(labelCarteTerritoire, GroupLayout.PREFERRED_SIZE, 150 , GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(labelJoueur, GroupLayout.PREFERRED_SIZE, 120 , GroupLayout.PREFERRED_SIZE)

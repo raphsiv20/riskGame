@@ -427,6 +427,11 @@ public class Plateau extends AbstractModel {
     }
 
     @Override
+    public CarteTerritoire obtenirCarteTerritoire() {
+        return null;
+    }
+
+    @Override
     public void attribuerEquipePartie() {
         Random random = new Random();
         for (Equipe equipe : this.getEquipes()) {

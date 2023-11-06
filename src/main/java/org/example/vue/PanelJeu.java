@@ -38,7 +38,15 @@ public class PanelJeu extends JPanel {
         cg.drawImage(RessourcesImages.AFRIQUENORD, x, y, cote, cote, this);
     }
     public void drawTerritoireALASKA(int x, int y, int cote) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
         cg.drawImage(RessourcesImages.ALASKA, x, y, cote, cote, this);
+        JLabel labelText = new JLabel("texte");
+        labelText.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Ajoutez le JLabel de texte au JPanel
+        panel.add(labelText, BorderLayout.SOUTH);
+        this.repaint();
     }
     public void drawTerritoireALBERTA(int x, int y, int cote) {
         cg.drawImage(RessourcesImages.ALBERTA, x, y, cote, cote, this);
