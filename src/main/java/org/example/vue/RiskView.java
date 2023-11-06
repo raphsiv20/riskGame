@@ -141,31 +141,31 @@ public class RiskView extends JFrame implements Observateur {
         //bouton fin partie demo
         JButton boutonFin = new JButton("(Demo) Fin partie");
         boutonFin.addActionListener(new ActionListener() {
-                                     public void actionPerformed(ActionEvent e) {
-                                         int i = 0;
-                                        for (Joueur joueurActuel : model.getJoueursPartie()) {
-                                            i += 1;
-                                            if (i == 5) {
-                                                for (Territoire territoireActuel : model.getTerritoiresGame()) {
-                                                    if (!joueurActuel.getTerritoiresOccupes().contains(territoireActuel)) {
-                                                            joueurActuel.addTerritoire(territoireActuel);
-                                                    }
-                                                }
-                                            }
-                                            else {
-                                                for (Territoire territoireActuel : model.getTerritoiresGame()) {
-                                                    if (joueurActuel.getTerritoiresOccupes().contains(territoireActuel)) {
-                                                        joueurActuel.removeTerritoire(territoireActuel);
-                                                    }
-                                                }
-                                            }
-                                        }
+         public void actionPerformed(ActionEvent e) {
+             int i = 0;
+            for (Joueur joueurActuel : model.getJoueursPartie()) {
+                i += 1;
+                if (i == 5) {
+                    for (Territoire territoireActuel : model.getTerritoiresGame()) {
+                        if (!joueurActuel.getTerritoiresOccupes().contains(territoireActuel)) {
+                                joueurActuel.addTerritoire(territoireActuel);
+                        }
+                    }
+                }
+                else {
+                    for (Territoire territoireActuel : model.getTerritoiresGame()) {
+                        if (joueurActuel.getTerritoiresOccupes().contains(territoireActuel)) {
+                            joueurActuel.removeTerritoire(territoireActuel);
+                        }
+                    }
+                }
+            }
 
-                                        for (Territoire territoireActuel : model.getTerritoiresGame()) {
-                                                territoireActuel.setJoueurOccupant(model.getJoueursPartie().get(4));
-                                        }
-                                     }
-                                 });
+            for (Territoire territoireActuel : model.getTerritoiresGame()) {
+                    territoireActuel.setJoueurOccupant(model.getJoueursPartie().get(4));
+            }
+         }
+     });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
