@@ -2,99 +2,238 @@ package org.example.vue;
 
 import org.example.controller.AbstractControler;
 import org.example.model.AbstractModel;
+import org.example.model.Equipe;
+import org.example.model.Joueur;
+import org.example.model.Territoire;
+import org.example.observer.Observateur;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-public class RiskView extends JFrame {
+import static org.example.ressourcesImg.RessourcesImages.AFGHANISTAN;
+import static org.example.ressourcesImg.RessourcesImages.ALASKA;
+
+
+public class RiskView extends JFrame implements Observateur {
 
     private AbstractModel model;
     private MouseListener mouseListener;
-    private AbstractControler controler;
     private PanelJeu panelJeu;
-    private javax.swing.JLabel labelNbTour;
-    private javax.swing.JLabel labelNbManche;
+    private JLabel labelNbTour = new javax.swing.JLabel();
+    private javax.swing.JTextArea labelJoueur = new JTextArea();
+    private JLabel labelPhaseJeu = new javax.swing.JLabel();
+    private JLabel labelSoldatsDispo = new javax.swing.JLabel();
+    private JLabel labelTerritoire = new javax.swing.JLabel();
+    private JLabel labelOccupantTerritoire = new javax.swing.JLabel();
+    private JLabel labelNbTroupeTerritoire = new javax.swing.JLabel();
+    private JLabel labelVoisins = new javax.swing.JLabel();
+    private javax.swing.JTextArea labelCarteTerritoire;
+    private int joueurActif = 0;
+
+
+
 
     public RiskView(AbstractModel model, AbstractControler controler) {
         this.model = model;
-        this.controler = controler;
+
         initComponents();
         this.mouseListener = new MouseListener(controler);
         this.panelJeu.addMouseListener(this.mouseListener);
+
         setVisible(true);
     }
+
 
     // initialise l'affichage
     private void initComponents() {
 
         panelJeu = new PanelJeu(this);
-        labelNbTour = new javax.swing.JLabel();
-        labelNbManche = new javax.swing.JLabel();
 
+        // label tour
+        model.setNumTour(1);
+        labelNbTour.setText("Tour "+ model.getNumTour());
+        labelCarteTerritoire = new javax.swing.JTextArea();
+        labelCarteTerritoire.setEditable(false);
+        labelCarteTerritoire.setVisible(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        labelJoueur.setEditable(false);
 
         // label phase de jeu
-        JLabel labelPhaseJeu = new javax.swing.JLabel();
-        controler.setPhaseTour("Phase de déploiement des troupes");
-        labelPhaseJeu.setText(controler.getPhaseTour());
+        model.setPhaseTour("Phase initiale");
+        labelPhaseJeu.setText(model.getPhaseTour());
+
+        labelSoldatsDispo.setText("Nombre de soldat a déployer : " + model.getJoueurActif().getSoldatsADeployer());
+
+        labelTerritoire.setText("Territoire actif : ");
+
+        labelOccupantTerritoire.setText("Joueur occupant le territoire : Aucun");
+
+        labelNbTroupeTerritoire.setText("Nombre de soldat sur le territoire : ");
+
+        labelVoisins.setText("Territoires voisins : ");
 
         //bouton phase de jeu
         JButton bouton = new JButton("Passer a la phase de jeu suivante");
         bouton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                switch (controler.getPhaseTour()) {
-                    case "Phase de déploiement des troupes" :
-                        controler.setPhaseTour("Phase de bataille");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
+                switch (model.getPhaseTour()) {
+                    case "Phase initiale" :
+                        model.setPhaseTour("Phase de déploiement des troupes");
+                        labelPhaseJeu.setText(model.getPhaseTour());
+                        update();
                         break;
                     case "Phase de bataille" :
-                        controler.setPhaseTour("Phase de renforcement");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
+                        labelCarteTerritoire.setVisible(false);
+                        model.setPhaseTour("Phase de renforcement");
+                        labelPhaseJeu.setText(model.getPhaseTour());
+                        update();
                         break;
                     case "Phase de renforcement" :
-                        controler.setPhaseTour("Phase de déploiement des troupes");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
+                        if (joueurActif == model.getJoueursPartie().size() - 1) {
+                            joueurActif = 0;
+                        } else {
+                            joueurActif += 1;
+                        }
+                        JOptionPane.showMessageDialog(
+                                Frame.getFrames()[0],
+                                "A toi de jouer " + model.getJoueursPartie().get(joueurActif).getNomJoueur(),
+                                "Tour suivant",
+                                JOptionPane.PLAIN_MESSAGE
+                        );
+
+                        labelCarteTerritoire.setVisible(true);
+                        model.setPhaseTour("Phase de déploiement des troupes");
+                        labelPhaseJeu.setText(model.getPhaseTour());
+
+                        if (model.getJoueursPartie().indexOf(model.getJoueurActif())+1 == model.getJoueursPartie().size() ) {
+                            model.getJoueurActif().setActif(false);
+                            model.getJoueursPartie().get(0).setActif(true);
+                        }
+                        else {
+                            Joueur ancienActif = model.getJoueurActif();
+                            model.getJoueursPartie().get(model.getJoueursPartie().indexOf(model.getJoueurActif()) + 1).setActif(true);
+                            ancienActif.setActif(false);
+                        }
+
+                        labelSoldatsDispo.setText("Nombre de soldat a déployer : "  + model.getJoueurActif().getSoldatsADeployer());
+
+                        update();
                         break;
                     default :
-                        controler.setPhaseTour("Phase de déploiement des troupes");
-                        labelPhaseJeu.setText(controler.getPhaseTour());
+                        break;
                 }
             }
         });
+
+        //bouton echanger carte
+        JButton boutonCarte = new JButton("Echanger carte");
+        boutonCarte.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (model.getJoueurActif().echangeCartePossible()){
+                    model.getJoueurActif().echangerCarteTerritoires();
+                }
+            }
+        });
+
+        //bouton fin partie demo
+        JButton boutonFin = new JButton("(Demo) Fin partie");
+        boutonFin.addActionListener(new ActionListener() {
+                                     public void actionPerformed(ActionEvent e) {
+                                         int i = 0;
+                                        for (Joueur joueurActuel : model.getJoueursPartie()) {
+                                            i += 1;
+                                            if (i == 5) {
+                                                for (Territoire territoireActuel : model.getTerritoiresGame()) {
+                                                    if (!joueurActuel.getTerritoiresOccupes().contains(territoireActuel)) {
+                                                            joueurActuel.addTerritoire(territoireActuel);
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (Territoire territoireActuel : model.getTerritoiresGame()) {
+                                                    if (joueurActuel.getTerritoiresOccupes().contains(territoireActuel)) {
+                                                        joueurActuel.removeTerritoire(territoireActuel);
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        for (Territoire territoireActuel : model.getTerritoiresGame()) {
+                                                territoireActuel.setJoueurOccupant(model.getJoueursPartie().get(4));
+                                        }
+                                     }
+                                 });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelNbManche, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelNbTour, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(340)
+                                .addComponent(panelJeu, javax.swing.GroupLayout.PREFERRED_SIZE, 800, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(labelNbTour, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(labelJoueur, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelCarteTerritoire, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(bouton)
+                        .addComponent(boutonCarte)
+                        .addComponent(boutonFin)
                         .addComponent(labelPhaseJeu)
+                        .addComponent(labelSoldatsDispo,javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE)
+                        .addComponent(labelTerritoire,javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE)
+                        .addComponent(labelOccupantTerritoire,javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE)
+                        .addComponent(labelNbTroupeTerritoire,javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE)
+                        .addComponent(labelVoisins,javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                                .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, 10000, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(450)
+                                .addComponent(labelJoueur, GroupLayout.PREFERRED_SIZE, 110 , GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(bouton)
+                                .addComponent(boutonCarte)
+                                .addComponent(boutonFin))
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(280)
+                                .addComponent(labelCarteTerritoire, GroupLayout.PREFERRED_SIZE, 150 , GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(280)
+                                .addComponent(labelCarteTerritoire, GroupLayout.PREFERRED_SIZE, 150 , GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(labelNbTour)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(labelPhaseJeu)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(labelNbManche)
-                        .addComponent(labelNbTour))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelSoldatsDispo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelTerritoire)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelOccupantTerritoire)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelNbTroupeTerritoire)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelVoisins)
+                        )
+        )
 
-        );
+        ;
 
         pack();
+
     }
 
+
     // dessine le plateau de jeu
-    public void dessinerJeu(){
-        labelNbTour.setText("Tour "+ model.getNumTour());
-        labelNbManche.setText("Manche "+ model.getNumTour());
+    public void dessinerJeu() {
+
         int h = this.panelJeu.getWidth();
         int l = this.panelJeu.getHeight();
         int x, y, cote;
@@ -114,27 +253,189 @@ public class RiskView extends JFrame {
                     case VIDE :
                         panelJeu.drawTerritoireVide(x+xP*cote, y+yP*cote, cote);
                         break;
-                    case AMNORD :
-                        panelJeu.drawTerritoireAmNord(x+xP*cote, y+yP*cote, cote);
+                    case AFGHANISTAN:
+                        panelJeu.drawTerritoireAFGHANISTAN(x+xP*cote, y+yP*cote, cote);
                         break;
-                    case AMSUD :
-                        panelJeu.drawTerritoireAmSud(x+xP*cote, y+yP*cote, cote);
+                    case AFRIQUE_DE_L_EST:
+                        panelJeu.drawTerritoireAFRIQUEEST(x+xP*cote, y+yP*cote, cote);
                         break;
-                    case EU :
-                        panelJeu.drawTerritoireEU(x+xP*cote, y+yP*cote, cote);
+                    case AFRIQUE_DU_SUD:
+                        panelJeu.drawTerritoireAFRIQUESUD(x+xP*cote, y+yP*cote, cote);
                         break;
-                    case AFRIQUE :
-                        panelJeu.drawTerritoireAfrique(x+xP*cote, y+yP*cote, cote);
+                    case AFRIQUE_DU_NORD:
+                        panelJeu.drawTerritoireAFRIQUENORD(x+xP*cote, y+yP*cote, cote);
                         break;
-                    case ASIE :
-                        panelJeu.drawTerritoireAsie(x+xP*cote, y+yP*cote, cote);
+                    case ALASKA:
+                        panelJeu.drawTerritoireALASKA(x+xP*cote, y+yP*cote, cote);
                         break;
-                    case AUST :
-                        panelJeu.drawTerritoireAust(x+xP*cote, y+yP*cote, cote);
+                    case ALBERTA:
+                        panelJeu.drawTerritoireALBERTA(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case AMERIQUE_CENTRALE:
+                        panelJeu.drawTerritoireAMCENTRALE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case ARGENTINE:
+                        panelJeu.drawTerritoireARGENTINA(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case BRESIL:
+                        panelJeu.drawTerritoireBRESIL(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case CHINE:
+                        panelJeu.drawTerritoireCHINA(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case CONGO:
+                        panelJeu.drawTerritoireCONGO(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case EGYPTE:
+                        panelJeu.drawTerritoireEGYPTE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case EST_DE_L_AUSTRALIE:
+                        panelJeu.drawTerritoireESTAUSTRALIE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case EST_DES_ETATS_UNIS:
+                        panelJeu.drawTerritoireESTETATSUNIS(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case EUROPE_DU_NORD:
+                        panelJeu.drawTerritoireEUROPENORD(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case EUROPE_DE_L_OUEST:
+                        panelJeu.drawTerritoireEUROPEOUEST(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case EUROPE_DU_SUD:
+                        panelJeu.drawTerritoireEUROPESUD(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case GRANDE_BRETAGNE:
+                        panelJeu.drawTerritoireGRANDEBRETAGNE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case GROENLAND:
+                        panelJeu.drawTerritoireGROENLAND(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case INDE:
+                        panelJeu.drawTerritoireINDE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case INDONESIE:
+                        panelJeu.drawTerritoireINDONESIE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case IRKOUTSK:
+                        panelJeu.drawTerritoireIRKUTSK(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case ISLANDE:
+                        panelJeu.drawTerritoireISLANDE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case JAPON:
+                        panelJeu.drawTerritoireJAPON(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case KAMCHATKA:
+                        panelJeu.drawTerritoireKAMCHATKA(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case MADAGASCAR:
+                        panelJeu.drawTerritoireMADAGASCAR(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case MONGOLIE:
+                        panelJeu.drawTerritoireMONGOLIA(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case MOYEN_ORIENT:
+                        panelJeu.drawTerritoireMOYENORIENT(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case NOUVELLE_GUINEE:
+                        panelJeu.drawTerritoireNOUVELLEGUINEE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case ONTARIO:
+                        panelJeu.drawTerritoireONTARIO(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case OUEST_DE_L_AUSTRALIE:
+                        panelJeu.drawTerritoireOUESTAUSTRALIE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case OUEST_DES_ETATS_UNIS:
+                        panelJeu.drawTerritoireOUESTETATSUNIS(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case OURAL:
+                        panelJeu.drawTerritoireOURAL(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case PEROU:
+                        panelJeu.drawTerritoirePEROU(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case QUEBEC:
+                        panelJeu.drawTerritoireQUEBEC(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case SCANDINAVIE:
+                        panelJeu.drawTerritoireSCANDINAVIA(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case SIAM:
+                        panelJeu.drawTerritoireSIAM(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case SIBERIE:
+                        panelJeu.drawTerritoireSIBERIE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case TERRITOIRE_DU_NORD_OUEST:
+                        panelJeu.drawTerritoireTERRITOIRENORDOUEST(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case UKRAINE:
+                        panelJeu.drawTerritoireUKRAINE(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case VENEZUELA:
+                        panelJeu.drawTerritoireVENEZUELA(x+xP*cote, y+yP*cote, cote);
+                        break;
+                    case TCHITA:
+                        panelJeu.drawTerritoireYAKUSTK(x+xP*cote, y+yP*cote, cote);
                         break;
                 }
 
             }
         }
+        update();
+    }
+
+    public void update() {
+            if (model.getJoueurActif().getTerritoiresOccupes().size() == 42) {
+                JOptionPane.showMessageDialog(null, "Le joueur " + model.getJoueurActif().getNomJoueur() + " a remporte la partie", "Partie terminee", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        if (model.getPhaseTour() == "Phase de bataille") {
+            labelCarteTerritoire.setVisible(false);
+        }
+
+        if (model.getPhaseTour() == "Phase de déploiement des troupes") {
+            labelCarteTerritoire.setVisible(true);
+        }
+
+        labelPhaseJeu.setText(model.getPhaseTour());
+        labelSoldatsDispo.setText("Nombre de soldat a déployer : " + model.getJoueurActif().getSoldatsADeployer());
+        if (model.getTerritoireActif().getTerritoireName() != null) {
+            labelTerritoire.setText("Territoire actif : " + model.getTerritoireActif().getTerritoireName());
+        }
+
+        if (model.getTerritoireActif().getSoldats() != 0) {
+            labelNbTroupeTerritoire.setText("Nombre de soldat sur le territoire : " + model.getTerritoireActif().getSoldats());
+        }
+
+
+        if (model.getTerritoireActif().getJoueurOccupant() != null) {
+            labelOccupantTerritoire.setText("Joueur occupant le territoire : " + model.getTerritoireActif().getJoueurOccupant().getNomJoueur());
+        }
+
+        String voisins = "";
+        if (model.getTerritoireActif().getTerritoiresAdjacents() != null) {
+            for (Territoire territoireActuel : model.getTerritoireActif().getTerritoiresAdjacents()) {
+                voisins += territoireActuel.getTerritoireName() + ", ";
+            }
+            labelVoisins.setText("<html>Territoires voisins : <br>"+voisins.replace(", ", "<br>") + "</html>" );
+        }
+
+        labelJoueur.setText("Joueurs :" + '\n');
+        labelCarteTerritoire.setText("Voici vos cartes territoires posséedés" + '\n');
+        Joueur joueurActif = model.getJoueurActif();
+
+        for (Joueur joueurActuel : model.getJoueursPartie()) {
+            if (joueurActuel == joueurActif) {
+                labelJoueur.setText(labelJoueur.getText() + "\u2794" + joueurActuel.getNomJoueur() + "\n");
+                for (int j = 0; j < model.getJoueurActif().getListeCarteTerritoire().size(); j++) {
+                    labelCarteTerritoire.setText(labelCarteTerritoire.getText() + model.getJoueurActif().getListeCarteTerritoire().get(j).getTypeCarte() + '\n');
+                }
+            } else {
+                labelJoueur.setText(labelJoueur.getText() + joueurActuel.getNomJoueur() + "\n");
+            }
+        }
+        repaint();
     }
 }

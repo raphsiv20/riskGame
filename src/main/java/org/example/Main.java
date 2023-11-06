@@ -6,13 +6,14 @@ import org.example.model.AbstractModel;
 import org.example.model.Plateau;
 import org.example.vue.RiskView;
 
+import java.io.File;
+
+
 public class Main {
     public static void main(String[] args) {
-        AbstractModel model = new Plateau();
+        AbstractModel model = new Plateau(10, 7);
         AbstractControler controler = new PlateauControler(model);
         RiskView v = new RiskView(model,controler);
-        while(!model.partieTerminer()){
-            controler.calculerStepSuivant();
-        }
+        model.addObservateur(v);
     }
 }
