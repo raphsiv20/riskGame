@@ -105,10 +105,6 @@ public class Territoire {
 		this.actif = actif;
 	}
 
-	public String getTerritoireContinentStr() {
-		return territoireContinentStr;
-	}
-
 	public void setTerritoireContinentStr(String territoireContinentStr) {
 		this.territoireContinentStr = territoireContinentStr;
 	}
