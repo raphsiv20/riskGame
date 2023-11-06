@@ -39,6 +39,13 @@ public class Territoire {
 	/*------------*/
 	/* Methodes */
 	/*------------*/
+	public void addSoldats(int newSoldats) {
+		this.soldats += newSoldats;
+	}
+
+	public void removeSoldats(int soldatsRemoved) {
+		this.soldats -= soldatsRemoved;
+	}
 	
 	/**
 	 * Affecte / retourne le type de le territoire.

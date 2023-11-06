@@ -49,7 +49,9 @@ public class Plateau extends AbstractModel {
         this.getJoueursPartie().get(0).addCarteTerritoire(this.getACarteTerritoireByTerritoireName("Alberta"));
         this.getJoueursPartie().get(0).addCarteTerritoire(this.getACarteTerritoireByTerritoireName("Argentine"));
 
-
+        this.getJoueursPartie().get(1).addCarteTerritoire(this.getACarteTerritoireByTerritoireName("Ouest de l'Australie"));
+        this.getJoueursPartie().get(1).addCarteTerritoire(this.getACarteTerritoireByTerritoireName("Nouvelle-Guinée"));
+        this.getJoueursPartie().get(1).addCarteTerritoire(this.getACarteTerritoireByTerritoireName("Irkoutsk"));
 
         this.setTerritoire(3, 0, new Territoire(TypeTerritoire.VIDE));
         this.setTerritoire(4, 0, new Territoire(TypeTerritoire.VIDE));

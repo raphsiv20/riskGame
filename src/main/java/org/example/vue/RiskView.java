@@ -138,6 +138,35 @@ public class RiskView extends JFrame implements Observateur {
             }
         });
 
+        //bouton fin partie demo
+        JButton boutonFin = new JButton("(Demo) Fin partie");
+        boutonFin.addActionListener(new ActionListener() {
+                                     public void actionPerformed(ActionEvent e) {
+                                         int i = 0;
+                                        for (Joueur joueurActuel : model.getJoueursPartie()) {
+                                            i += 1;
+                                            if (i == 5) {
+                                                for (Territoire territoireActuel : model.getTerritoiresGame()) {
+                                                    if (!joueurActuel.getTerritoiresOccupes().contains(territoireActuel)) {
+                                                            joueurActuel.addTerritoire(territoireActuel);
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (Territoire territoireActuel : model.getTerritoiresGame()) {
+                                                    if (joueurActuel.getTerritoiresOccupes().contains(territoireActuel)) {
+                                                        joueurActuel.removeTerritoire(territoireActuel);
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        for (Territoire territoireActuel : model.getTerritoiresGame()) {
+                                                territoireActuel.setJoueurOccupant(model.getJoueursPartie().get(4));
+                                        }
+                                     }
+                                 });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -151,6 +180,7 @@ public class RiskView extends JFrame implements Observateur {
                         .addComponent(labelCarteTerritoire, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(bouton)
                         .addComponent(boutonCarte)
+                        .addComponent(boutonFin)
                         .addComponent(labelPhaseJeu)
                         .addComponent(labelSoldatsDispo,javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE)
                         .addComponent(labelTerritoire,javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE)
@@ -167,7 +197,8 @@ public class RiskView extends JFrame implements Observateur {
                                 .addComponent(labelJoueur, GroupLayout.PREFERRED_SIZE, 110 , GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(bouton)
-                                .addComponent(boutonCarte))
+                                .addComponent(boutonCarte)
+                                .addComponent(boutonFin))
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(280)
                                 .addComponent(labelCarteTerritoire, GroupLayout.PREFERRED_SIZE, 150 , GroupLayout.PREFERRED_SIZE))
@@ -353,6 +384,9 @@ public class RiskView extends JFrame implements Observateur {
     }
 
     public void update() {
+            if (model.getJoueurActif().getTerritoiresOccupes().size() == 42) {
+                JOptionPane.showMessageDialog(null, "Le joueur " + model.getJoueurActif().getNomJoueur() + " a remporte la partie", "Partie terminee", JOptionPane.INFORMATION_MESSAGE);
+            }
 
         if (model.getPhaseTour() == "Phase de bataille") {
             labelCarteTerritoire.setVisible(false);
