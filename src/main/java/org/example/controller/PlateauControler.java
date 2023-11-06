@@ -14,7 +14,7 @@ import java.util.Random;
 import org.example.model.Joueur;
 
 public class PlateauControler extends AbstractControler {
-    private static int[] battleResult = {};
+//    private static int[] battleResult = {};
 
     private ArrayList<String> carteTerritroie = new ArrayList<>();
 
@@ -224,17 +224,16 @@ public class PlateauControler extends AbstractControler {
 
                     System.out.println("nb des : " + nbAttackerDice + nbDefenderDice);
 
-                    boolean resultatAttaque = faireBataille(nbSoldatsAtta, nbAttackerDice, nbSoldatsDefen, nbDefenderDice);
-
-                    if (resultatAttaque) {
+                    ResultatBataille resultatAttaque = faireBataille(nbSoldatsAtta, nbAttackerDice, nbSoldatsDefen, nbDefenderDice);
+                    int[] nbArmiesLoss = resultatAttaque.getArmiesLoss();
+                    if (resultatAttaque.isAttaqueReusi()) {
                         territoireCible.setJoueurOccupant(model.getJoueurActif());
 
                         //Get carte territoire
                         this.carteTerritroie.add(territoireCible.getTerritoireName());
-//                        model.getJoueurActif().addCarteTerritoire(model.getACarteTerritoireByTerritoireName(territoireCible.getTerritoireName()));
-//                        System.out.println("get carte : " + model.getACarteTerritoireByTerritoireName(territoireCible.getTerritoireName()).getTerritoire().getTerritoireName());
 
-                        int nbSoldatReste = territoireClique.getSoldats() - battleResult[0];
+                        int nbSoldatReste = territoireClique.getSoldats() - nbArmiesLoss[0];
+
                         int nbSoldatDeplacer = 0;
 
                         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1, 1, nbSoldatReste - 1, 1);
@@ -262,8 +261,12 @@ public class PlateauControler extends AbstractControler {
                         territoireClique.setSoldats(nbSoldatReste - nbSoldatDeplacer);
                         territoireCible.setSoldats(nbSoldatDeplacer);
                     } else {
-                        territoireCible.setSoldats(territoireCible.getSoldats() - battleResult[1]);
-                        int nb = territoireClique.getSoldats() - battleResult[0];
+                        territoireCible.setSoldats(territoireCible.getSoldats() - nbArmiesLoss[1]);
+//                        territoireCible.setSoldats(territoireCible.getSoldats() - 1);
+
+//                        int nb = territoireClique.getSoldats() - battleResult[0];
+
+                        int nb = territoireClique.getSoldats() -  nbArmiesLoss[0];
                         if (nb <= 0) nb = 1;
                         territoireClique.setSoldats(nb);
                     }
@@ -419,13 +422,19 @@ public class PlateauControler extends AbstractControler {
     }
 
 
-    public static boolean faireBataille(int attackerArmies, int attackerDice, int defenderArmies, int defenderDice) {
+    public ResultatBataille faireBataille(int attackerArmies, int attackerDice, int defenderArmies, int defenderDice) {
         try {
+            Des desAtta = new Des(attackerDice);
+            desAtta.rollDice();
+            int[] resultatDesAtta = desAtta.getResultatDes();
+            Des desDefen = new Des(defenderDice);
+            desDefen.rollDice();
+            int[] resultatDesDefen = desDefen.getResultatDes();
 
-            int[] attackerRoll = rollDice(attackerDice);
-            int[] defenderRoll = rollDice(defenderDice);
+            Bataille bataille = new Bataille(attackerDice, attackerArmies, resultatDesAtta,defenderDice, defenderArmies, resultatDesDefen);
+            bataille.faireBataille();
 
-            String resultatDes = "Attacker's dice roll: " + arrayToString(attackerRoll) + "Defender's dice roll: " + arrayToString(defenderRoll);
+            String resultatDes = "Attacker's dice roll: " + Arrays.toString(resultatDesAtta)+ "Defender's dice roll: " + Arrays.toString(resultatDesDefen);
 
             //resultat des
             JOptionPane.showMessageDialog(
@@ -435,19 +444,14 @@ public class PlateauControler extends AbstractControler {
                     JOptionPane.PLAIN_MESSAGE
             );
 
-            // clean result
-            Arrays.fill(battleResult, 0);
-            // comparer
-            battleResult = compareDice(attackerRoll, defenderRoll, attackerDice, defenderDice);
+            System.out.println("result attack : " + bataille.isAttaqueReusi());
 
-            boolean attaqueReusi = false;
-            if (defenderDice - battleResult[1] <= 0)
-                attaqueReusi = true;
-            System.out.println();
+            int[] battleResult = bataille.getResultatBataille();
+            boolean attaqueReusi = bataille.isAttaqueReusi();
             String resultatBat = "Attaque réussie : " + attaqueReusi +" Attacker loses " + battleResult[0] + " armies, Defender loses " + battleResult[1] + " armies.";
 
             if (attaqueReusi && battleResult[0] == 0) {
-                resultatBat = "Attaque réussie : " + attaqueReusi +" Attacker loses " + battleResult[0] + " armies, Defender loses " + defenderArmies + " armies.";
+                resultatBat = "Attaque réussie : " + true +" Attacker loses " + battleResult[0] + " armies, Defender loses " + defenderArmies + " armies.";
             }
             JOptionPane.showMessageDialog(
                     Frame.getFrames()[0],
@@ -455,74 +459,12 @@ public class PlateauControler extends AbstractControler {
                     "Resultat bataille",
                     JOptionPane.PLAIN_MESSAGE
             );
-            return attaqueReusi;
+            return new ResultatBataille(attaqueReusi, battleResult);
         } catch (ArithmeticException e) {
             // 捕获异常后的处理
             System.out.println("Nb armies 0! Error!!!");
             e.printStackTrace();
-            return false;
+            return null;
         }
-    }
-
-    // lacner des
-    public static int[] rollDice(int numDice) {
-        int[] result = new int[numDice];
-        Random rand = new Random();
-        for (int i = 0; i < numDice; i++) {
-            result[i] = rand.nextInt(6) + 1; // random interger de 1 -> 6
-        }
-        Arrays.sort(result);
-        for (int i = 0; i < numDice / 2; i++) {
-            int temp = result[i];
-            result[i] = result[numDice - i - 1];
-            result[numDice - i - 1] = temp;
-        }
-        return result;
-    }
-
-    // comparer
-    public static int[] compareDice(int[] attackerRoll, int[] defenderRoll, int attackerArmies, int defenderArmies) {
-        int[] result = new int[2]; // result[0] troupes loss by attacker , result[1] troueps loss by defender
-
-        while (attackerArmies >= 1 && defenderArmies >= 1) {
-            for (int i = 0; i < Math.min(attackerRoll.length, defenderRoll.length); i++) {
-                if (attackerRoll[i] > defenderRoll[i]) {
-                    result[1]++; // defender loss un troupes
-                } else {
-                    result[0]++; // Attacker loss un troupes
-                }
-                System.out.println(Arrays.toString(result));
-                defenderArmies--;
-                attackerArmies--;
-            }
-        }
-
-        return result;
-    }
-
-    // int vector --> String
-    public static String arrayToString(int[] arr) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < arr.length; i++) {
-            sb.append(arr[i]);
-            if (i < arr.length - 1) {
-                sb.append(", ");
-            }
-        }
-        return sb.toString();
-    }
-
-    private void getCarteTerritoire() {
-        Random random = new Random();
-
-        // random index
-        int randomIndex = random.nextInt(this.carteTerritroie.size());
-
-        String randomTerritoire = this.carteTerritroie.get(randomIndex);
-
-        System.out.println("vous avez gagne carte : " + randomTerritoire);
-        model.getJoueurActif().addCarteTerritoire(model.getACarteTerritoireByTerritoireName(randomTerritoire));
-
-        this.carteTerritroie.clear();
     }
 }
