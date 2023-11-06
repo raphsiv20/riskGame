@@ -21,11 +21,7 @@ public class RiskView extends JFrame implements Observateur {
 
     private AbstractModel model;
     private MouseListener mouseListener;
-    private AbstractControler controler;
     private PanelJeu panelJeu;
-    private java.util.List<Joueur> joueurs;
-    private int joueurActifIndex = 0;
-    private int incr;
     private JLabel labelNbTour = new javax.swing.JLabel();
     private javax.swing.JTextArea labelJoueur = new JTextArea();
     private JLabel labelPhaseJeu = new javax.swing.JLabel();
@@ -35,7 +31,6 @@ public class RiskView extends JFrame implements Observateur {
     private JLabel labelNbTroupeTerritoire = new javax.swing.JLabel();
     private JLabel labelVoisins = new javax.swing.JLabel();
     private javax.swing.JTextArea labelCarteTerritoire;
-    JButton boutonEchangerCarte = new JButton("Échanger carte");
     private int joueurActif = 0;
 
 
@@ -43,9 +38,6 @@ public class RiskView extends JFrame implements Observateur {
 
     public RiskView(AbstractModel model, AbstractControler controler) {
         this.model = model;
-        this.controler = controler;
-        this.joueurs = model.getJoueursPartie();
-        this.incr = 0;
 
         initComponents();
         this.mouseListener = new MouseListener(controler);
@@ -64,8 +56,10 @@ public class RiskView extends JFrame implements Observateur {
         model.setNumTour(1);
         labelNbTour.setText("Tour "+ model.getNumTour());
         labelCarteTerritoire = new javax.swing.JTextArea();
+        labelCarteTerritoire.setEditable(false);
         labelCarteTerritoire.setVisible(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        labelJoueur.setEditable(false);
 
         // label phase de jeu
         model.setPhaseTour("Phase initiale");
@@ -75,7 +69,7 @@ public class RiskView extends JFrame implements Observateur {
 
         labelTerritoire.setText("Territoire actif : ");
 
-        labelOccupantTerritoire.setText("Joueur occupant le territoire : ");
+        labelOccupantTerritoire.setText("Joueur occupant le territoire : Aucun");
 
         labelNbTroupeTerritoire.setText("Nombre de soldat sur le territoire : ");
 
@@ -86,41 +80,47 @@ public class RiskView extends JFrame implements Observateur {
         bouton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 switch (model.getPhaseTour()) {
+                    case "Phase initiale" :
+                        model.setPhaseTour("Phase de déploiement des troupes");
+                        labelPhaseJeu.setText(model.getPhaseTour());
+                        update();
+                        break;
                     case "Phase de bataille" :
                         labelCarteTerritoire.setVisible(false);
                         model.setPhaseTour("Phase de renforcement");
                         labelPhaseJeu.setText(model.getPhaseTour());
+                        update();
                         break;
                     case "Phase de renforcement" :
-                        if (joueurActif == joueurs.size() - 1) {
+                        if (joueurActif == model.getJoueursPartie().size() - 1) {
                             joueurActif = 0;
                         } else {
                             joueurActif += 1;
                         }
                         JOptionPane.showMessageDialog(
                                 Frame.getFrames()[0],
-                                "A toi de jouer " + joueurs.get(joueurActif).getNomJoueur(),
+                                "A toi de jouer " + model.getJoueursPartie().get(joueurActif).getNomJoueur(),
                                 "Tour suivant",
                                 JOptionPane.PLAIN_MESSAGE
                         );
 
                         labelCarteTerritoire.setVisible(true);
-                        incr = incr + 1;
                         model.setPhaseTour("Phase de déploiement des troupes");
                         labelPhaseJeu.setText(model.getPhaseTour());
-                        if (incr == 4) {
-                            model.setNumTour(model.getNumTour() + 1);
-                            labelNbTour.setText("Tour " + model.getNumTour());
-                            incr = 0;
-                        }
-                        if (joueurActifIndex >= joueurs.size()-1) {
-                            joueurActifIndex = 0;
-                            dessinerJeu();
+
+                        if (model.getJoueursPartie().indexOf(model.getJoueurActif())+1 == model.getJoueursPartie().size() ) {
+                            model.getJoueurActif().setActif(false);
+                            model.getJoueursPartie().get(0).setActif(true);
                         }
                         else {
-                            joueurActifIndex += 1;
-                            actualiseLblJoueur();
+                            Joueur ancienActif = model.getJoueurActif();
+                            model.getJoueursPartie().get(model.getJoueursPartie().indexOf(model.getJoueurActif()) + 1).setActif(true);
+                            ancienActif.setActif(false);
                         }
+
+                        labelSoldatsDispo.setText("Nombre de soldat a déployer : "  + model.getJoueurActif().getSoldatsADeployer());
+
+                        update();
                         break;
                     default :
                         break;
@@ -128,34 +128,82 @@ public class RiskView extends JFrame implements Observateur {
             }
         });
 
+        //bouton echanger carte
+        JButton boutonCarte = new JButton("Echanger carte");
+        boutonCarte.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (model.getJoueurActif().echangeCartePossible()){
+                    model.getJoueurActif().echangerCarteTerritoires();
+                }
+            }
+        });
+
+        //bouton fin partie demo
+        JButton boutonFin = new JButton("(Demo) Fin partie");
+        boutonFin.addActionListener(new ActionListener() {
+                                     public void actionPerformed(ActionEvent e) {
+                                         int i = 0;
+                                        for (Joueur joueurActuel : model.getJoueursPartie()) {
+                                            i += 1;
+                                            if (i == 5) {
+                                                for (Territoire territoireActuel : model.getTerritoiresGame()) {
+                                                    if (!joueurActuel.getTerritoiresOccupes().contains(territoireActuel)) {
+                                                            joueurActuel.addTerritoire(territoireActuel);
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (Territoire territoireActuel : model.getTerritoiresGame()) {
+                                                    if (joueurActuel.getTerritoiresOccupes().contains(territoireActuel)) {
+                                                        joueurActuel.removeTerritoire(territoireActuel);
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        for (Territoire territoireActuel : model.getTerritoiresGame()) {
+                                                territoireActuel.setJoueurOccupant(model.getJoueursPartie().get(4));
+                                        }
+                                     }
+                                 });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelNbTour, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(340)
+                                .addComponent(panelJeu, javax.swing.GroupLayout.PREFERRED_SIZE, 800, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(labelNbTour, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addComponent(labelJoueur, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
                         .addComponent(labelCarteTerritoire, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(bouton)
+                        .addComponent(boutonCarte)
+                        .addComponent(boutonFin)
                         .addComponent(labelPhaseJeu)
-                        .addComponent(labelSoldatsDispo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(labelTerritoire, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(labelOccupantTerritoire, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(labelNbTroupeTerritoire, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(labelVoisins, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(labelSoldatsDispo,javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE)
+                        .addComponent(labelTerritoire,javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE)
+                        .addComponent(labelOccupantTerritoire,javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE)
+                        .addComponent(labelNbTroupeTerritoire,javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE)
+                        .addComponent(labelVoisins,javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, 10000, Short.MAX_VALUE)
-                                .addComponent(labelCarteTerritoire, GroupLayout.PREFERRED_SIZE, 150 , GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(labelJoueur, GroupLayout.PREFERRED_SIZE, 120 , GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(bouton))
+                                .addComponent(panelJeu, javax.swing.GroupLayout.DEFAULT_SIZE, 10000, Short.MAX_VALUE))
                         .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelNbTour)
+                                .addGap(450)
+                                .addComponent(labelJoueur, GroupLayout.PREFERRED_SIZE, 110 , GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(bouton)
+                                .addComponent(boutonCarte)
+                                .addComponent(boutonFin))
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(280)
+                                .addComponent(labelCarteTerritoire, GroupLayout.PREFERRED_SIZE, 150 , GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(labelNbTour)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(labelPhaseJeu)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -164,13 +212,12 @@ public class RiskView extends JFrame implements Observateur {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(labelTerritoire)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(labelOccupantTerritoire)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(labelNbTroupeTerritoire)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(labelVoisins)
-
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelOccupantTerritoire)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelNbTroupeTerritoire)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelVoisins)
                         )
         )
 
@@ -183,37 +230,6 @@ public class RiskView extends JFrame implements Observateur {
 
     // dessine le plateau de jeu
     public void dessinerJeu() {
-        labelJoueur.setText("Joueurs :" + '\n');
-        labelCarteTerritoire.setText("Voici vos cartes territoires posséedés" + '\n');
-        for (int i = 0; i < joueurs.size(); i++) {
-            String nomJoueur = joueurs.get(i).getNomJoueur();
-            int Infanterie = 0;
-            int Cavalerie = 0;
-            int Artillerie = 0;
-            if (i == joueurActifIndex) {
-                labelJoueur.setText(labelJoueur.getText() + "\u2794" + nomJoueur + "\n");
-                for (int j = 0; j < joueurs.get(i).getListeCarteTerritoire().size(); j++) {
-                    labelCarteTerritoire.setText(labelCarteTerritoire.getText() + "Carte de type " + joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte().toString()+ "\n");
-                    if (joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte() == "Infanterie"){
-                        Infanterie += 1;
-                        System.out.println(Infanterie);
-                    }
-                    else if (joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte() == "Cavalerie"){
-                        Cavalerie += 1;
-                    }
-                    else {
-                        Artillerie += 1;
-                    }
-                }
-                if (Infanterie == 3 || Cavalerie == 3 || Artillerie == 3){
-                    labelCarteTerritoire.add(boutonEchangerCarte);
-                }
-                ;
-            }
-            else {
-                labelJoueur.setText(labelJoueur.getText() + nomJoueur + "\n");
-            }
-        }
 
         int h = this.panelJeu.getWidth();
         int l = this.panelJeu.getHeight();
@@ -364,65 +380,59 @@ public class RiskView extends JFrame implements Observateur {
 
             }
         }
-        actualiseLblJoueur();
-    }
-
-    public void actualiseLblJoueur() {
-        labelJoueur.setText("Joueurs :" + '\n');
-        labelCarteTerritoire.setText("Voici vos cartes territoires posséedés" + '\n');
-        for (int i = 0; i < joueurs.size(); i++) {
-            String nomJoueur = joueurs.get(i).getNomJoueur();
-            int Infanterie = 0;
-            int Cavalerie = 0;
-            int Artillerie = 0;
-            if (i == joueurActifIndex) {
-                labelJoueur.setText(labelJoueur.getText() + "\u2794" + nomJoueur + "\n");
-                for (int j = 0; j < joueurs.get(i).getListeCarteTerritoire().size(); j++) {
-                    labelCarteTerritoire.setText(labelCarteTerritoire.getText() + "Carte de type " + joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte().toString()+ "\n");
-                    if (joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte() == "Infanterie"){
-                        Infanterie += 1;
-                        System.out.println(Infanterie);
-                    }
-                    else if (joueurs.get(i).getListeCarteTerritoire().get(j).getTypeCarte() == "Cavalerie"){
-                        Cavalerie += 1;
-                    }
-                    else {
-                        Artillerie += 1;
-                    }
-                }
-                if (Infanterie == 3 || Cavalerie == 3 || Artillerie == 3){
-                    labelCarteTerritoire.add(boutonEchangerCarte);
-                }
-                ;
-            }
-            else {
-                labelJoueur.setText(labelJoueur.getText() + nomJoueur + "\n");
-            }
-        }
+        update();
     }
 
     public void update() {
-        actualiseLblJoueur();
-        /*
-        for (Joueur joueurActuel : joueurs) {
-            if (joueurActuel.getAtif()) {
-                labelJoueur.setText(labelJoueur.getText() + "\u2794" + joueurActuel.getNomJoueur() + "\n");
+            if (model.getJoueurActif().getTerritoiresOccupes().size() == 42) {
+                JOptionPane.showMessageDialog(null, "Le joueur " + model.getJoueurActif().getNomJoueur() + " a remporte la partie", "Partie terminee", JOptionPane.INFORMATION_MESSAGE);
             }
-            else {
-                labelJoueur.setText(labelJoueur.getText() + joueurActuel.getNomJoueur() + "\n");
-            }
-        }*/
+
+        if (model.getPhaseTour() == "Phase de bataille") {
+            labelCarteTerritoire.setVisible(false);
+        }
+
+        if (model.getPhaseTour() == "Phase de déploiement des troupes") {
+            labelCarteTerritoire.setVisible(true);
+        }
 
         labelPhaseJeu.setText(model.getPhaseTour());
-        labelSoldatsDispo.setText("Nombre de soldat a déployer : "+ model.getJoueurActif().getSoldatsADeployer());
-        labelTerritoire.setText("Territoire actif : " +model.getTerritoireActif().getTerritoireName());
-        labelNbTroupeTerritoire.setText("Nombre de soldat sur le territoire : " +model.getTerritoireActif().getSoldats());
-        labelOccupantTerritoire.setText("Joueur occupant le territoire : "+model.getTerritoireActif().getJoueurOccupant());
-        String voisins = "";
-        for (Territoire territoireActuel : model.getTerritoireActif().getTerritoiresAdjacents()) {
-            voisins += territoireActuel.getTerritoireName() + ", ";
+        labelSoldatsDispo.setText("Nombre de soldat a déployer : " + model.getJoueurActif().getSoldatsADeployer());
+        if (model.getTerritoireActif().getTerritoireName() != null) {
+            labelTerritoire.setText("Territoire actif : " + model.getTerritoireActif().getTerritoireName());
         }
-        labelVoisins.setText("Territoires voisins : "+voisins);
+
+        if (model.getTerritoireActif().getSoldats() != 0) {
+            labelNbTroupeTerritoire.setText("Nombre de soldat sur le territoire : " + model.getTerritoireActif().getSoldats());
+        }
+
+
+        if (model.getTerritoireActif().getJoueurOccupant() != null) {
+            labelOccupantTerritoire.setText("Joueur occupant le territoire : " + model.getTerritoireActif().getJoueurOccupant().getNomJoueur());
+        }
+
+        String voisins = "";
+        if (model.getTerritoireActif().getTerritoiresAdjacents() != null) {
+            for (Territoire territoireActuel : model.getTerritoireActif().getTerritoiresAdjacents()) {
+                voisins += territoireActuel.getTerritoireName() + ", ";
+            }
+            labelVoisins.setText("<html>Territoires voisins : <br>"+voisins.replace(", ", "<br>") + "</html>" );
+        }
+
+        labelJoueur.setText("Joueurs :" + '\n');
+        labelCarteTerritoire.setText("Voici vos cartes territoires posséedés" + '\n');
+        Joueur joueurActif = model.getJoueurActif();
+
+        for (Joueur joueurActuel : model.getJoueursPartie()) {
+            if (joueurActuel == joueurActif) {
+                labelJoueur.setText(labelJoueur.getText() + "\u2794" + joueurActuel.getNomJoueur() + "\n");
+                for (int j = 0; j < model.getJoueurActif().getListeCarteTerritoire().size(); j++) {
+                    labelCarteTerritoire.setText(labelCarteTerritoire.getText() + model.getJoueurActif().getListeCarteTerritoire().get(j).getTypeCarte() + '\n');
+                }
+            } else {
+                labelJoueur.setText(labelJoueur.getText() + joueurActuel.getNomJoueur() + "\n");
+            }
+        }
         repaint();
     }
 }
