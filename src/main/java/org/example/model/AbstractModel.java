@@ -21,6 +21,9 @@ public abstract class AbstractModel implements Observable {
     private List<Continent> continentsGame;
     private List<CarteTerritoire> cartesTerritoires;
     private List<Joueur> joueurs;
+    private Competition competition;
+    private Tournoi tournoi;
+    private Manche manche;
 
     private List<Joueur> joueursPartie;
     private Tour tours;
@@ -39,6 +42,30 @@ public abstract class AbstractModel implements Observable {
         this.tours = new Tour(1);
         observateurs = new ArrayList<>();
         this.joueursPartie = new ArrayList<>();
+    }
+
+    public Competition getCompetition() {
+        return competition;
+    }
+
+    public void setCompetition(Competition competition) {
+        this.competition = competition;
+    }
+
+    public Tournoi getTournoi() {
+        return tournoi;
+    }
+
+    public void setTournoi(Tournoi tournoi) {
+        this.tournoi = tournoi;
+    }
+
+    public Manche getManche() {
+        return manche;
+    }
+
+    public void setManche(Manche manche) {
+        this.manche = manche;
     }
 
     public String getPhaseTour() {

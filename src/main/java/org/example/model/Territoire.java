@@ -104,4 +104,8 @@ public class Territoire {
 	public void setActif(boolean actif) {
 		this.actif = actif;
 	}
+
+	public void setTerritoireContinentStr(String territoireContinentStr) {
+		this.territoireContinentStr = territoireContinentStr;
+	}
 }

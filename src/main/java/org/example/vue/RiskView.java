@@ -1,10 +1,7 @@
 package org.example.vue;
 
 import org.example.controller.AbstractControler;
-import org.example.model.AbstractModel;
-import org.example.model.Equipe;
-import org.example.model.Joueur;
-import org.example.model.Territoire;
+import org.example.model.*;
 import org.example.observer.Observateur;
 
 import javax.swing.*;
@@ -49,7 +46,30 @@ public class RiskView extends JFrame implements Observateur {
 
     // initialise l'affichage
     private void initComponents() {
+        String[] listeCompet = {"Compet1", "Compet2", "Compet3",};
+        JComboBox<String> comboBox1 = new JComboBox<>(listeCompet);
+        String[] listeTournoi = {"Tournoi1", "Tournoi2", "Tournoi3"};
+        JComboBox<String> comboBox2 = new JComboBox<>(listeTournoi);
 
+        // result territoire attaque
+        String territoireCibleNom = (String) JOptionPane.showInputDialog(
+                Frame.getFrames()[0],
+                "Sélectionnez la compétition :",
+                "Choix du tournoi",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                listeCompet,
+                0
+        );
+        String territoireCibleNo = (String) JOptionPane.showInputDialog(
+                Frame.getFrames()[0],
+                "Sélectionnez la compétition :",
+                "Choix du tournoi",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                listeTournoi,
+                0
+        );
         panelJeu = new PanelJeu(this);
 
         // label tour
@@ -83,10 +103,11 @@ public class RiskView extends JFrame implements Observateur {
                     case "Phase initiale" :
                         model.setPhaseTour("Phase de déploiement des troupes");
                         labelPhaseJeu.setText(model.getPhaseTour());
+                        labelCarteTerritoire.setVisible(true);
                         update();
                         break;
                     case "Phase de bataille" :
-                        labelCarteTerritoire.setVisible(false);
+                        labelCarteTerritoire.setVisible(true);
                         model.setPhaseTour("Phase de renforcement");
                         labelPhaseJeu.setText(model.getPhaseTour());
                         update();
@@ -108,7 +129,7 @@ public class RiskView extends JFrame implements Observateur {
                         model.setPhaseTour("Phase de déploiement des troupes");
                         labelPhaseJeu.setText(model.getPhaseTour());
 
-                        if (model.getJoueursPartie().indexOf(model.getJoueurActif())+1 == model.getJoueursPartie().size() ) {
+                        if (model.getJoueursPartie().indexOf(model.getJoueurActif())+1 == model.getJoueursPartie().size()) {
                             model.getJoueurActif().setActif(false);
                             model.getJoueursPartie().get(0).setActif(true);
                         }
@@ -141,31 +162,15 @@ public class RiskView extends JFrame implements Observateur {
         //bouton fin partie demo
         JButton boutonFin = new JButton("(Demo) Fin partie");
         boutonFin.addActionListener(new ActionListener() {
-                                     public void actionPerformed(ActionEvent e) {
-                                         int i = 0;
-                                        for (Joueur joueurActuel : model.getJoueursPartie()) {
-                                            i += 1;
-                                            if (i == 5) {
-                                                for (Territoire territoireActuel : model.getTerritoiresGame()) {
-                                                    if (!joueurActuel.getTerritoiresOccupes().contains(territoireActuel)) {
-                                                            joueurActuel.addTerritoire(territoireActuel);
-                                                    }
-                                                }
-                                            }
-                                            else {
-                                                for (Territoire territoireActuel : model.getTerritoiresGame()) {
-                                                    if (joueurActuel.getTerritoiresOccupes().contains(territoireActuel)) {
-                                                        joueurActuel.removeTerritoire(territoireActuel);
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        for (Territoire territoireActuel : model.getTerritoiresGame()) {
-                                                territoireActuel.setJoueurOccupant(model.getJoueursPartie().get(4));
-                                        }
-                                     }
-                                 });
+         public void actionPerformed(ActionEvent e) {
+             model.getTerritoiresGame().forEach(territoire -> {
+                 if (territoire.getJoueurOccupant() == null || !territoire.getJoueurOccupant().equals(model.getJoueurActif())) {
+                     territoire.setJoueurOccupant(model.getJoueurActif());
+                 }
+             });
+             JOptionPane.showMessageDialog(null, model.getJoueurActif().getNomJoueur() + " a gagné la partie!", "vainqueur", JOptionPane.INFORMATION_MESSAGE);
+         }
+     });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -199,6 +204,9 @@ public class RiskView extends JFrame implements Observateur {
                                 .addComponent(bouton)
                                 .addComponent(boutonCarte)
                                 .addComponent(boutonFin))
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(280)
+                                .addComponent(labelCarteTerritoire, GroupLayout.PREFERRED_SIZE, 150 , GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(280)
                                 .addComponent(labelCarteTerritoire, GroupLayout.PREFERRED_SIZE, 150 , GroupLayout.PREFERRED_SIZE))

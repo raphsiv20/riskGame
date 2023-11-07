@@ -1,39 +1,59 @@
 package org.example.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 public class Manche {
-    private int numManche;
-    private HashMap<Manche,Tour> listeTour;
-    public Manche(int numManche) {
-        this.numManche = numManche;
-        this.listeTour = new HashMap<Manche,Tour>();
+    private int idManche;
+    private String nomPartie;
+    private int ordrePartie;
+    private Statut statutManche;
+    private Tournoi tounoiManche;
+
+    public Manche(int idManche, String nomPartie, int ordrePartie, Statut statutManche, Tournoi tounoiManche) {
+        this.idManche = idManche;
+        this.nomPartie = nomPartie;
+        this.ordrePartie = ordrePartie;
+        this.statutManche = statutManche;
+        this.tounoiManche = tounoiManche;
     }
 
-    public void addMancheTour(Manche manche , Tour tour){
-        listeTour.put(manche,tour);
+    public String getNomPartie() {
+        return nomPartie;
     }
 
-    public void changementManche (){
-        if (listeTour.containsValue(4) == true){
-            for (Manche entry: listeTour.keySet()
-                 ) {
-                entry.setterNumManche(entry.getnumManche() + 1);
-                listeTour.get(entry).setNumTour(1);
-            }
-        }
+    public void setNomPartie(String nomPartie) {
+        this.nomPartie = nomPartie;
     }
 
-    public void afficherManche(){
-
+    public int getOrdrePartie() {
+        return ordrePartie;
     }
 
-    public void setterNumManche(int numManche) {
-        this.numManche = numManche;
+    public void setOrdrePartie(int ordrePartie) {
+        this.ordrePartie = ordrePartie;
     }
 
-    public int getnumManche() {
-        return numManche;
+    public Statut getStatutManche() {
+        return statutManche;
+    }
+
+    public void setStatutManche(Statut statutManche) {
+        this.statutManche = statutManche;
+    }
+
+    public Tournoi getTounoiManche() {
+        return tounoiManche;
+    }
+
+    public void setTounoiManche(Tournoi tounoiManche) {
+        this.tounoiManche = tounoiManche;
+    }
+
+    public int getIdManche() {
+        return idManche;
+    }
+
+    public void setIdManche(int idManche) {
+        this.idManche = idManche;
     }
 }
