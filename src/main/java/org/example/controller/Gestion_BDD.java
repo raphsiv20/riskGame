@@ -5,7 +5,27 @@ public class Gestion_BDD {
     public Gestion_BDD(){
 
     }
-    public static void insertNombreTerritoire(int idJoueur) {
+    public void insertJoueurPartie(String joueur) {
+        try {
+            System.out.println(joueur);
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd", "root", "projet");
+
+            // Use a prepared statement to avoid SQL injection
+            String sql = "INSERT INTO joueurs(idEquipe, nom) VALUES (1, ?)";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, joueur); // Set the value for the placeholder
+
+            pstmt.executeUpdate();
+
+            pstmt.close();
+            con.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+/*    public static void insertNombreTerritoire(int idJoueur) {
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_risk","root","");
@@ -51,7 +71,7 @@ public class Gestion_BDD {
             con.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();}
-    }
+    }*/
 
     public static void main(String[] args) {
         //insertNombreTerritoire(1);

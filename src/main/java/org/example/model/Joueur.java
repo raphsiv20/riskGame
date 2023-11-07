@@ -1,8 +1,5 @@
 package org.example.model;
 import java.util.ArrayList;
-
-import static org.example.controller.Gestion_BDD.insertNombreTerritoire;
-
 import java.util.HashMap;
 import java.util.List;
 
