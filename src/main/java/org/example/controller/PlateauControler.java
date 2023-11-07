@@ -262,9 +262,6 @@ public class PlateauControler extends AbstractControler {
                         territoireCible.setSoldats(nbSoldatDeplacer);
                     } else {
                         territoireCible.setSoldats(territoireCible.getSoldats() - nbArmiesLoss[1]);
-//                        territoireCible.setSoldats(territoireCible.getSoldats() - 1);
-
-//                        int nb = territoireClique.getSoldats() - battleResult[0];
 
                         int nb = territoireClique.getSoldats() -  nbArmiesLoss[0];
                         if (nb <= 0) nb = 1;
@@ -302,16 +299,6 @@ public class PlateauControler extends AbstractControler {
 
     private void renforcement(Territoire territoireSource) {
 
-        /*//Boite de dialogue pour le nombre de joueur à déplacer
-        NumberFormat formatBataille = NumberFormat.getInstance();
-        NumberFormatter formatter = new NumberFormatter(formatBataille);
-        formatter.setValueClass(Integer.class);
-        formatter.setMinimum(0);
-        formatter.setMaximum(Integer.MAX_VALUE); // troupe dispo joueur
-        formatter.setAllowsInvalid(false);*/
-
-
-
         //boite de dialogue deploiement troupe
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, territoireSource.getSoldats() - 1, 1);
         JSpinner spinner = new JSpinner(spinnerModel);
@@ -329,7 +316,6 @@ public class PlateauControler extends AbstractControler {
 
         if (Troupes == 0) {
             int nbTroupes = (int) spinnerModel.getValue();
-            //System.out.println("C ICIIIIIIIIIII  troupe" + nbTroupes);
 
 
             ArrayList<String> territoiresJoueur = new ArrayList<String>();
@@ -338,10 +324,6 @@ public class PlateauControler extends AbstractControler {
             }
 
             territoiresJoueur.remove(territoireSource.getTerritoireName());
-
-           /* System.out.println(model.getJoueurActif().getTerritoiresOccupes());
-            System.out.println("Eh oh c'est la gros C'EST LA LA EH OH");
-            System.out.println(territoiresJoueur);*/
 
             Object[] territoiresArray = territoiresJoueur.toArray();
             // Afficher la boîte de dialogue avec la liste déroulante
@@ -355,17 +337,7 @@ public class PlateauControler extends AbstractControler {
                     0
             );
 
-           /* if (territoireCibleNom != null) {
-                // Le code ici sera exécuté si l'utilisateur a sélectionné une option
-                System.out.println("Territoire cible sélectionné : " + territoireCibleNom);
-            } else {
-                System.out.println("MARCHEPAS");
 
-            }*/
-
-        /*// Récupérer le territoire cible en fonction du nom sélectionné
-        Territoire territoireCible = territoiresAdjacentsEligibles.stream().filter(territoire -> territoire.getNom().equals(territoireCibleNom)).findFirst().orElse(null);
-*/
             List<Territoire> territoiresAdjacents = territoireSource.getTerritoiresAdjacents();
             List<Territoire> territoiresAdjacentsInter = territoireSource.getTerritoiresAdjacents();
             Territoire territoireCible = model.getTerritoireByName(territoireCibleNom);
