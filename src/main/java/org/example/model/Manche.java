@@ -3,12 +3,14 @@ package org.example.model;
 import java.util.List;
 
 public class Manche {
+    private int idManche;
     private String nomPartie;
     private int ordrePartie;
     private Statut statutManche;
     private Tournoi tounoiManche;
 
-    public Manche(String nomPartie, int ordrePartie, Statut statutManche, Tournoi tounoiManche) {
+    public Manche(int idManche, String nomPartie, int ordrePartie, Statut statutManche, Tournoi tounoiManche) {
+        this.idManche = idManche;
         this.nomPartie = nomPartie;
         this.ordrePartie = ordrePartie;
         this.statutManche = statutManche;
@@ -45,5 +47,13 @@ public class Manche {
 
     public void setTounoiManche(Tournoi tounoiManche) {
         this.tounoiManche = tounoiManche;
+    }
+
+    public int getIdManche() {
+        return idManche;
+    }
+
+    public void setIdManche(int idManche) {
+        this.idManche = idManche;
     }
 }
