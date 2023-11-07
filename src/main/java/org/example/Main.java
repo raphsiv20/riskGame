@@ -14,8 +14,7 @@ public class Main {
     public static void main(String[] args) {
         AbstractModel model = new Plateau(10, 7);
         AbstractControler controler = new PlateauControler(model);
-        Gestion_BDD gestionBdd = new Gestion_BDD();
-        RiskView v = new RiskView(model,controler, gestionBdd);
+        RiskView v = new RiskView(model,controler);
         model.addObservateur(v);
     }
 }

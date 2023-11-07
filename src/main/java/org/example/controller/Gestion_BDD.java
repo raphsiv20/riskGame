@@ -5,16 +5,18 @@ public class Gestion_BDD {
     public Gestion_BDD(){
 
     }
-    public void insertJoueurPartie(String joueur) {
+    public void insertJoueurPartie(Integer joueur) {
         try {
             System.out.println(joueur);
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd", "root", "projet");
 
             // Use a prepared statement to avoid SQL injection
-            String sql = "INSERT INTO joueurs(idEquipe, nom) VALUES (1, ?)";
+            String sql = "INSERT INTO bouclierpartie VALUES (?,?, ?)";
             PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, joueur); // Set the value for the placeholder
+            pstmt.setInt(1, 2);
+            pstmt.setInt(2, 1);
+            pstmt.setInt(3, 1);
 
             pstmt.executeUpdate();
 
@@ -24,6 +26,28 @@ public class Gestion_BDD {
             e.printStackTrace();
         }
     }
+
+    public void selectCompet() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd", "root", "projet");
+
+            // Use a prepared statement to avoid SQL injection
+            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM competitions where competitions.idcompetitions = 1");
+            while(rs.next()){
+                String monJouetId= rs.getString("nom");
+                System.out.println(monJouetId);
+            }
+
+            con.close();
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 /*    public static void insertNombreTerritoire(int idJoueur) {
         try{

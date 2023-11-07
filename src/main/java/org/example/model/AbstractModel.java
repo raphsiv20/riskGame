@@ -1,5 +1,6 @@
 package org.example.model;
 
+import org.example.controller.Gestion_BDD;
 import org.example.observer.Observable;
 import org.example.observer.Observateur;
 
@@ -24,6 +25,7 @@ public abstract class AbstractModel implements Observable {
     private Competition competition;
     private Tournoi tournoi;
     private Manche manche;
+    private Gestion_BDD bdd;
 
     private List<Joueur> joueursPartie;
     private Tour tours;
@@ -42,6 +44,15 @@ public abstract class AbstractModel implements Observable {
         this.tours = new Tour(1);
         observateurs = new ArrayList<>();
         this.joueursPartie = new ArrayList<>();
+        this.bdd = new Gestion_BDD();
+    }
+
+    public Gestion_BDD getBdd() {
+        return bdd;
+    }
+
+    public void setBdd(Gestion_BDD bdd) {
+        this.bdd = bdd;
     }
 
     public Competition getCompetition() {

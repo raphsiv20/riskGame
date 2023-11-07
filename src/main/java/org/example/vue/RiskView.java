@@ -46,6 +46,7 @@ public class RiskView extends JFrame implements Observateur {
 
     // initialise l'affichage
     private void initComponents() {
+        model.getBdd().selectCompet();
         String[] listeCompet = {"Compet1", "Compet2", "Compet3",};
         JComboBox<String> comboBox1 = new JComboBox<>(listeCompet);
         String[] listeTournoi = {"Tournoi1", "Tournoi2", "Tournoi3"};
