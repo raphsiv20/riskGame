@@ -401,7 +401,6 @@ public class PlateauControler extends AbstractControler {
         }
     }
 
-
     public ResultatBataille faireBataille(int attackerArmies, int attackerDice, int defenderArmies, int defenderDice) {
         try {
             Des desAtta = new Des(attackerDice);
