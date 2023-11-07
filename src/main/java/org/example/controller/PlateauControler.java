@@ -184,8 +184,11 @@ public class PlateauControler extends AbstractControler {
             if (territoireCible != null) {
 
                 System.out.println("Vous avez choisr attaquer : " + territoireCible.getTerritoireName());
+
+
                 int nbSoldatsAtta = territoireClique.getSoldats();
                 int nbSoldatsDefen = territoireCible.getSoldats();
+
 
                 if (nbSoldatsAtta > 1) {
                     // choisir nb des attaqueur
@@ -204,6 +207,11 @@ public class PlateauControler extends AbstractControler {
                     );
 
                     int nbAttackerDice = (int) attackerSpinnerModel.getValue();
+
+                    // update Belliqueux
+                    model.getJoueurActif().addPtsBelliqueux(nbAttackerDice);
+                    System.out.println("joueur : " + model.getJoueurActif().getNomJoueur() + " point : " + model.getJoueurActif().getPtsBelliqueux());
+
 
                     // choisir nb des defendeur
                     SpinnerNumberModel defenderSpinnerModel = new SpinnerNumberModel(1, 1, Math.min(2, nbSoldatsDefen), 1);
