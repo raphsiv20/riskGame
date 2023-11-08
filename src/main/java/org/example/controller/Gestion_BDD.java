@@ -12,7 +12,6 @@ public class Gestion_BDD {
 
     private Connection connection;
     public Gestion_BDD(){
-
     }
     public void openConnection(){
         try {
@@ -22,8 +21,13 @@ public class Gestion_BDD {
             e.printStackTrace();
         }
     }
-    public void endConnection() throws SQLException {
-        connection.close();
+    public void endConnection()  {
+        try {
+            connection.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 //    public void insertJoueurPartie(Integer joueur) {
 //        try {
@@ -765,23 +769,73 @@ public class Gestion_BDD {
         }
     }
 
-    public void setJoueurTournoi(int idTournoi, List<Integer> playersId) {
+    public void setJoueurTournoi(int idTournoi, int playerId) {
         openConnection();
-        for (int playerId : playersId) {
-            try {
-                String sqlQuery = ("INSERT INTO participer (idtournois, idjoueurs) " +
-                        "VALUES (?, ?) ");
 
-                PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-                preparedStatement.setInt(1, idTournoi);
-                preparedStatement.setInt(2, playerId);
-                preparedStatement.executeUpdate();
-                preparedStatement.close();
-                endConnection();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        try {
+            String sqlQuery = ("INSERT INTO participer (idtournois, idjoueurs) " +
+                    "VALUES (?, ?) ");
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            preparedStatement.setInt(1, idTournoi);
+            preparedStatement.setInt(2, playerId);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+        endConnection();
+    }
+    public List<Integer> getAllCompetitions() {
+        List<Integer> competitions = new ArrayList<Integer>();
+        try {
+            openConnection();
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM competitions");
+            while(rs.next()){
+                competitions.add(rs.getInt("idcompetitions"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        endConnection();
+        return competitions;
+    }
+
+    public List<Integer> getAllTournaments() {
+        List<Integer> tournaments = new ArrayList<Integer>();
+        try {
+            openConnection();
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tournois");
+            while(rs.next()){
+                tournaments.add(rs.getInt("idtournois"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        endConnection();
+        return tournaments;
+    }
+
+    public List<Integer> getAllGames() {
+        List<Integer> games = new ArrayList<Integer>();
+        try {
+            openConnection();
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM parties");
+            while(rs.next()){
+                games.add(rs.getInt("idparties"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        endConnection();
+        return games;
     }
 
 
@@ -791,8 +845,20 @@ public class Gestion_BDD {
     public static void main(String[] args) {
         //insertNombreTerritoire(1);
         Gestion_BDD bdd = new Gestion_BDD();
-//        bdd.setTeamCompetition(1,1,2023);
-        bdd.setPlayerCompetition(1,2,2023);
+        //        bdd.setTeamCompetition(1,1,2023);
+//        bdd.setPlayerCompetition(1,3,2023);
+        Equipe equipe1 = new Equipe("DRX",6);
+        Equipe equipe2 = new Equipe("LDLC",1);
+        Joueur joueur1 = new Joueur("Thomas","Dupont",equipe2,1,20);
+        Joueur joueur2 = new Joueur("Martin","Pierre",equipe2,2,20);
+        Joueur joueur3 = new Joueur("Park","Hye-jin",equipe1,23,20);
+        Joueur joueur4 = new Joueur("Choi","Min-ji",equipe1,24,20);
+        ArrayList<Integer> listjoueur = new ArrayList<Integer>();
+        listjoueur.add(joueur1.getIdJoueur());
+        listjoueur.add(joueur2.getIdJoueur());
+        listjoueur.add(joueur3.getIdJoueur());
+        listjoueur.add(joueur4.getIdJoueur());
+        System.out.println(bdd.getAllCompetitions());
 
     }
 }
