@@ -381,9 +381,11 @@ public class Plateau extends AbstractModel {
 
     @Override
     public void addEquipe(String[] equipes) {
-        this.setEquipes(Arrays.stream(equipes)
-                .map(Equipe::new)
-                .toList());
+        String[] equipeArray;
+        for (int i = 0; i < equipes.length; i++) {
+            equipeArray = equipes[i].split(",");
+            this.getEquipes().add(new Equipe(equipeArray[1], Integer.parseInt(equipeArray[0])));
+        }
     }
     @Override
     public void addContinent(String[] continents) {
