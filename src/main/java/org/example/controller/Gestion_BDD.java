@@ -4,60 +4,63 @@ import org.example.model.Joueur;
 import org.example.model.Manche;
 
 import java.sql.*;
+import java.util.Arrays;
 import java.util.List;
 
 public class Gestion_BDD {
     public Gestion_BDD(){
 
     }
-//    public static void insertNombreTerritoire(int idJoueur) {
-//        try{
-//            Class.forName("com.mysql.cj.jdbc.Driver");
-//            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_risk","root","");
-//            PreparedStatement pstmt = con.prepareStatement("UPDATE joueur SET NombreTerritoireConquis = NombreTerritoireConquis + 1 WHERE IdJoueur =" + idJoueur);
-//            pstmt.executeUpdate();
-//            pstmt.close();
-//            con.close();
-//        } catch (ClassNotFoundException | SQLException e) {
-//            e.printStackTrace();}
-//    }
-//
-//    public static void insertNombreAttaque(int idJoueur){
-//        try{
-//            Class.forName("com.mysql.cj.jdbc.Driver");
-//            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_risk","root","");
-//            PreparedStatement pstmt = con.prepareStatement("UPDATE joueur SET NombreAttaque = NombreAttaque + 1 WHERE IdJoueur =" + idJoueur);
-//            pstmt.executeUpdate();
-//            pstmt.close();
-//            con.close();
-//        } catch (ClassNotFoundException | SQLException e) {
-//            e.printStackTrace();}
-//    }
-//
-//    public static void insertNombreDefense(int idJoueur){
-//        try{
-//            Class.forName("com.mysql.cj.jdbc.Driver");
-//            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_risk","root","");
-//            PreparedStatement pstmt = con.prepareStatement("UPDATE joueur SET NombreDefense = NombreDefense + 1 WHERE IdJoueur =" + idJoueur);
-//            pstmt.executeUpdate();
-//            pstmt.close();
-//            con.close();
-//        } catch (ClassNotFoundException | SQLException e) {
-//            e.printStackTrace();}
-//    }
-//
-//    public static void insertNombreUn(int idJoueur){
-//        try{
-//            Class.forName("com.mysql.cj.jdbc.Driver");
-//            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_risk","root","");
-//            PreparedStatement pstmt = con.prepareStatement("UPDATE joueur SET Nombre1 = Nombre1 + 1 WHERE IdJoueur =" + idJoueur);
-//            pstmt.executeUpdate();
-//            pstmt.close();
-//            con.close();
-//        } catch (ClassNotFoundException | SQLException e) {
-//            e.printStackTrace();}
-//    }
+    public static void insertNombreTerritoire(int idJoueur) {
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_risk","root","");
+            PreparedStatement pstmt = con.prepareStatement("UPDATE joueur SET NombreTerritoireConquis = NombreTerritoireConquis + 1 WHERE IdJoueur =" + idJoueur);
+            pstmt.executeUpdate();
+            pstmt.close();
+            con.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();}
+    }
 
+    public static void insertNombreAttaque(int idJoueur){
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_risk","root","");
+            PreparedStatement pstmt = con.prepareStatement("UPDATE joueur SET NombreAttaque = NombreAttaque + 1 WHERE IdJoueur =" + idJoueur);
+            pstmt.executeUpdate();
+            pstmt.close();
+            con.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();}
+    }
+
+    public static void insertNombreDefense(int idJoueur){
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_risk","root","");
+            PreparedStatement pstmt = con.prepareStatement("UPDATE joueur SET NombreDefense = NombreDefense + 1 WHERE IdJoueur =" + idJoueur);
+            pstmt.executeUpdate();
+            pstmt.close();
+            con.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();}
+    }
+
+    public static void insertNombreUn(int idJoueur){
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_risk","root","");
+            PreparedStatement pstmt = con.prepareStatement("UPDATE joueur SET Nombre1 = Nombre1 + 1 WHERE IdJoueur =" + idJoueur);
+            pstmt.executeUpdate();
+            pstmt.close();
+            con.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();}
+    }
+
+
+    // insert 4 performance vers BD a la fin de la partie   (listJoueursPartie, Partie)
     public static void insertClassementPerformancesPartie(List<Joueur> joueursPartie, Manche manche) {
         try {
             Connection con = Connect_MySQL.getConnection();
@@ -103,9 +106,41 @@ public class Gestion_BDD {
     }
 
 
-//    public static void main(String[] args) {
-//        //insertNombreTerritoire(1);
-//        System.out.println("update ok");
-//    }
+
+    // get performance  (idPartie, classeXXX)  ====>>>  idJoueur, performancePoint
+    public static int[] getPerformanceJoueur(int idPartie, String typePerformance) {
+        int[] result = null;
+        try {
+            Connection con = Connect_MySQL.getConnection();
+            String sql_typePerformance = "SELECT idJoueurs, point\n" +
+                    "FROM " + typePerformance + "\n" +
+                    "WHERE idPartie = ? " +
+                    "AND point = (SELECT MAX(point) FROM " + typePerformance + " WHERE idPartie = ?)";
+            PreparedStatement pstmt_typePerformance = con.prepareStatement(sql_typePerformance);
+            pstmt_typePerformance.setInt(1, idPartie);
+            pstmt_typePerformance.setInt(2, idPartie);
+            ResultSet rs = pstmt_typePerformance.executeQuery();
+
+            if (rs.next()) {
+                // Extract the results and store them in the 'result' array
+                int idJoueur = rs.getInt("idJoueurs");
+                int point = rs.getInt("point");
+                result = new int[] { idJoueur, point };
+            }
+
+            rs.close();
+            pstmt_typePerformance.close();
+//            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+
+    public static void main(String[] args) {
+        System.out.println(Arrays.toString(getPerformanceJoueur(1,"classeBelliqueux")));
+    }
 }
 

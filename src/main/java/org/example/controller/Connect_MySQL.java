@@ -12,16 +12,16 @@ public class Connect_MySQL {
     private static Connection connection=null;
 
     static{
-        //1、加载驱动程序（反射的方法）
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        //2、连接数据库
+
         try {
             connection=(Connection) DriverManager.
-                    getConnection(URL, USER,PASSWORD);//地址，用户名，密码
+                    getConnection(URL, USER,PASSWORD);
         } catch (SQLException e) {
             e.printStackTrace();
         }
