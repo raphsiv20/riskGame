@@ -185,6 +185,8 @@ public class RiskView extends JFrame implements Observateur {
             // update performance des joueurs de partie veres DB
 //             Gestion_BDD.insertClassementPerformancesPartie(model.getJoueursPartie(), model.getManche());
 
+            // afficher performance partie
+
             int[] malChanceux = Gestion_BDD.getPerformanceJoueur(1, "classeMalchanceux");
             int[] Belliqueux = Gestion_BDD.getPerformanceJoueur(1, "classeBelliqueux");
             int[] Bouclier = Gestion_BDD.getPerformanceJoueur(1, "classeBouclier");
@@ -196,7 +198,7 @@ public class RiskView extends JFrame implements Observateur {
             result.put("Bouclier", new String[]{model.getAJoueurById(Bouclier[0]).getNomJoueur(), String.valueOf(Bouclier[1])});
             result.put("Conquerant", new String[]{model.getAJoueurById(Conquerant[0]).getNomJoueur(), String.valueOf(Conquerant[1])});
 
-             StringBuilder message = new StringBuilder("Performance Table:\n");
+             StringBuilder message = new StringBuilder("Performance partie:\n");
              for (Map.Entry<String, String[]> entry : result.entrySet()) {
                  message.append(entry.getKey()).append(": ").append(entry.getValue()[0]).append(",   Points: ").append(entry.getValue()[1]).append("\n");
              }
