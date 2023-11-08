@@ -1,6 +1,7 @@
 package org.example.vue;
 
 import org.example.controller.AbstractControler;
+import org.example.controller.Gestion_BDD;
 import org.example.model.*;
 import org.example.observer.Observateur;
 
@@ -169,6 +170,17 @@ public class RiskView extends JFrame implements Observateur {
                  }
              });
              JOptionPane.showMessageDialog(null, model.getJoueurActif().getNomJoueur() + " a gagné la partie!", "vainqueur", JOptionPane.INFORMATION_MESSAGE);
+            for (Joueur j : model.getJoueursPartie()) {
+                System.out.println(" joueur : " + j.getNomJoueur());
+                System.out.println(" point Malchanceux : " + j.getPtsMalchanceux() + "\n" +
+                        "point belliqueux : " + j.getPtsBelliqueux() + "\n" +
+                        "point bouclier : " + j.getPtsDefenseur() + "\n" +
+                        "point conquérant " + j.getPtsConquerant()
+                );
+            }
+
+            // update performance des joueurs de partie veres DB
+             Gestion_BDD.insertClassementPerformancesPartie(model.getJoueursPartie(), model.getManche());
          }
      });
 

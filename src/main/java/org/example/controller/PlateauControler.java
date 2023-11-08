@@ -233,8 +233,18 @@ public class PlateauControler extends AbstractControler {
                     System.out.println("nb des : " + nbAttackerDice + nbDefenderDice);
 
                     ResultatBataille resultatAttaque = faireBataille(nbSoldatsAtta, nbAttackerDice, nbSoldatsDefen, nbDefenderDice);
+
+                    // update malchanceux
+                    model.getJoueurActif().addPtsMalchanceux(resultatAttaque.getNbUnAtta());        // nb de un par attaquer
+                    territoireCible.getJoueurOccupant().addPtsMalchanceux(resultatAttaque.getNbUnDefen());      // nb de un par defenceur
+
+//                    System.out.println("nb de un : " + model.getJoueurActif().getPtsMalchanceux() + " defencer " + territoireCible.getJoueurOccupant().getPtsMalchanceux());
+
                     int[] nbArmiesLoss = resultatAttaque.getArmiesLoss();
                     if (resultatAttaque.isAttaqueReusi()) {
+                        // update conquérant
+                        model.getJoueurActif().addPtsConquerant(1);
+
                         territoireCible.setJoueurOccupant(model.getJoueurActif());
 
                         //Get carte territoire
@@ -269,8 +279,12 @@ public class PlateauControler extends AbstractControler {
                         territoireClique.setSoldats(nbSoldatReste - nbSoldatDeplacer);
                         territoireCible.setSoldats(nbSoldatDeplacer);
                     } else {
-                        territoireCible.setSoldats(territoireCible.getSoldats() - nbArmiesLoss[1]);
 
+                        // update Defenseur point
+                        territoireCible.getJoueurOccupant().addPtsDefenseur(nbDefenderDice);
+//                        System.out.println(territoireCible.getJoueurOccupant().getNomJoueur() + " defence success, point plus + " + territoireCible.getJoueurOccupant().getPtsDefenseur());
+
+                        territoireCible.setSoldats(territoireCible.getSoldats() - nbArmiesLoss[1]);
                         int nb = territoireClique.getSoldats() -  nbArmiesLoss[0];
                         if (nb <= 0) nb = 1;
                         territoireClique.setSoldats(nb);
@@ -404,12 +418,18 @@ public class PlateauControler extends AbstractControler {
 
     public ResultatBataille faireBataille(int attackerArmies, int attackerDice, int defenderArmies, int defenderDice) {
         try {
+            // Des de attaqueur
             Des desAtta = new Des(attackerDice);
             desAtta.rollDice();
             int[] resultatDesAtta = desAtta.getResultatDes();
+            int nbUnAtta = desAtta.getNbUN();
+
+            //  Des de defenceur
             Des desDefen = new Des(defenderDice);
             desDefen.rollDice();
             int[] resultatDesDefen = desDefen.getResultatDes();
+            int nbUnDefen = desDefen.getNbUN();
+
 
             Bataille bataille = new Bataille(attackerDice, attackerArmies, resultatDesAtta,defenderDice, defenderArmies, resultatDesDefen);
             bataille.faireBataille();
@@ -439,7 +459,7 @@ public class PlateauControler extends AbstractControler {
                     "Resultat bataille",
                     JOptionPane.PLAIN_MESSAGE
             );
-            return new ResultatBataille(attaqueReusi, battleResult);
+            return new ResultatBataille(attaqueReusi, battleResult, nbUnAtta, nbUnDefen);
         } catch (ArithmeticException e) {
             // 捕获异常后的处理
             System.out.println("Nb armies 0! Error!!!");
