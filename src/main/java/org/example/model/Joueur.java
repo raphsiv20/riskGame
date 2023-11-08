@@ -1,8 +1,6 @@
 package org.example.model;
 import java.util.ArrayList;
 
-import static org.example.controller.Gestion_BDD.insertNombreTerritoire;
-
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,6 +14,10 @@ public class Joueur {
     private int soldatsADeployer;
     private ArrayList<CarteTerritoire> listeCarteTerritoire;
     private boolean actif;
+    private int ptsConquerant;
+    private int ptsDefenseur;
+    private int ptsMalchanceux;
+    private int ptsBelliqueux;
 
     public Joueur(String nomJoueur, String prenomJoueur, Equipe equipeJoueur, int idJoueur, int soldatsADeployer) {
         this.idJoueur = idJoueur;
@@ -28,6 +30,19 @@ public class Joueur {
         this.equipeJoueur.addJoueur(this);
         this.actif = false;
         this.soldatsADeployer = soldatsADeployer;
+    }
+
+    public void addPtsConquerant(int ptsToAdd) {
+        this.ptsConquerant += ptsToAdd;
+    }
+    public void addPtsMalchanceux(int ptsToAdd) {
+        this.ptsMalchanceux += ptsToAdd;
+    }
+    public void addPtsBelliqueux(int ptsToAdd) {
+        this.ptsBelliqueux += ptsToAdd;
+    }
+    public void addPtsDefenseur(int ptsToAdd) {
+        this.ptsDefenseur += ptsToAdd;
     }
 
     public boolean getAtif() {
@@ -228,5 +243,43 @@ public class Joueur {
         }
     }
 
+    public int getPtsConquerant() {
+        return ptsConquerant;
+    }
 
+    public void setPtsConquerant(int ptsConquerant) {
+        this.ptsConquerant = ptsConquerant;
+    }
+
+    public int getPtsDefenseur() {
+        return ptsDefenseur;
+    }
+
+    public void setPtsDefenseur(int ptsDefenseur) {
+        this.ptsDefenseur = ptsDefenseur;
+    }
+
+    public int getPtsMalchanceux() {
+        return ptsMalchanceux;
+    }
+
+    public void setPtsMalchanceux(int ptsMalchanceux) {
+        this.ptsMalchanceux = ptsMalchanceux;
+    }
+
+    public int getPtsBelliqueux() {
+        return ptsBelliqueux;
+    }
+
+    public void setPtsBelliqueux(int ptsBelliqueux) {
+        this.ptsBelliqueux = ptsBelliqueux;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Joueur joueur) {
+            return this.getIdJoueur() == joueur.getIdJoueur();
+        }
+        return false;
+    }
 }
