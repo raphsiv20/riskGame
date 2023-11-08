@@ -31,6 +31,7 @@ public abstract class AbstractModel implements Observable {
     private Tour tours;
     private List<Equipe> equipes;
     private String phaseTour;
+
     public AbstractModel(int hauteur, int largeur) {
         this.hauteur = 10;
         this.largeur = 7;

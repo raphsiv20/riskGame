@@ -457,13 +457,5 @@ public class Plateau extends AbstractModel {
         return this.getTerritoires()[x][y].getTypeTerritoire();
     }
 
-    @Override
-    public CarteTerritoire obtenirCarteTerritoire() {
-        List<CarteTerritoire> carteTerritoiresRestantes =  this.getCartesTerritoires().stream()
-                .filter(carteTerritoire -> carteTerritoire.getJoueurDetenantLaCarte() != null)
-                .toList();
-        Random randomCarte = new Random();
-        return carteTerritoiresRestantes.get(randomCarte.nextInt(carteTerritoiresRestantes.size()));
-}
 
  }
