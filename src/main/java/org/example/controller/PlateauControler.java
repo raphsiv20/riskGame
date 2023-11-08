@@ -14,8 +14,6 @@ import java.util.Random;
 import org.example.model.Joueur;
 
 public class PlateauControler extends AbstractControler {
-//    private static int[] battleResult = {};
-
     private ArrayList<String> carteTerritroie = new ArrayList<>();
 
     public PlateauControler(AbstractModel model) {

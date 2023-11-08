@@ -39,7 +39,7 @@ public class RiskView extends JFrame implements Observateur {
 
     public RiskView(AbstractModel model, AbstractControler controler) {
         this.model = model;
-
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         initComponents();
         this.mouseListener = new MouseListener(controler);
         this.panelJeu.addMouseListener(this.mouseListener);

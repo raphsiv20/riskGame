@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.model.AbstractModel;
+import org.example.vue.CreerCompetitionView;
 import org.example.vue.OrganisationView;
 
 import java.awt.event.ActionEvent;
@@ -26,52 +27,32 @@ public class OrganisationController  implements ActionListener {
         String actionEvent = evt.getActionCommand();
         System.out.println(evt.getActionCommand());
 
-        if (actionEvent.equals("Créer Competition")) {
-
-
-
-            System.out.println("Loading Competition...");
-
-
+        switch (actionEvent) {
+            case "Créer Competition":
+                System.out.println("Loading Competition...");
+                CreerCompetitionView creerCompetitionView = new CreerCompetitionView();
+                creerCompetitionView.addActionListeners(new CreerCompetitionController(model, creerCompetitionView));
+                creerCompetitionView.setVisible(true);
+                break;
+            case "Créer Tournoi":
+                System.out.println("Loading Créer Tournoi...");
+                break;
+            case "Créer Partie":
+                System.out.println("Loading Partie...");
+                break;
+            case "Affecter Equipe":
+                System.out.println("Loading Equipe...");
+                break;
+            case "Affecter Joueur":
+                System.out.println("Loading Joueur...");
+                break;
+            case "Revenir":
+                System.out.println("Loading Revenir...");
+                view.setVisible(false);
+                break;
+            default:
+                System.out.println("Error: " + actionEvent + " actionEvent not found!");
         }
 
-        else if (actionEvent.equals("Créer Tournoi")) {
-
-
-
-            System.out.println("Loading Créer Tournoi...");
-
-
-        }
-
-        else if (actionEvent.equals("Créer Partie"))
-        {
-
-
-            System.out.println("Loading Partie...");
-
-
-        }
-        else if (actionEvent.equals("Affecter Equipe"))
-        {
-            System.out.println("Loading Equipe...");
-        }
-
-        else if (actionEvent.equals("Affecter Joueur"))
-        {
-            System.out.println("Loading Joueur...");
-        }
-
-
-        else if (actionEvent.equals("Revenir"))
-        {
-            System.out.println("Loading Revenir...");
-            view.setVisible(false);
-        }
-
-        else
-        {
-            System.out.println("Error: " + actionEvent + " actionEvent not found!");
-        }
     }
 }
