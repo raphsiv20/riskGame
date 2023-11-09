@@ -173,6 +173,7 @@ public class RiskView extends JFrame implements Observateur {
                      territoire.setJoueurOccupant(model.getJoueurActif());
                  }
              });
+             model.setWinner(model.getJoueurActif());
              JOptionPane.showMessageDialog(null, model.getJoueurActif().getNomJoueur() + " a gagné la partie!", "vainqueur", JOptionPane.INFORMATION_MESSAGE);
             for (Joueur j : model.getJoueursPartie()) {
                 System.out.println(" joueur : " + j.getNomJoueur());
@@ -182,6 +183,7 @@ public class RiskView extends JFrame implements Observateur {
                         "point conquérant " + j.getPtsConquerant()
                 );
             }
+            model.endGame();
 
             // update performance des joueurs de partie veres DB
 //             Gestion_BDD.insertClassementPerformancesPartie(model.getJoueursPartie(), model.getManche());

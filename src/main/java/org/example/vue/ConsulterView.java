@@ -9,17 +9,15 @@ public class ConsulterView extends JFrame {
 
     private GridLayout mainLayout;
 
-    private JButton manageCompetition;
-    private JButton consultLeaderBoards;
-    private JButton play;
+    private JButton consulterCompetition;
+    private JButton consulterTournois;
+    private JButton consulterPartie;
     private JButton quit;
-    private JButton affecterJoueur;
 
-    private String manageCompetitionName = "Organiser Competition";
-    private String consultLeaderBoardsName = "Consulter classement";
-    private String playButtonName = "Jouer";
-    private String affecterJoueurName = "AffecterJoueur";
-    private String quitButtonName = "Quitter";
+    private String consulterCompetitionName = "Consulter classement competition";
+    private String consulterTournoisName = "Consulter classement tournois";
+    private String consulterPartieButtonName = "Consulter classement partie";
+    private String quitButtonName = "Back";
 
     /**
      * Constructs the main menu.
@@ -49,29 +47,25 @@ public class ConsulterView extends JFrame {
         mainPanel.setLayout(mainLayout);
 
         // Creates buttons
-        manageCompetition = new JButton("Organiser Competition");
+        consulterCompetition = new JButton("Consulter classement competition");
 
-        consultLeaderBoards = new JButton("Consulter classement");
+        consulterTournois = new JButton("Consulter classement tournois");
 
-        play = new JButton("Jouer");
+        consulterPartie = new JButton("Consulter classement partie");
 
-        quit = new JButton("Quitter");
-        affecterJoueur = new JButton("AffecterJoueur");
-
+        quit = new JButton("Back");
 
         // Sets button commands
-        manageCompetition.setActionCommand(manageCompetitionName);
-        consultLeaderBoards.setActionCommand(consultLeaderBoardsName);
-        play.setActionCommand(playButtonName);
+        consulterCompetition.setActionCommand(consulterCompetitionName);
+        consulterTournois.setActionCommand(consulterTournoisName);
+        consulterPartie.setActionCommand(consulterPartieButtonName);
         quit.setActionCommand(quitButtonName);
-        affecterJoueur.setActionCommand(affecterJoueurName);
 
         // Adds buttons to mainPanel
-        mainPanel.add(manageCompetition);
-        mainPanel.add(consultLeaderBoards);
-        mainPanel.add(play);
+        mainPanel.add(consulterCompetition);
+        mainPanel.add(consulterTournois);
+        mainPanel.add(consulterPartie);
         mainPanel.add(quit);
-        mainPanel.add(affecterJoueur);
 
         return mainPanel;
     }
@@ -79,12 +73,9 @@ public class ConsulterView extends JFrame {
     // Action listeners for riskView
     public void addActionListeners(ActionListener evt)
     {
-        manageCompetition.addActionListener(evt);
-        consultLeaderBoards.addActionListener(evt);
-        play.addActionListener(evt);
+        consulterCompetition.addActionListener(evt);
+        consulterTournois.addActionListener(evt);
+        consulterPartie.addActionListener(evt);
         quit.addActionListener(evt);
-        affecterJoueur.addActionListener(evt);
     }
-
-
 }

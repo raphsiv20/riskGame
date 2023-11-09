@@ -1,8 +1,7 @@
 package org.example.controller;
 
 import org.example.model.AbstractModel;
-import org.example.vue.ConsulterView;
-import org.example.vue.OrganisationView;
+import org.example.vue.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,44 +24,31 @@ public class ConsulterController implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
 
         String actionEvent = evt.getActionCommand();
-
-        if (actionEvent.equals("threePlayersBtn")) {
-
-
-
-            System.out.println("Loading PlayerSettingsDialog...");
-
-
-        }
-
-        else if (actionEvent.equals("fourPlayersBtn")) {
-
-
-
-            System.out.println("Loading PlayerSettingsDialog...");
-
-
-        }
-
-        else if (actionEvent.equals("AffecterJoueur"))
-        {
-
-
-            System.out.println("Loading AffecterJoueur...");
-
-
-        }
-
-
-
-        else if (actionEvent.equals("backBtn"))
-        {
-
-        }
-
-        else
-        {
-            System.out.println("Error: " + actionEvent + " actionEvent not found!");
+        switch (actionEvent) {
+            case "Consulter classement competition":
+                System.out.println("Loading classement Competition...");
+                ClassementCompetitionView classementCompetitionView = new ClassementCompetitionView();
+                classementCompetitionView.addActionListeners(new ClassementCompetitionController(model, classementCompetitionView));
+                classementCompetitionView.setVisible(true);
+                break;
+            case "Consulter classement tournois":
+                System.out.println("Loading classement tournois...");
+                ClassementTournoisView classementTournoisView = new ClassementTournoisView();
+                classementTournoisView.addActionListeners(new ClassementTournoisController(model, classementTournoisView));
+                classementTournoisView.setVisible(true);
+                break;
+            case "Consulter classement partie":
+                System.out.println("Loading classement partie...");
+                ClassementPartieView classementPartieView = new ClassementPartieView();
+                classementPartieView.addActionListeners(new ClassementPartieController(model, classementPartieView));
+                classementPartieView.setVisible(true);
+                break;
+            case "Back":
+                System.out.println("go back...");
+                view.setVisible(false);
+                break;
+            default:
+                System.out.println("Error: " + actionEvent + " actionEvent not found!");
         }
     }
 }
