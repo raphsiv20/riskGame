@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Plateau extends AbstractModel {
 
@@ -89,6 +86,21 @@ public class Plateau extends AbstractModel {
         this.setTerritoire(9, 6, new Territoire(TypeTerritoire.VIDE));
 
         this.getJoueursPartie().get(0).setActif(true);
+    }
+
+    @Override
+    public LinkedHashMap<Joueur, Integer> endGame() {
+        LinkedHashMap<Joueur, Integer> classement = new LinkedHashMap<>();
+        classement.put(this.getWinner(),1);
+        List<Joueur> remainingPlayers = this.getJoueursPartie();
+        remainingPlayers.remove(this.getWinner());
+        Collections.shuffle(remainingPlayers);
+        int classe = 2;
+        for (Joueur j : remainingPlayers) {
+            classement.put(j,classe);
+            classe += 1;
+        }
+        return classement;
     }
 
     /*------------*/

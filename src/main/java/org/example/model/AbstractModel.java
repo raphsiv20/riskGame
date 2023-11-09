@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public abstract class AbstractModel implements Observable {
@@ -24,6 +25,7 @@ public abstract class AbstractModel implements Observable {
     private Competition competition;
     private Tournoi tournoi;
     private Manche manche;
+    private Joueur winner;
 
     private List<Joueur> joueursPartie;
     private Tour tours;
@@ -42,6 +44,16 @@ public abstract class AbstractModel implements Observable {
         this.tours = new Tour(1);
         observateurs = new ArrayList<>();
         this.joueursPartie = new ArrayList<>();
+    }
+
+    public abstract LinkedHashMap<Joueur, Integer> endGame();
+
+    public Joueur getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Joueur winner) {
+        this.winner = winner;
     }
 
     public Competition getCompetition() {

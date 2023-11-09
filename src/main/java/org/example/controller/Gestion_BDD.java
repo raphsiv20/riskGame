@@ -1,12 +1,11 @@
 package org.example.controller;
 import com.njupt.ymh.Connect_MySQL;
+import org.example.model.Equipe;
 import org.example.model.Joueur;
 import org.example.model.Manche;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Gestion_BDD {
     public Gestion_BDD(){
@@ -155,8 +154,48 @@ public class Gestion_BDD {
         }
     }
 
+    public static void insertClassementPartie(LinkedHashMap<Joueur,Integer> classement, int idPartie) {
+        try {
+            Connect_MySQL conn = new Connect_MySQL();
+            Connection con = conn.getConnection();
+            String sql_insertClassement = "insert into ClassePartie values (?, ?, ?);";
+            Iterator<Map.Entry<Joueur, Integer>> entryIterator = classement.entrySet().iterator();
+            int point = 10;
+            while (entryIterator.hasNext()) {
+                Map.Entry<Joueur, Integer> next = entryIterator.next();
+                PreparedStatement pstmt_competition = con.prepareStatement(sql_insertClassement);
+                pstmt_competition.setInt(1, next.getKey().getIdJoueur());
+                pstmt_competition.setInt(2, idPartie);
+                pstmt_competition.setInt(3, point);
+                pstmt_competition.executeUpdate();
+                pstmt_competition.close();
+                point -= 2;
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
-//    public static void main(String[] args) {
-//    }
+
+    public static void main(String[] args) {
+        LinkedHashMap<Joueur, Integer> classement = new LinkedHashMap<>();
+        Equipe equipe = new Equipe("helo");
+        Joueur joueur1 = new Joueur("aaa","aaa", equipe, 1, 12);
+        Joueur joueur2 = new Joueur("bbb","aaa", equipe, 2, 12);
+        Joueur joueur3 = new Joueur("aaa","aaa", equipe, 3, 12);
+        Joueur joueur4 = new Joueur("aaa","aaa", equipe, 4, 12);
+        Joueur joueur5 = new Joueur("aaa","aaa", equipe, 5, 12);
+        Joueur joueur6 = new Joueur("aaa","aaa", equipe, 6, 12);
+        classement.put(joueur1,1);
+        classement.put(joueur2,2);
+        classement.put(joueur3,3);
+        classement.put(joueur4,4);
+        classement.put(joueur5,5);
+        classement.put(joueur6,6);
+
+        insertClassementPartie(classement, 1);
+
+    }
 }
 
