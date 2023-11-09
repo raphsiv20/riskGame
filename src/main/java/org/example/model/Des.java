@@ -8,6 +8,7 @@ public class Des {
     private int nbDes;
     private int[] resultatDes;
 
+
     public Des(int nb) {
         this.nbDes = nb;
         this.resultatDes = new int[nbDes];
@@ -30,6 +31,14 @@ public class Des {
             result[this.nbDes - i - 1] = temp;
         }
         this.resultatDes = result;
+    }
+
+    public int getNbUN() {
+        int nbUN = 0;
+        for (int i : resultatDes) {
+            if (i == 1) nbUN += 1;
+        }
+        return nbUN;
     }
 
 }

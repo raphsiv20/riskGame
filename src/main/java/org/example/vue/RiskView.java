@@ -1,6 +1,7 @@
 package org.example.vue;
 
 import org.example.controller.AbstractControler;
+import org.example.controller.Gestion_BDD;
 import org.example.model.*;
 import org.example.observer.Observateur;
 
@@ -9,6 +10,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.example.ressourcesImg.RessourcesImages.AFGHANISTAN;
 import static org.example.ressourcesImg.RessourcesImages.ALASKA;
@@ -35,7 +39,7 @@ public class RiskView extends JFrame implements Observateur {
 
     public RiskView(AbstractModel model, AbstractControler controler) {
         this.model = model;
-
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         initComponents();
         this.mouseListener = new MouseListener(controler);
         this.panelJeu.addMouseListener(this.mouseListener);
@@ -177,6 +181,40 @@ public class RiskView extends JFrame implements Observateur {
                  }
              });
              JOptionPane.showMessageDialog(null, model.getJoueurActif().getNomJoueur() + " a gagné la partie!", "vainqueur", JOptionPane.INFORMATION_MESSAGE);
+            for (Joueur j : model.getJoueursPartie()) {
+                System.out.println(" joueur : " + j.getNomJoueur());
+                System.out.println(" point Malchanceux : " + j.getPtsMalchanceux() + "\n" +
+                        "point belliqueux : " + j.getPtsBelliqueux() + "\n" +
+                        "point bouclier : " + j.getPtsDefenseur() + "\n" +
+                        "point conquérant " + j.getPtsConquerant()
+                );
+            }
+
+            // update performance des joueurs de partie veres DB
+//             Gestion_BDD.insertClassementPerformancesPartie(model.getJoueursPartie(), model.getManche());
+
+            // afficher performance partie
+
+            int[] malChanceux = Gestion_BDD.getPerformanceJoueur(1, "classeMalchanceux");
+            int[] Belliqueux = Gestion_BDD.getPerformanceJoueur(1, "classeBelliqueux");
+            int[] Bouclier = Gestion_BDD.getPerformanceJoueur(1, "classeBouclier");
+            int[] Conquerant = Gestion_BDD.getPerformanceJoueur(1, "classeConquerant");
+
+            HashMap<String, String[]> result = new HashMap<>();
+            result.put("Malchanceux" , new String[]{model.getAJoueurById(malChanceux[0]).getNomJoueur(), String.valueOf(malChanceux[1])});
+            result.put("Belliqueux", new String[]{model.getAJoueurById(Belliqueux[0]).getNomJoueur(), String.valueOf(Belliqueux[1])});
+            result.put("Bouclier", new String[]{model.getAJoueurById(Bouclier[0]).getNomJoueur(), String.valueOf(Bouclier[1])});
+            result.put("Conquerant", new String[]{model.getAJoueurById(Conquerant[0]).getNomJoueur(), String.valueOf(Conquerant[1])});
+
+             StringBuilder message = new StringBuilder("Performance partie:\n");
+             for (Map.Entry<String, String[]> entry : result.entrySet()) {
+                 message.append(entry.getKey()).append(": ").append(entry.getValue()[0]).append(",   Points: ").append(entry.getValue()[1]).append("\n");
+             }
+
+             // 显示消息框
+             JOptionPane.showMessageDialog(null, message.toString(), "Performance pour cette partie", JOptionPane.INFORMATION_MESSAGE);
+
+
          }
      });
 
