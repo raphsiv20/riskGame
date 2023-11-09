@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.model.AbstractModel;
+import org.example.vue.AffecterEquipeView;
 import org.example.vue.CreerCompetitionView;
 import org.example.vue.OrganisationView;
 
@@ -42,6 +43,9 @@ public class OrganisationController  implements ActionListener {
                 break;
             case "Affecter Equipe":
                 System.out.println("Loading Equipe...");
+                AffecterEquipeView AffecterEquipeView = new AffecterEquipeView();
+                AffecterEquipeView.addActionListeners(new AffecterEquipeController(model, new AffecterEquipeView()));
+                AffecterEquipeView.setVisible(true);
                 break;
             case "Affecter Joueur":
                 System.out.println("Loading Joueur...");
