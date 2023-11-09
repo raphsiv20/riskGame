@@ -41,8 +41,6 @@ public class InitController implements ActionListener {
             organisationView.addActionListeners(new OrganisationController(model, organisationView));
             organisationView.setVisible(true);
 
-
-
         } else if (actionEvent.equals("Consulter classement")) {
             System.out.println("Loading ConsulterView...");
             //Opens the playerCountDialog
@@ -56,7 +54,7 @@ public class InitController implements ActionListener {
             RiskView riskView1 = new RiskView(model, new PlateauControler(model));
 
         } else if (actionEvent.equals("Quitter")) {
-
+            System.exit(0);
         }
     }
 }
