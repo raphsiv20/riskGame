@@ -51,45 +51,6 @@ public class Gestion_BDD {
 //        }
 //    }
 
-    public ArrayList<Manche> getTournamentsGames(int tournamentId){
-        openConnection();
-        ArrayList<Manche> listParties = new ArrayList<Manche>();
-        Statut statut = Statut.EN_COURS;
-        try {
-
-            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlQuery = ("SELECT * FROM parties where parties.idtournois = ?");
-
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-            preparedStatement.setInt(1, tournamentId);
-
-            ResultSet rs = preparedStatement.executeQuery();
-            while(rs.next()){
-                int idParties = rs.getInt("idparties");
-                String nomParties = rs.getString("nompartie");
-                int ordreParties = rs.getInt("ordre");
-                String statutTour = rs.getString("statut");
-
-                if (statutTour == "PAS_COMMENCE"){
-                    statut = Statut.PAS_COMMENCE;
-                }
-                if (statutTour == "EN_COURS"){
-                    statut = Statut.EN_COURS;
-                }
-                if (statutTour == "TERMINE"){
-                    statut = Statut.TERMINE;
-                }
-                Tournoi tournoi = new Tournoi(0000, "null", 0000, null, statut);
-                tournoi.setIdTournoi(tournamentId);
-                Manche manche = new Manche(idParties, nomParties, ordreParties,statut, tournoi);
-                listParties.add(manche);
-            }
-            endConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return listParties;
-    }
 
     public boolean isACompetitionStarted(){
         openConnection();
@@ -163,7 +124,7 @@ public class Gestion_BDD {
         openConnection();
         try {
             Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlQuery = ("SELECT * FROM classementcompet where idcompetitions = ? order by point");
+            String sqlQuery = ("SELECT * FROM classementcompet where idcompetitions = ? order by point desc");
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
             preparedStatement.setInt(1, idComp);
@@ -183,7 +144,7 @@ public class Gestion_BDD {
         openConnection();
         try {
             Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlQuery = ("SELECT * FROM classementcompet where classementcompet.idcompetitions = ? order by classementcompet.point");
+            String sqlQuery = ("SELECT * FROM classementcompet where classementcompet.idcompetitions = ? order by classementcompet.point desc");
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
             preparedStatement.setInt(1, idCompetition);
@@ -204,7 +165,7 @@ public class Gestion_BDD {
         openConnection();
         try {
             Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlQuery = ("SELECT * FROM classementtournoi where classementtournoi.idtournois = ? order by classementtournoi.point");
+            String sqlQuery = ("SELECT * FROM classementtournoi where classementtournoi.idtournois = ? order by classementtournoi.point desc");
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
             preparedStatement.setInt(1, idTournament);
@@ -604,15 +565,21 @@ public class Gestion_BDD {
 
         endConnection();
     }
-    public List<Integer> getAllCompetitions() {
-        List<Integer> competitions = new ArrayList<Integer>();
+    public Map<Integer, List<String>> getAllCompetitions() {
+        Map<Integer, List<String>> competitions = new HashMap<>();
         try {
             openConnection();
             Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery("SELECT * FROM competitions");
             while(rs.next()){
-                competitions.add(rs.getInt("idcompetitions"));
+                List<String> compInfos = new ArrayList<>();
+                compInfos.add(rs.getString("nom"));
+                compInfos.add(rs.getString("datedebut"));
+                compInfos.add(rs.getString("datefin"));
+                compInfos.add(rs.getString("statut"));
+                competitions.put(rs.getInt("idcompetitions"), compInfos);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -654,35 +621,35 @@ public class Gestion_BDD {
         endConnection();
         return games;
     }
-    public void insertClassementPerformancesPartie(List<Joueur> joueursPartie, Manche manche) {
+    public void insertClassementPerformancesPartie(List<Joueur> joueursPartie, Integer manche) {
         openConnection();
         try {
             for (Joueur j : joueursPartie) {
                 String sql_malchanceux = "insert into malchanceuxpartie (idjoueurs, idparties, point) values (?, ?, ?)";
                 PreparedStatement pstmt_malchanceux = connection.prepareStatement(sql_malchanceux);
                 pstmt_malchanceux.setInt(1, j.getIdJoueur());
-                pstmt_malchanceux.setInt(2, manche.getIdManche());
+                pstmt_malchanceux.setInt(2, manche);
                 pstmt_malchanceux.setInt(3, j.getPtsMalchanceux());
                 pstmt_malchanceux.executeUpdate();
 
                 String sql_belliqueux = "insert into beliqueuxpartie (idjoueurs, idparties, point) values (?, ?, ?)";
                 PreparedStatement pstmt_belliqueux = connection.prepareStatement(sql_belliqueux);
                 pstmt_belliqueux.setInt(1, j.getIdJoueur());
-                pstmt_belliqueux.setInt(2, manche.getIdManche());
+                pstmt_belliqueux.setInt(2, manche);
                 pstmt_belliqueux.setInt(3, j.getPtsBelliqueux());
                 pstmt_belliqueux.executeUpdate();
 
                 String sql_bouclier = "insert into bouclierpartie (idjoueurs, idparties, point) values (?, ?, ?)";
                 PreparedStatement pstmt_bouclier = connection.prepareStatement(sql_bouclier);
                 pstmt_bouclier.setInt(1, j.getIdJoueur());
-                pstmt_bouclier.setInt(2, manche.getIdManche());
+                pstmt_bouclier.setInt(2, manche);
                 pstmt_bouclier.setInt(3, j.getPtsDefenseur());
                 pstmt_bouclier.executeUpdate();
 
                 String sql_conquerant = "insert into conquerantpartie (idjoueurs, idparties, point) values (?, ?, ?)";
                 PreparedStatement pstmt_conquerant = connection.prepareStatement(sql_conquerant);
                 pstmt_conquerant.setInt(1, j.getIdJoueur());
-                pstmt_conquerant.setInt(2, manche.getIdManche());
+                pstmt_conquerant.setInt(2, manche);
                 pstmt_conquerant.setInt(3, j.getPtsConquerant());
                 pstmt_conquerant.executeUpdate();
 
@@ -770,7 +737,7 @@ public class Gestion_BDD {
         openConnection();
         try {
             Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlQuery = ("SELECT * FROM " + typeClassement + " where annee = ? order by classementtournoi.point");
+            String sqlQuery = ("SELECT * FROM " + typeClassement + " where annee = ? order by point desc");
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
             preparedStatement.setString(1, annee);
@@ -786,7 +753,7 @@ public class Gestion_BDD {
         return classement;
     }
 
-    public void setPlayerAnnualRanking(int idJoueur, String typeClassement, String annee) {
+    public void setPlayersAnnualRanking(String typeClassement, String annee) {
         List<Integer> competitions = this.getCompetitionsByAnnee(annee);
         List<Integer> tournois = new ArrayList<Integer>();
         competitions.forEach(idCompetition -> {
@@ -807,7 +774,32 @@ public class Gestion_BDD {
 
         for (int joueur: joueurs) {
             try {
-                String sqlQuery = ("INSERT INTO " + typeClassement + " (idjoueur, annee, point) " +
+                String selectQuery = "SELECT * FROM " + typeClassement + " WHERE idjoueurs = ? AND annee = ?";
+
+                PreparedStatement selectStatement = connection.prepareStatement(selectQuery);
+                selectStatement.setInt(1, joueur);
+                selectStatement.setString(2, annee);
+                ResultSet resultSet = selectStatement.executeQuery();
+                System.out.println(resultSet.next());
+                if (resultSet.next()) {
+                    String updateQuery = "UPDATE " + typeClassement + " SET point = ? WHERE idjoueurs = ? AND annee = ?;";
+                    System.out.println(this.getAPlayerAnnualPoints(joueur, typeClassement, parties));
+                    PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
+                    updateStatement.setInt(1, this.getAPlayerAnnualPoints(joueur, typeClassement, parties));
+                    updateStatement.setInt(2, joueur);
+                    updateStatement.setString(3, annee);
+                    updateStatement.executeUpdate();
+                    updateStatement.close();
+                } else if (!resultSet.next()){
+                    String insertQuery = "INSERT INTO " + typeClassement + " (idjoueurs, annee, point) VALUES (?, ?, ?)";
+                    PreparedStatement insertStatement = connection.prepareStatement(insertQuery);
+                    insertStatement.setInt(1, joueur);
+                    insertStatement.setString(2, annee);
+                    insertStatement.setInt(3, this.getAPlayerAnnualPoints(joueur, typeClassement, parties));
+                    insertStatement.executeUpdate();
+                    insertStatement.close();
+                }
+                /*String sqlQuery = ("INSERT INTO " + typeClassement + " (idjoueurs, annee, point) " +
                         "VALUES (?, ?, ?) " +
                         "ON DUPLICATE KEY UPDATE point = ?;");
 
@@ -815,9 +807,9 @@ public class Gestion_BDD {
                 preparedStatement.setInt(1, joueur);
                 preparedStatement.setString(2, annee);
                 preparedStatement.setInt(3, this.getAPlayerAnnualPoints(joueur, typeClassement, parties));
+                preparedStatement.setInt(4, this.getAPlayerAnnualPoints(joueur, typeClassement, parties));
                 preparedStatement.executeUpdate();
-                preparedStatement.close();
-                endConnection();
+                preparedStatement.close();*/
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -827,14 +819,16 @@ public class Gestion_BDD {
 
     public int getAPlayerAnnualPoints(int idJoueur, String typeClassement, List<Integer> games) {
         int playerPoints = 0;
+        System.out.println(idJoueur);
         openConnection();
+        String typeClassementPartie = typeClassement.replace("annuel", "partie");
         for (Integer gameId: games) {
             try {
                 Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                         ResultSet.CONCUR_READ_ONLY);
-                String sqlQuery = ("SELECT *" +
-                        "FROM " + typeClassement + " " +
-                        "WHERE idjoueurs = ?" +
+                String sqlQuery = ("SELECT * " +
+                        "FROM " + typeClassementPartie + " " +
+                        "WHERE idjoueurs = ? " +
                         "and idparties = ?;");
 
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
@@ -859,9 +853,13 @@ public class Gestion_BDD {
             openConnection();
             Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-            ResultSet rs = stmt.executeQuery("SELECT *" +
-                    "FROM competitions" +
-                    "WHERE RIGHT(competitions.datedebut, 4) = ?;");
+            String sqlQuery = ("SELECT * " +
+                    "FROM competitions " +
+                    "WHERE RIGHT(competitions.datedebut, 4) = ?;");;
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            preparedStatement.setString(1, annee);
+            ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
                 competitions.add(rs.getInt("idcompetitions"));
             }
@@ -972,6 +970,28 @@ public List<Integer> getTournamentGames(int tournamentId){
         }
         return listParties;
     }
+    public void insertClassementPartie(LinkedHashMap<Joueur,Integer> classement, int idPartie) {
+        try {
+            openConnection();
+            String sql_insertClassement = "insert into classementpartie values (?, ?, ?);";
+            Iterator<Map.Entry<Joueur, Integer>> entryIterator = classement.entrySet().iterator();
+            int point = 10;
+            while (entryIterator.hasNext()) {
+                Map.Entry<Joueur, Integer> next = entryIterator.next();
+                PreparedStatement pstmt_competition = connection.prepareStatement(sql_insertClassement);
+                pstmt_competition.setInt(1, next.getKey().getIdJoueur());
+                pstmt_competition.setInt(2, idPartie);
+                pstmt_competition.setInt(3, point);
+                pstmt_competition.executeUpdate();
+                pstmt_competition.close();
+                point -= 2;
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        endConnection();
+    }
 
     public static void main(String[] args) {
         //insertNombreTerritoire(1);
@@ -984,11 +1004,31 @@ public List<Integer> getTournamentGames(int tournamentId){
         Joueur joueur2 = new Joueur("Martin","Pierre",equipe2,2,20);
         Joueur joueur3 = new Joueur("Park","Hye-jin",equipe1,23,20);
         Joueur joueur4 = new Joueur("Choi","Min-ji",equipe1,24,20);
-        ArrayList<Integer> listjoueur = new ArrayList<Integer>();
-        listjoueur.add(joueur1.getIdJoueur());
-        listjoueur.add(joueur2.getIdJoueur());
-        listjoueur.add(joueur3.getIdJoueur());
-        listjoueur.add(joueur4.getIdJoueur());
+
+        joueur1.addPtsMalchanceux(12);
+        joueur1.addPtsBelliqueux(10);
+        joueur1.addPtsConquerant(10);
+        joueur1.addPtsDefenseur(7);
+
+        joueur2.addPtsMalchanceux(8);
+        joueur2.addPtsBelliqueux(6);
+        joueur2.addPtsConquerant(9);
+        joueur2.addPtsDefenseur(8);
+
+        joueur3.addPtsMalchanceux(10);
+        joueur3.addPtsBelliqueux(11);
+        joueur3.addPtsConquerant(7);
+        joueur3.addPtsDefenseur(9);
+
+        joueur4.addPtsMalchanceux(9);
+        joueur4.addPtsBelliqueux(12);
+        joueur4.addPtsConquerant(8);
+        joueur4.addPtsDefenseur(10);
+        ArrayList<Joueur> listjoueur = new ArrayList<Joueur>();
+        listjoueur.add(joueur1);
+        listjoueur.add(joueur2);
+        listjoueur.add(joueur3);
+        listjoueur.add(joueur4);
         System.out.println(bdd.getAllTournaments());
 //        bdd.setJoueurTournoi(1,2);
 //        bdd.setJoueurTournoi(1,23);
@@ -997,13 +1037,21 @@ public List<Integer> getTournamentGames(int tournamentId){
  //       bdd.setJoueurPartie(2,bdd.getTournamentPlayers(1));
 
 //        bdd.addCarteTerritoire(1,"EST_DE_L_AUSTRALIE",1);
-       bdd.setCompetitionLeaderboards(1);
+     //  bdd.setCompetitionLeaderboards(1);
     //    bdd.setTeamCompetition(1,6,2023);
         for (Map.Entry<Integer, Integer> entry: bdd.getATournamentLeaderboards(1).entrySet())
               {
                   System.out.println("joueur :" + entry.getKey() + " points: " + entry.getValue());
 
         }
+
+        System.out.println(bdd.isACompetitionStarted());
+        System.out.println(bdd.getCompetitionActive());
+       //bdd.insertClassementPerformancesPartie(listjoueur,2);
+        //System.out.println(Arrays.toString(bdd.getPerformanceJoueur(2,"beliqueuxpartie")));
+        bdd.setPlayersAnnualRanking("beliqueuxannuel","2023");
+        System.out.println(bdd.getClassementAnnuel("2023","beliqueuxannuel"));
+
 
 
     }

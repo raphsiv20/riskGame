@@ -187,7 +187,27 @@ public class Plateau extends AbstractModel {
         this.addEquipe(equipes);
         this.addJoueurs(joueurs);
         this.attribuerEquipePartie();
+        for (Map.Entry<Integer, List<String>> entry: getBdd().getAllCompetitions().entrySet()) {
+            this.addCompetition(new Competition(entry.getKey(), entry.getValue().get(0), entry.getValue().get(1), entry.getValue().get(2), Statut.valueOf(entry.getValue().get(3))));
+        }
+
     }
+
+    @Override
+    public void addCompetition(Competition competition) {
+        this.getAllCompetitions().add(competition);
+    }
+
+    @Override
+    public void addTournoi(Tournoi tournoi) {
+        this.getAllTournaments().add(tournoi);
+    }
+
+    @Override
+    public void addPartie(Manche manche) {
+        this.getAllGames().add(manche);
+    }
+
     @Override
     public void addTerritories(String[] territoires) {
         for (int i = 0; i < territoires.length; i++) {

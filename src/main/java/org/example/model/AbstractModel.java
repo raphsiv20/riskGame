@@ -10,12 +10,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public abstract class AbstractModel implements Observable {
     private ArrayList<Observateur> observateurs;
     private int hauteur;
     private int largeur;
+    private Joueur winner;
     private Territoire[][] territoires;
     private boolean partieTerminer;
     private List<Territoire> territoiresGame;
@@ -48,7 +50,14 @@ public abstract class AbstractModel implements Observable {
         observateurs = new ArrayList<>();
         this.joueursPartie = new ArrayList<>();
         this.bdd = new Gestion_BDD();
+        this.allCompetitions = new ArrayList<>();
+        this.allTournaments = new ArrayList<>();
+        this.allGames = new ArrayList<>();
     }
+
+    public abstract void addCompetition(Competition competition);
+    public abstract void addTournoi(Tournoi tournoi);
+    public abstract void addPartie(Manche manche);
 
     public Gestion_BDD getBdd() {
         return bdd;
@@ -301,4 +310,15 @@ public abstract class AbstractModel implements Observable {
 
     public abstract CarteTerritoire obtenirCarteTerritoire();
 
+    public abstract LinkedHashMap<Joueur, Integer> endGame();
+
+    public Joueur getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Joueur winner) {
+        this.winner = winner;
+    }
+
 }
+

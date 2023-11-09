@@ -186,7 +186,7 @@ public class RiskView extends JFrame implements Observateur {
             model.endGame();
 
             // update performance des joueurs de partie veres DB
-//             Gestion_BDD.insertClassementPerformancesPartie(model.getJoueursPartie(), model.getManche());
+            model.getBdd().insertClassementPerformancesPartie(model.getJoueursPartie(), model.getManche().getIdManche());
 
             // afficher performance partie
 
