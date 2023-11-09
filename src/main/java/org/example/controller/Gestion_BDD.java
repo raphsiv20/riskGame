@@ -51,24 +51,6 @@ public class Gestion_BDD {
 //        }
 //    }
 
-    public void selectCompet() {
-        try {
-            openConnection();
-
-
-            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-            ResultSet rs = stmt.executeQuery("SELECT * FROM competitions where competitions.idcompetitions = 1");
-            while(rs.next()){
-                String monJouetId= rs.getString("nom");
-                System.out.println(monJouetId);
-            }
-            endConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public Competition getACompetitionByName(String compName){
         openConnection();
         Statut statut = Statut.EN_COURS;
@@ -386,6 +368,27 @@ public class Gestion_BDD {
         return ClassCompet;
     }
 
+    public Map<Integer, Integer> getACompetitionLeaderboards(int idCompetition) {
+        Map<Integer, Integer> classement = new LinkedHashMap<Integer, Integer>();
+        openConnection();
+        try {
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            String sqlQuery = ("SELECT * FROM classementcompet where classementcompet.idcompetitions = ? order by classementcompet.point");
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            preparedStatement.setInt(1, idCompetition);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                classement.put(rs.getInt("idequipe"), rs.getInt("point"));
+            }
+            endConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return classement;
+    }
+
     public Map<Integer, Integer> getATournamentLeaderboards(int idTournament) {
         Map<Integer, Integer> classement = new LinkedHashMap<Integer, Integer>();
         openConnection();
@@ -483,17 +486,19 @@ public class Gestion_BDD {
                 preparedStatement.setInt(4, entry.getValue());
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
-                endConnection();
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
+        endConnection();
 
     }
     public void setTournamentLeaderboards(int idTournoi) {
+        openConnection();
         List<Integer> tournamentPlayers = this.getTournamentPlayers(idTournoi);
         Map<Integer, Integer> playerPoints = this.getTournamentsPlayersPoints(tournamentPlayers, idTournoi);
-        openConnection();
+
         for (Map.Entry<Integer, Integer> entry : playerPoints.entrySet()) {
             try {
                 String sqlQuery = ("INSERT INTO classementtournoi (idtournois, idjoueurs, point) " +
@@ -507,11 +512,11 @@ public class Gestion_BDD {
                 preparedStatement.setInt(4, entry.getValue());
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
-                endConnection();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
+        endConnection();
 
     }
     public void setTeamCompetition(int idCompetition, int idequipe, int date) {
@@ -561,7 +566,7 @@ public class Gestion_BDD {
     public Map<Integer, Integer> getTournamentsPlayersPoints(List<Integer> tournamentPlayers, int idTournoi) {
         Map<Integer, Integer> tournamentPlayersPoints = new LinkedHashMap<Integer, Integer>();
         for (Integer player : tournamentPlayers) {
-            tournamentPlayersPoints.put(player, this.getATeamPlayersPointsOfACompetition(player, idTournoi));
+            tournamentPlayersPoints.put(player, this.getAPlayersPointsOfATournament(player, idTournoi));
         }
         return tournamentPlayersPoints;
     }
@@ -585,11 +590,11 @@ public class Gestion_BDD {
                 while(rs.next()){
                     teamPoints += rs.getInt("point");
                 }
-                endConnection();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
+
         return teamPoints;
     }
     public int getAPlayersPointsOfATournament(int idJoueur, int idTournoi) {
@@ -597,9 +602,10 @@ public class Gestion_BDD {
         openConnection();
         try {
             Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlQuery = ("SELECT * FROM classementtournoi " +
-                    "where classementtournoi.idtournois = ? " +
-                    "and classementtournoi.idjoueurs = ?; ");
+            String sqlQuery = ("SELECT * FROM classementpartie, parties " +
+                    "where classementpartie.idparties = parties.idparties " +
+                    "and parties.idtournois = ? " +
+                    "and classementpartie.idjoueurs = ?; ");
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
             preparedStatement.setInt(1, idTournoi);
@@ -607,9 +613,8 @@ public class Gestion_BDD {
 
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
-                playerPoints = rs.getInt("point");
+                playerPoints += rs.getInt("point");
             }
-            endConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -630,7 +635,7 @@ public class Gestion_BDD {
             while(rs.next()){
                 players.add(rs.getInt("idjoueurs"));
             }
-            endConnection();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -648,9 +653,8 @@ public class Gestion_BDD {
 
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
-                teams.add(rs.getInt("idequipe"));
+                teams.add(rs.getInt("idequipes"));
             }
-            endConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -670,7 +674,7 @@ public class Gestion_BDD {
             while(rs.next()){
                 players.add(rs.getInt("idjoueurs"));
             }
-            endConnection();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -679,7 +683,7 @@ public class Gestion_BDD {
     public void addCarteTerritoire(int idJoueur, String nomCarteTerritoire, int idPartie) {
         openConnection();
         try {
-            String sqlQuery = ("INSERT INTO posseder (idjoueurs, nomcarteterritoires, idparties) " +
+            String sqlQuery = ("INSERT INTO posseder (idjoueur, nomcarteterritoires, idparties) " +
                     "VALUES (?, ?, ?); ");
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
@@ -762,11 +766,14 @@ public class Gestion_BDD {
                 preparedStatement.setInt(2, playerId);
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
-                endConnection();
-            } catch (SQLException e) {
+
+
+            }catch (SQLException e) {
                 e.printStackTrace();
             }
         }
+
+         endConnection();
     }
 
     public void setJoueurTournoi(int idTournoi, int playerId) {
@@ -858,7 +865,22 @@ public class Gestion_BDD {
         listjoueur.add(joueur2.getIdJoueur());
         listjoueur.add(joueur3.getIdJoueur());
         listjoueur.add(joueur4.getIdJoueur());
-        System.out.println(bdd.getAllCompetitions());
+        System.out.println(bdd.getAllTournaments());
+//        bdd.setJoueurTournoi(1,2);
+//        bdd.setJoueurTournoi(1,23);
+//        bdd.setJoueurTournoi(1,24);
+  //     bdd.setJoueurPartie(1,bdd.getTournamentPlayers(1));
+ //       bdd.setJoueurPartie(2,bdd.getTournamentPlayers(1));
+
+//        bdd.addCarteTerritoire(1,"EST_DE_L_AUSTRALIE",1);
+       bdd.setCompetitionLeaderboards(1);
+    //    bdd.setTeamCompetition(1,6,2023);
+        for (Map.Entry<Integer, Integer> entry: bdd.getATournamentLeaderboards(1).entrySet())
+              {
+                  System.out.println("joueur :" + entry.getKey() + " points: " + entry.getValue());
+
+        }
+
 
     }
 }
