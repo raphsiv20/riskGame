@@ -108,4 +108,12 @@ public class Territoire {
 	public void setTerritoireContinentStr(String territoireContinentStr) {
 		this.territoireContinentStr = territoireContinentStr;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Territoire territoire) {
+			return this.getTerritoireName().equals(territoire.territoireName);
+		}
+		return false;
+	}
 }

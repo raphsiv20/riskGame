@@ -1,7 +1,10 @@
 package org.example.model;
 
-import java.util.List;
-
+/**
+ * @author: xxx
+ * @createTime: 2023/10/24 11:35
+ * @project: xxx
+ */
 public class Manche {
     private int idManche;
     private String nomPartie;
@@ -56,4 +59,5 @@ public class Manche {
     public void setIdManche(int idManche) {
         this.idManche = idManche;
     }
+
 }

@@ -1,5 +1,6 @@
 package org.example.model;
 
+import org.example.controller.Gestion_BDD;
 import org.example.observer.Observable;
 import org.example.observer.Observateur;
 
@@ -16,6 +17,7 @@ public abstract class AbstractModel implements Observable {
     private ArrayList<Observateur> observateurs;
     private int hauteur;
     private int largeur;
+    private Joueur winner;
     private Territoire[][] territoires;
     private boolean partieTerminer;
     private List<Territoire> territoiresGame;
@@ -25,7 +27,10 @@ public abstract class AbstractModel implements Observable {
     private Competition competition;
     private Tournoi tournoi;
     private Manche manche;
-    private Joueur winner;
+    private Gestion_BDD bdd;
+    private List<Competition> allCompetitions;
+    private List<Tournoi> allTournaments;
+    private List<Manche> allGames;
 
     private List<Joueur> joueursPartie;
     private Tour tours;
@@ -44,16 +49,22 @@ public abstract class AbstractModel implements Observable {
         this.tours = new Tour(1);
         observateurs = new ArrayList<>();
         this.joueursPartie = new ArrayList<>();
+        this.bdd = new Gestion_BDD();
+        this.allCompetitions = new ArrayList<>();
+        this.allTournaments = new ArrayList<>();
+        this.allGames = new ArrayList<>();
     }
 
-    public abstract LinkedHashMap<Joueur, Integer> endGame();
+    public abstract void addCompetition(Competition competition);
+    public abstract void addTournoi(Tournoi tournoi);
+    public abstract void addPartie(Manche manche);
 
-    public Joueur getWinner() {
-        return winner;
+    public Gestion_BDD getBdd() {
+        return bdd;
     }
 
-    public void setWinner(Joueur winner) {
-        this.winner = winner;
+    public void setBdd(Gestion_BDD bdd) {
+        this.bdd = bdd;
     }
 
     public Competition getCompetition() {
@@ -270,6 +281,44 @@ public abstract class AbstractModel implements Observable {
         return res;
     }
 
+    public List<Competition> getAllCompetitions() {
+        return allCompetitions;
+    }
+
+    public void setAllCompetitions(List<Competition> allCompetitions) {
+        this.allCompetitions = allCompetitions;
+    }
+
+    public List<Tournoi> getAllTournaments() {
+        return allTournaments;
+    }
+
+    public void setAllTournaments(List<Tournoi> allTournaments) {
+        this.allTournaments = allTournaments;
+    }
+
+    public List<Manche> getAllGames() {
+        return allGames;
+    }
+
+    public void setAllGames(List<Manche> allGames) {
+        this.allGames = allGames;
+    }
+    public abstract Competition getCompetitionByID(int id);
+    public abstract Tournoi getTournamentByID(int id);
+    public abstract Manche getGameByID(int id);
+
     public abstract CarteTerritoire obtenirCarteTerritoire();
 
+    public abstract LinkedHashMap<Joueur, Integer> endGame();
+
+    public Joueur getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Joueur winner) {
+        this.winner = winner;
+    }
+
 }
+

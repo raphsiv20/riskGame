@@ -34,8 +34,11 @@ public class CreerCompetitionController  implements ActionListener {
         if (actionEvent.equals("Creer")) {
             System.out.println("loading ");
             ArrayList<String> info = view.getCompetitionInfos();
-            gestionBdd.insertCompetition(info);
-
+            if (gestionBdd.insertCompetition(info) == true) {
+                System.out.println("Competition created with GREAT SUCCESS!!!!");
+            } else if (gestionBdd.insertCompetition(info) == false) {
+                System.out.println("Competition created with GREAT FAILURE :)");
+            }
         } else if (actionEvent.equals("Revenir")) {
             view.setVisible(false);
 

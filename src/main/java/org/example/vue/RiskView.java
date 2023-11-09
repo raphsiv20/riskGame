@@ -50,6 +50,7 @@ public class RiskView extends JFrame implements Observateur {
 
     // initialise l'affichage
     private void initComponents() {
+        System.out.println(model.getBdd().getACompetitionTournaments(1));
         String[] listeCompet = {"Compet1", "Compet2", "Compet3",};
         JComboBox<String> comboBox1 = new JComboBox<>(listeCompet);
         String[] listeTournoi = {"Tournoi1", "Tournoi2", "Tournoi3"};
@@ -185,14 +186,14 @@ public class RiskView extends JFrame implements Observateur {
             model.endGame();
 
             // update performance des joueurs de partie veres DB
-//             Gestion_BDD.insertClassementPerformancesPartie(model.getJoueursPartie(), model.getManche());
+            model.getBdd().insertClassementPerformancesPartie(model.getJoueursPartie(), model.getManche().getIdManche());
 
             // afficher performance partie
 
-            int[] malChanceux = Gestion_BDD.getPerformanceJoueur(1, "classeMalchanceux");
-            int[] Belliqueux = Gestion_BDD.getPerformanceJoueur(1, "classeBelliqueux");
-            int[] Bouclier = Gestion_BDD.getPerformanceJoueur(1, "classeBouclier");
-            int[] Conquerant = Gestion_BDD.getPerformanceJoueur(1, "classeConquerant");
+            int[] malChanceux = model.getBdd().getPerformanceJoueur(1, "classeMalchanceux");
+            int[] Belliqueux = model.getBdd().getPerformanceJoueur(1, "classeBelliqueux");
+            int[] Bouclier = model.getBdd().getPerformanceJoueur(1, "classeBouclier");
+            int[] Conquerant = model.getBdd().getPerformanceJoueur(1, "classeConquerant");
 
             HashMap<String, String[]> result = new HashMap<>();
             result.put("Malchanceux" , new String[]{model.getAJoueurById(malChanceux[0]).getNomJoueur(), String.valueOf(malChanceux[1])});
