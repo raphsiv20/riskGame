@@ -50,7 +50,6 @@ public class RiskView extends JFrame implements Observateur {
 
     // initialise l'affichage
     private void initComponents() {
-        model.getBdd().selectCompet();
         System.out.println(model.getBdd().getACompetitionByName("ParisCup").getStatutCompetition());
         for (Tournoi entry : model.getBdd().getACompetitionTournaments(1)
              ) {
@@ -195,10 +194,10 @@ public class RiskView extends JFrame implements Observateur {
 
             // afficher performance partie
 
-            int[] malChanceux = Gestion_BDD.getPerformanceJoueur(1, "classeMalchanceux");
-            int[] Belliqueux = Gestion_BDD.getPerformanceJoueur(1, "classeBelliqueux");
-            int[] Bouclier = Gestion_BDD.getPerformanceJoueur(1, "classeBouclier");
-            int[] Conquerant = Gestion_BDD.getPerformanceJoueur(1, "classeConquerant");
+            int[] malChanceux = model.getBdd().getPerformanceJoueur(1, "classeMalchanceux");
+            int[] Belliqueux = model.getBdd().getPerformanceJoueur(1, "classeBelliqueux");
+            int[] Bouclier = model.getBdd().getPerformanceJoueur(1, "classeBouclier");
+            int[] Conquerant = model.getBdd().getPerformanceJoueur(1, "classeConquerant");
 
             HashMap<String, String[]> result = new HashMap<>();
             result.put("Malchanceux" , new String[]{model.getAJoueurById(malChanceux[0]).getNomJoueur(), String.valueOf(malChanceux[1])});

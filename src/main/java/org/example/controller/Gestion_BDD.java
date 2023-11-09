@@ -844,6 +844,117 @@ public class Gestion_BDD {
         endConnection();
         return games;
     }
+    public void insertClassementPerformancesPartie(List<Joueur> joueursPartie, Manche manche) {
+        openConnection();
+        try {
+            for (Joueur j : joueursPartie) {
+                String sql_malchanceux = "insert into malchanceuxpartie (idjoueurs, idparties, point) values (?, ?, ?)";
+                PreparedStatement pstmt_malchanceux = connection.prepareStatement(sql_malchanceux);
+                pstmt_malchanceux.setInt(1, j.getIdJoueur());
+                pstmt_malchanceux.setInt(2, manche.getIdManche());
+                pstmt_malchanceux.setInt(3, j.getPtsMalchanceux());
+                pstmt_malchanceux.executeUpdate();
+
+                String sql_belliqueux = "insert into beliqueuxpartie (idjoueurs, idparties, point) values (?, ?, ?)";
+                PreparedStatement pstmt_belliqueux = connection.prepareStatement(sql_belliqueux);
+                pstmt_belliqueux.setInt(1, j.getIdJoueur());
+                pstmt_belliqueux.setInt(2, manche.getIdManche());
+                pstmt_belliqueux.setInt(3, j.getPtsBelliqueux());
+                pstmt_belliqueux.executeUpdate();
+
+                String sql_bouclier = "insert into bouclierpartie (idjoueurs, idparties, point) values (?, ?, ?)";
+                PreparedStatement pstmt_bouclier = connection.prepareStatement(sql_bouclier);
+                pstmt_bouclier.setInt(1, j.getIdJoueur());
+                pstmt_bouclier.setInt(2, manche.getIdManche());
+                pstmt_bouclier.setInt(3, j.getPtsDefenseur());
+                pstmt_bouclier.executeUpdate();
+
+                String sql_conquerant = "insert into conquerantpartie (idjoueurs, idparties, point) values (?, ?, ?)";
+                PreparedStatement pstmt_conquerant = connection.prepareStatement(sql_conquerant);
+                pstmt_conquerant.setInt(1, j.getIdJoueur());
+                pstmt_conquerant.setInt(2, manche.getIdManche());
+                pstmt_conquerant.setInt(3, j.getPtsConquerant());
+                pstmt_conquerant.executeUpdate();
+
+                pstmt_malchanceux.close();
+                pstmt_belliqueux.close();
+                pstmt_bouclier.close();
+                pstmt_conquerant.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        endConnection();
+    }
+
+
+
+    // get performance  (idPartie, classeXXX)  ====>>>  idJoueur, performancePoint
+    public int[] getPerformanceJoueur(int idPartie, String typePerformance) {
+        openConnection();
+        int[] result = null;
+        try {
+
+            String sql_typePerformance = "SELECT idjoueurs, point\n" +
+                    "FROM " + typePerformance + "\n" +
+                    "WHERE idparties = ? " +
+                    "AND point = (SELECT MAX(point) FROM " + typePerformance + " WHERE idparties = ?)";
+            PreparedStatement pstmt_typePerformance = connection.prepareStatement(sql_typePerformance);
+            pstmt_typePerformance.setInt(1, idPartie);
+            pstmt_typePerformance.setInt(2, idPartie);
+            ResultSet rs = pstmt_typePerformance.executeQuery();
+
+            if (rs.next()) {
+                // Extract the results and store them in the 'result' array
+                int idJoueur = rs.getInt("idjoueurs");
+                int point = rs.getInt("point");
+                result = new int[] { idJoueur, point };
+            }
+
+            rs.close();
+            pstmt_typePerformance.close();
+//            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        endConnection();
+        return result;
+    }
+
+    public boolean insertCompetition(ArrayList<String> infos) {
+        this.openConnection();
+        int idcompetitions = 0;
+        boolean result = false;
+        try {
+            String sql = "SELECT MAX(idcompetitions) FROM competitions;";
+
+            PreparedStatement pstmt1_competition = connection.prepareStatement(sql);
+            ResultSet rs = pstmt1_competition.executeQuery();
+
+            if (rs.next()) {
+                // Extract the results and store them in the 'result' array
+                idcompetitions = rs.getInt("MAX(idcompetitions)")+1;
+
+            }
+
+            String sql_malchanceux = "insert into competitions values (?, ?, ?, ?,?);";
+            PreparedStatement pstmt_competition = connection.prepareStatement(sql_malchanceux);
+            pstmt_competition.setInt(1, idcompetitions);
+            pstmt_competition.setString(2, infos.get(0));
+            pstmt_competition.setString(3, infos.get(1));
+            pstmt_competition.setString(4, infos.get(2));
+            pstmt_competition.setString(5, Statut.PAS_COMMENCE.toString());
+            pstmt_competition.executeUpdate();
+            pstmt_competition.close();
+            result = true;
+        }
+        catch (Exception e){
+
+            e.printStackTrace();
+        }
+        endConnection();
+        return result;
+    }
 
 
 

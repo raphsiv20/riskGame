@@ -28,7 +28,7 @@ public class ConsulterView extends JFrame {
     {
         setTitle("Java-Risk");
         setPreferredSize(new Dimension(600, 600));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(true);
 
