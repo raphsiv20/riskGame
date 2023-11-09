@@ -51,120 +51,6 @@ public class Gestion_BDD {
 //        }
 //    }
 
-    public Competition getACompetitionByName(String compName){
-        openConnection();
-        Statut statut = Statut.EN_COURS;
-        Competition competition = new Competition(0,"blank","0000","0000",statut);
-        competition.setNomCompetition(compName);
-        try {
-
-        Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-        String sqlQuery = ("SELECT * FROM competitions where competitions.nom = ?");
-
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-        preparedStatement.setString(1, compName);
-
-        ResultSet rs = preparedStatement.executeQuery();
-        while(rs.next()){
-            competition.setIdCompetition(rs.getInt("idcompetitions"));
-            competition.setDateDebut(rs.getString("datedebut"));
-            competition.setDateFin(rs.getString("datefin"));
-            competition.setDateDebut(rs.getString("dateDebut"));
-            if (rs.getString("statut") == "PAS_COMMENCE"){
-                statut = Statut.PAS_COMMENCE;
-            }
-            if (rs.getString("statut") == "EN_COURS"){
-                statut = Statut.EN_COURS;
-            }
-            if (rs.getString("statut") == "TERMINE"){
-                statut = Statut.TERMINE;
-            }
-            competition.setStatutCompetition(statut);
-        }
-        endConnection();
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-        return competition;
-}
-    public ArrayList<Tournoi> getACompetitionTournaments(int idComp){
-    openConnection();
-    ArrayList<Tournoi> listTournois = new ArrayList<Tournoi>();
-    Statut statut = Statut.EN_COURS;
-    Competition competition = new Competition(0,"blank","0000","0000",statut);
-    competition.setIdCompetition(idComp);
-        try {
-
-        Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-        String sqlQuery = ("SELECT * FROM tournois where tournois.idcompetitions = ?");
-
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-        preparedStatement.setInt(1, competition.getIdCompetition());
-
-        ResultSet rs = preparedStatement.executeQuery();
-        while(rs.next()){
-            int idTournoi = rs.getInt("idtournois");
-            String nomTournoi = rs.getString("nom");
-            int ordreTournoi = rs.getInt("ordre");
-            String statutTour = rs.getString("statut");
-
-            if (statutTour == "PAS_COMMENCE"){
-                statut = Statut.PAS_COMMENCE;
-            }
-            if (statutTour == "EN_COURS"){
-                statut = Statut.EN_COURS;
-            }
-            if (statutTour == "TERMINE"){
-                statut = Statut.TERMINE;
-            }
-            Tournoi tournoi = new Tournoi(idTournoi, nomTournoi, ordreTournoi, null, statut);
-            listTournois.add(tournoi);
-        }
-        endConnection();
-        } catch (SQLException e) {
-        e.printStackTrace();
-        }
-        return listTournois;
-}
-    public Tournoi getATournoiByName(String tournamentName){
-        openConnection();
-        Statut statut = Statut.EN_COURS;
-        Competition competition = new Competition(0,"blank","0000","0000",statut);
-        Tournoi tournoi = new Tournoi(0,"NULL",0,competition,statut);
-        try {
-
-            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlQuery = ("SELECT * FROM tournois where tournois.nom = ?");
-
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-            preparedStatement.setString(1, tournamentName);
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                tournoi.setIdTournoi( rs.getInt("idtournois"));
-                tournoi.setNomTournoi(rs.getString("nom"));
-                tournoi.setOrdreTournoi(rs.getInt("ordre"));
-                competition.setIdCompetition(rs.getInt("idcompetitions"));
-                tournoi.setCompetitionTournoi(competition);
-                String statutTour = rs.getString("statut");
-
-                if (statutTour == "PAS_COMMENCE") {
-                    statut = Statut.PAS_COMMENCE;
-                }
-                if (statutTour == "EN_COURS") {
-                    statut = Statut.EN_COURS;
-                }
-                if (statutTour == "TERMINE") {
-                    statut = Statut.TERMINE;
-                }
-                tournoi.setStatutTournoi(statut);
-            }
-            endConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return tournoi;
-    }
-
     public ArrayList<Manche> getTournamentsGames(int tournamentId){
         openConnection();
         ArrayList<Manche> listParties = new ArrayList<Manche>();
@@ -205,76 +91,53 @@ public class Gestion_BDD {
         return listParties;
     }
 
-    public ArrayList<Joueur> getTournamentsPlayers(int tournamentId){
+    public boolean isACompetitionStarted(){
         openConnection();
-        ArrayList<Joueur> listJoueur = new ArrayList<Joueur>();
-        Equipe equipe = new Equipe("null",0);
+        ArrayList<String> listCompet = new ArrayList<String>();
         try {
 
             Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlQuery = ("SELECT * FROM participer where participer.idtournois = ?");
+            String sqlQuery = ("SELECT * FROM competitions where competitions.statut = ?");
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-            preparedStatement.setInt(1, tournamentId);
-            int joueurid = 0;
+            preparedStatement.setString(1,"EN_COURS");
 
             ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                joueurid = rs.getInt("idjoueurs");
-            }
-
-            Statement stmt2 = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sql = ("SELECT * FROM joueur where joueur.idjoueurs = ?");
-
-            PreparedStatement prstmt = connection.prepareStatement(sql);
-            prstmt.setInt(1, joueurid);
-            ResultSet rs2 = prstmt.executeQuery();
-            while (rs2.next()) {
-                int idJoueurs = rs.getInt("idjoueurs");
-                String nomJoueurs = rs.getString("nom");
-                String prenomJoueur = rs.getString("prenom");
-                int idEquipe = rs.getInt("idequipe");
-                equipe.setIdEquipe(idEquipe);
-                Joueur joueur = new Joueur(nomJoueurs,prenomJoueur,equipe,idJoueurs,00);
-                listJoueur.add(joueur);
-            }
-
-
-        }catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return listJoueur;
-    }
-
-    public boolean isACompetitionStarted(int idCompet){
-        openConnection();
-        ArrayList<Competition> listCompet = new ArrayList<Competition>();
-        boolean result = true;
-        try {
-
-            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlQuery = ("SELECT * FROM competitions where competitions.idcompetitions = ? and competitions.statut = ?");
-
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-            preparedStatement.setInt(1,idCompet);
-            preparedStatement.setString(2,"EN_COURS");
-
-            ResultSet rs = preparedStatement.executeQuery();
-//            result = rs.getFetchSize() != 0;
             while(rs.next()){
-               String nom = rs.getString("nom");
-               result = nom != null;
+               String nom = rs.getString("statut");
+               listCompet.add(nom);
             }
-            endConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return result;
+        endConnection();
+        return !listCompet.isEmpty();
+    }
+    public int getCompetitionActive() {
+        int competition = 0;
+        Statut statut = Statut.EN_COURS;
+        openConnection();
+        try {
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            String sqlQuery = ("SELECT * FROM competitions where statut = ?");
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            preparedStatement.setString(1, statut.toString());
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                competition = rs.getInt("idcompetitions");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        endConnection();
+        return competition;
     }
 
-    public ArrayList<Tournoi> tournamentsToPlay(int idComp){
+    public List<Integer> tournamentsToPlay(int idComp){
         openConnection();
-        ArrayList<Tournoi> listTournois = new ArrayList<Tournoi>();
+        ArrayList<Integer> listTournois = new ArrayList<>();
         Statut statut = Statut.EN_COURS;
         try {
 
@@ -283,16 +146,11 @@ public class Gestion_BDD {
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
             preparedStatement.setInt(1,idComp);
-            preparedStatement.setString(2,"EN_COURS");
+            preparedStatement.setString(2,statut.toString());
 
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
-                int idTournoi = rs.getInt("idtournois");
-                String nomTournoi = rs.getString("nom");
-                int ordreTournoi = rs.getInt("ordre");
-                String statutTour = rs.getString("statut");
-                Tournoi tournoi = new Tournoi(idTournoi, nomTournoi, ordreTournoi, null, statut);
-                listTournois.add(tournoi);
+                listTournois.add(rs.getInt("idtournois"));
             }
             endConnection();
         } catch (SQLException e) {
@@ -300,74 +158,26 @@ public class Gestion_BDD {
         }
         return listTournois;
     }
-    public ArrayList<Manche> gamesToPlay(int idTournoi){
+    public Map<Integer,Integer> getCompetitionLeaderboards(int idComp){
+        Map<Integer, Integer> classement = new LinkedHashMap<Integer, Integer>();
         openConnection();
-        ArrayList<Manche> listParties = new ArrayList<Manche>();
-        Statut statut = Statut.EN_COURS;
         try {
-
             Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlQuery = ("SELECT * FROM parties where parties.idtournois = ? and parties.statut = ?");
+            String sqlQuery = ("SELECT * FROM classementcompet where idcompetitions = ? order by point");
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-            preparedStatement.setInt(1,idTournoi);
-            preparedStatement.setString(2,"EN_COURS");
+            preparedStatement.setInt(1, idComp);
 
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
-                int idParties = rs.getInt("idparties");
-                String nomParties = rs.getString("nompartie");
-                int ordreParties = rs.getInt("ordre");
-
-                Manche manche = new Manche(idParties, nomParties, ordreParties,statut, null);
-                listParties.add(manche);
+                classement.put(rs.getInt("idjoueurs"), rs.getInt("point"));
             }
             endConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return listParties;
+        return classement;
     }
-    public HashMap<Equipe,Integer> getCompetitionLeaderboards(int idComp){
-        openConnection();
-        HashMap<Equipe,Integer> ClassCompet = new HashMap<Equipe,Integer>();
-//        int idequipe = 0;
-//        int point = 0;
-        try {
-
-            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlQuery = ("SELECT * FROM classementcompet where classementcompet.idcompetitions = ?");
-
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-            preparedStatement.setInt(1,idComp);
-
-            ResultSet rs = preparedStatement.executeQuery();
-            while(rs.next()){
-                int idequipe = rs.getInt("idequipe");
-                int point = rs.getInt("point");
-                Equipe equipe = new Equipe(null,idequipe);
-                ClassCompet.put(equipe,point);
-            }
-//            Statement stmt2 = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-//            String sql = ("SELECT * FROM equipes where equipes.idequipe = ?");
-//
-//            PreparedStatement preparedStatement2 = connection.prepareStatement(sql);
-//            preparedStatement2.setInt(1,idequipe);
-//
-//            ResultSet rs2 = preparedStatement2.executeQuery();
-//            while(rs2.next()){
-//                int idequipes = rs.getInt("idequipe");
-//                String nomEquipe = rs.getString("nom");
-//                Equipe equipe = new Equipe(nomEquipe,idequipes);
-//
-//            }
-            endConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return ClassCompet;
-    }
-
     public Map<Integer, Integer> getACompetitionLeaderboards(int idCompetition) {
         Map<Integer, Integer> classement = new LinkedHashMap<Integer, Integer>();
         openConnection();
@@ -955,10 +765,213 @@ public class Gestion_BDD {
         endConnection();
         return result;
     }
+    public Map<Integer, Integer> getClassementAnnuel(String annee, String typeClassement) {
+        Map<Integer, Integer> classement = new LinkedHashMap<Integer, Integer>();
+        openConnection();
+        try {
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            String sqlQuery = ("SELECT * FROM " + typeClassement + " where annee = ? order by classementtournoi.point");
 
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            preparedStatement.setString(1, annee);
 
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                classement.put(rs.getInt("idjoueurs"), rs.getInt("point"));
+            }
+            endConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return classement;
+    }
 
+    public void setPlayerAnnualRanking(int idJoueur, String typeClassement, String annee) {
+        List<Integer> competitions = this.getCompetitionsByAnnee(annee);
+        List<Integer> tournois = new ArrayList<Integer>();
+        competitions.forEach(idCompetition -> {
+            tournois.addAll(this.getACompetitionTournaments(idCompetition));
+        });
+        List<Integer> parties = new ArrayList<Integer>();
+        tournois.forEach(idTournoi -> {
+            parties.addAll(this.getTournamentGames(idTournoi));
+        });
+        List<Integer> equipes = new ArrayList<Integer>();
+        competitions.forEach(idCompetition -> {
+            equipes.addAll(this.getCompetitionTeams(idCompetition));
+        });
+        List<Integer> joueurs = new ArrayList<>();
+        equipes.forEach(idEquipe -> {
+            joueurs.addAll(this.getATeamPlayers(idEquipe));
+        });
 
+        for (int joueur: joueurs) {
+            try {
+                String sqlQuery = ("INSERT INTO " + typeClassement + " (idjoueur, annee, point) " +
+                        "VALUES (?, ?, ?) " +
+                        "ON DUPLICATE KEY UPDATE point = ?;");
+
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+                preparedStatement.setInt(1, joueur);
+                preparedStatement.setString(2, annee);
+                preparedStatement.setInt(3, this.getAPlayerAnnualPoints(joueur, typeClassement, parties));
+                preparedStatement.executeUpdate();
+                preparedStatement.close();
+                endConnection();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public int getAPlayerAnnualPoints(int idJoueur, String typeClassement, List<Integer> games) {
+        int playerPoints = 0;
+        openConnection();
+        for (Integer gameId: games) {
+            try {
+                Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                        ResultSet.CONCUR_READ_ONLY);
+                String sqlQuery = ("SELECT *" +
+                        "FROM " + typeClassement + " " +
+                        "WHERE idjoueurs = ?" +
+                        "and idparties = ?;");
+
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+                preparedStatement.setInt(1, idJoueur);
+                preparedStatement.setInt(2, gameId);
+
+                ResultSet rs = preparedStatement.executeQuery();
+                while(rs.next()){
+                    playerPoints += rs.getInt("point");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return playerPoints;
+
+    }
+
+    public List<Integer> getCompetitionsByAnnee(String annee) {
+        List<Integer> competitions = new ArrayList<>();
+        try {
+            openConnection();
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = stmt.executeQuery("SELECT *" +
+                    "FROM competitions" +
+                    "WHERE RIGHT(competitions.datedebut, 4) = ?;");
+            while(rs.next()){
+                competitions.add(rs.getInt("idcompetitions"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return competitions;
+    }
+
+public List<Integer> getTournamentGames(int tournamentId){
+        openConnection();
+        List<Integer> parties = new ArrayList<>();
+        try {
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            String sqlQuery = ("SELECT * FROM parties where parties.idtournois = ?");
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            preparedStatement.setInt(1, tournamentId);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                parties.add(rs.getInt("idparties"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return parties;
+    }
+        public int getATournoiByName(String tournamentName){
+        openConnection();
+        int tournoi = 0;
+        try {
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            String sqlQuery = ("SELECT * FROM tournois where tournois.nom = ?");
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            preparedStatement.setString(1, tournamentName);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                tournoi = rs.getInt("idtournois");
+            }
+            endConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tournoi;
+    }
+    public ArrayList<Integer> getACompetitionTournaments(int idComp){
+        openConnection();
+        ArrayList<Integer> listTournois = new ArrayList<>();
+        try {
+
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            String sqlQuery = ("SELECT * FROM tournois where tournois.idcompetitions = ?");
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            preparedStatement.setInt(1, idComp);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                listTournois.add(rs.getInt("idtournois"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return listTournois;
+    }
+    public int getACompetitionByName(String compName){
+        openConnection();
+        int competition = 0;
+        try {
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            String sqlQuery = ("SELECT * FROM competitions where competitions.nom = ?");
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            preparedStatement.setString(1, compName);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                competition = (rs.getInt("idcompetitions"));
+            }
+            endConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return competition;
+    }
+    public List<Integer> gamesToPlay(int idTournoi){
+        openConnection();
+        List<Integer> listParties = new ArrayList<>();
+        Statut statut = Statut.EN_COURS;
+        try {
+
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            String sqlQuery = ("SELECT * FROM parties where parties.idtournois = ? and parties.statut = ?");
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            preparedStatement.setInt(1,idTournoi);
+            preparedStatement.setString(2,statut.toString());
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                listParties.add(rs.getInt("idTournoi"));
+            }
+            endConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return listParties;
+    }
 
     public static void main(String[] args) {
         //insertNombreTerritoire(1);

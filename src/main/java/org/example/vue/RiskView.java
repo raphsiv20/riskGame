@@ -50,12 +50,6 @@ public class RiskView extends JFrame implements Observateur {
 
     // initialise l'affichage
     private void initComponents() {
-        System.out.println(model.getBdd().getACompetitionByName("ParisCup").getStatutCompetition());
-        for (Tournoi entry : model.getBdd().getACompetitionTournaments(1)
-             ) {
-            System.out.println(entry.getNomTournoi());
-
-        }
         System.out.println(model.getBdd().getACompetitionTournaments(1));
         String[] listeCompet = {"Compet1", "Compet2", "Compet3",};
         JComboBox<String> comboBox1 = new JComboBox<>(listeCompet);

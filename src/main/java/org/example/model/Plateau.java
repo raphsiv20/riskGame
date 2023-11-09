@@ -460,5 +460,25 @@ public class Plateau extends AbstractModel {
         Random randomCarte = new Random();
         return carteTerritoiresRestantes.get(randomCarte.nextInt(carteTerritoiresRestantes.size()));
 }
+    @Override
+    public Competition getCompetitionByID(int id) {
+        return this.getAllCompetitions().stream()
+                .filter(competition -> competition.getIdCompetition() == id)
+                .toList().get(0);
+    }
+
+    @Override
+    public Tournoi getTournamentByID(int id) {
+        return this.getAllTournaments().stream()
+                .filter(tournoi -> tournoi.getIdTournoi() == id)
+                .toList().get(0);
+    }
+
+    @Override
+    public Manche getGameByID(int id) {
+        return this.getAllGames().stream()
+                .filter(game -> game.getIdManche() == id)
+                .toList().get(0);
+    }
 
  }

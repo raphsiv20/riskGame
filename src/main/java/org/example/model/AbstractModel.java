@@ -26,6 +26,9 @@ public abstract class AbstractModel implements Observable {
     private Tournoi tournoi;
     private Manche manche;
     private Gestion_BDD bdd;
+    private List<Competition> allCompetitions;
+    private List<Tournoi> allTournaments;
+    private List<Manche> allGames;
 
     private List<Joueur> joueursPartie;
     private Tour tours;
@@ -268,6 +271,33 @@ public abstract class AbstractModel implements Observable {
         }
         return res;
     }
+
+    public List<Competition> getAllCompetitions() {
+        return allCompetitions;
+    }
+
+    public void setAllCompetitions(List<Competition> allCompetitions) {
+        this.allCompetitions = allCompetitions;
+    }
+
+    public List<Tournoi> getAllTournaments() {
+        return allTournaments;
+    }
+
+    public void setAllTournaments(List<Tournoi> allTournaments) {
+        this.allTournaments = allTournaments;
+    }
+
+    public List<Manche> getAllGames() {
+        return allGames;
+    }
+
+    public void setAllGames(List<Manche> allGames) {
+        this.allGames = allGames;
+    }
+    public abstract Competition getCompetitionByID(int id);
+    public abstract Tournoi getTournamentByID(int id);
+    public abstract Manche getGameByID(int id);
 
     public abstract CarteTerritoire obtenirCarteTerritoire();
 
