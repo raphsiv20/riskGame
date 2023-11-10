@@ -43,6 +43,12 @@ public class ConsulterController implements ActionListener {
                 classementPartieView.addActionListeners(new ClassementPartieController(model, classementPartieView));
                 classementPartieView.setVisible(true);
                 break;
+            case "Consulter competition performance":
+                System.out.println("Loading classement performance...");
+                ConsulterPerformanceView consulterPerformanceView = new ConsulterPerformanceView(model);
+                consulterPerformanceView.addActionListeners(new ConsulterPerformanceController(model, consulterPerformanceView));
+                consulterPerformanceView.setVisible(true);
+                break;
             case "Back":
                 System.out.println("go back...");
                 view.setVisible(false);

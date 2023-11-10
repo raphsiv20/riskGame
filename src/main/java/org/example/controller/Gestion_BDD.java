@@ -16,7 +16,7 @@ public class Gestion_BDD {
     public void openConnection(){
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd", "root", "projet");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_risk", "root", "Wyc19981128");
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }

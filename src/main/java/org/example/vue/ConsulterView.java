@@ -16,11 +16,13 @@ public class ConsulterView extends JFrame {
     private JButton consulterCompetition;
     private JButton consulterTournois;
     private JButton consulterPartie;
+    private JButton consulterPerformance;
     private JButton quit;
 
     private String consulterCompetitionName = "Consulter classement competition";
     private String consulterTournoisName = "Consulter classement tournois";
     private String consulterPartieButtonName = "Consulter classement partie";
+    private String consulterPerformanceButtonName = "Consulter competition performance";
     private String quitButtonName = "Back";
 
     /**
@@ -58,18 +60,22 @@ public class ConsulterView extends JFrame {
 
         consulterPartie = new JButton("Consulter classement partie");
 
+        consulterPerformance = new JButton("Consulter competition performance");
+
         quit = new JButton("Back");
 
         // Sets button commands
         consulterCompetition.setActionCommand(consulterCompetitionName);
         consulterTournois.setActionCommand(consulterTournoisName);
         consulterPartie.setActionCommand(consulterPartieButtonName);
+        consulterPerformance.setActionCommand(consulterPerformanceButtonName);
         quit.setActionCommand(quitButtonName);
 
         // Adds buttons to mainPanel
         mainPanel.add(consulterCompetition);
         mainPanel.add(consulterTournois);
         mainPanel.add(consulterPartie);
+        mainPanel.add(consulterPerformance);
         mainPanel.add(quit);
 
         return mainPanel;
@@ -81,6 +87,7 @@ public class ConsulterView extends JFrame {
         consulterCompetition.addActionListener(evt);
         consulterTournois.addActionListener(evt);
         consulterPartie.addActionListener(evt);
+        consulterPerformance.addActionListener(evt);
         quit.addActionListener(evt);
     }
 }
