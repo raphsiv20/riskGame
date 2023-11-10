@@ -187,7 +187,7 @@ public class Plateau extends AbstractModel {
         this.addEquipe(equipes);
         this.addJoueurs(joueurs);
         this.attribuerEquipePartie();
-        /* for (Map.Entry<Integer, List<String>> entry: getBdd().getAllCompetitions().entrySet()) {
+        for (Map.Entry<Integer, List<String>> entry: getBdd().getAllCompetitions().entrySet()) {
             this.addCompetition(new Competition(entry.getKey(), entry.getValue().get(0), entry.getValue().get(1), entry.getValue().get(2), Statut.valueOf(entry.getValue().get(3))));
         }
         for (Map.Entry<List<Integer>, List<String>> entry: getBdd().getAllTournaments().entrySet()) {
@@ -196,7 +196,7 @@ public class Plateau extends AbstractModel {
         for (Map.Entry<List<Integer>, List<String>> entry: getBdd().getAllGames().entrySet()) {
             this.addPartie(new Manche(entry.getKey().get(0), entry.getValue().get(0), entry.getKey().get(1), Statut.valueOf(entry.getValue().get(1)), this.getTournamentByID(entry.getKey().get(2))));
         }
-        System.out.println(getAllGames().size()); */
+        System.out.println(getAllGames().size());
     }
 
     @Override
@@ -470,6 +470,13 @@ public class Plateau extends AbstractModel {
     public Equipe getEquipeByName(String nomEquipe) {
         return this.getEquipes().stream()
                 .filter(equipe -> equipe.getNomEquipe().equals(nomEquipe))
+                .toList().get(0);
+    }
+
+    @Override
+    public Equipe getEquipeById(int idEquipe) {
+        return this.getEquipes().stream()
+                .filter(equipe -> equipe.getIdEquipe() == (idEquipe))
                 .toList().get(0);
     }
 

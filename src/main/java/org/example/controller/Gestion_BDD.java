@@ -131,7 +131,7 @@ public class Gestion_BDD {
 
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
-                classement.put(rs.getInt("idjoueurs"), rs.getInt("point"));
+                classement.put(rs.getInt("idequipe"), rs.getInt("point"));
             }
             endConnection();
         } catch (SQLException e) {
@@ -185,7 +185,7 @@ public class Gestion_BDD {
         openConnection();
         try {
             Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlQuery = ("SELECT * FROM classementpartie where classementpartie.idparties = ? order by classementpartie.point desc");
+            String sqlQuery = ("SELECT * FROM classepartie where classepartie.idparties = ? order by classepartie.point desc");
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
             preparedStatement.setInt(1, idGame);
@@ -300,6 +300,7 @@ public class Gestion_BDD {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
                 preparedStatement.setInt(1, idCompetition);
                 preparedStatement.setInt(2, idequipe);
+                System.out.println(date);
                 preparedStatement.setString(3,date);
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
@@ -375,10 +376,10 @@ public class Gestion_BDD {
         openConnection();
         try {
             Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sqlQuery = ("SELECT * FROM classementpartie, parties " +
-                    "where classementpartie.idparties = parties.idparties " +
+            String sqlQuery = ("SELECT * FROM classepartie, parties " +
+                    "where classepartie.idparties = parties.idparties " +
                     "and parties.idtournois = ? " +
-                    "and classementpartie.idjoueurs = ?; ");
+                    "and classepartie.idjoueurs = ?; ");
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
             preparedStatement.setInt(1, idTournoi);
@@ -512,7 +513,7 @@ public class Gestion_BDD {
         openConnection();
         try {
             String sqlQuery = ("UPDATE parties " +
-                    "set partie.statut = ? " +
+                    "set parties.statut = ? " +
                     "where parties.idparties = ?; ");
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
@@ -629,7 +630,7 @@ public class Gestion_BDD {
                 partieInfos.add(rs.getString("nompartie"));
                 partieInfos.add(rs.getString("statut"));
 
-                idPartie.add(rs.getInt("idpartie"));
+                idPartie.add(rs.getInt("idparties"));
                 idPartie.add(rs.getInt("ordre"));
                 idPartie.add(rs.getInt("idtournois"));
                 games.put(idPartie, partieInfos);
@@ -767,14 +768,48 @@ public class Gestion_BDD {
                 idTournoi = rs.getInt("MAX(idtournois)")+1;
             }
 
-            String sql_malchanceux = "insert into tournois values (?, ?, ?, ?,?, ?);";
+            String sql_malchanceux = "insert into tournois values (?, ?, ?, ?,?,?);";
             PreparedStatement pstmt_competition = connection.prepareStatement(sql_malchanceux);
             pstmt_competition.setInt(1, idTournoi);
             pstmt_competition.setString(2, infos.get(0));
             pstmt_competition.setInt(3, Integer.parseInt(infos.get(1)));
             pstmt_competition.setString(4, infos.get(2));
-            pstmt_competition.setString(5, Statut.PAS_COMMENCE.toString());
-            pstmt_competition.setInt(6, this.getACompetitionByName(infos.get(3)));
+            pstmt_competition.setString(6, Statut.PAS_COMMENCE.toString());
+            pstmt_competition.setInt(5, this.getACompetitionByName(infos.get(3)));
+            pstmt_competition.executeUpdate();
+            pstmt_competition.close();
+            result = true;
+        }
+        catch (Exception e){
+
+            e.printStackTrace();
+        }
+        endConnection();
+        return result;
+    }
+
+    public boolean insertPartie (ArrayList<String> infos) {
+        this.openConnection();
+        int idPartie = 0;
+        boolean result = false;
+        try {
+            String sql = "SELECT MAX(idparties) FROM parties;";
+
+            PreparedStatement pstmt1_competition = connection.prepareStatement(sql);
+            ResultSet rs = pstmt1_competition.executeQuery();
+
+            if (rs.next()) {
+                // Extract the results and store them in the 'result' array
+                idPartie = rs.getInt("MAX(idparties)")+1;
+            }
+
+            String sql_malchanceux = "insert into parties values (?, ?, ?, ?,?);";
+            PreparedStatement pstmt_competition = connection.prepareStatement(sql_malchanceux);
+            pstmt_competition.setInt(1, idPartie);
+            pstmt_competition.setString(2, infos.get(0));
+            pstmt_competition.setInt(3, Integer.parseInt(infos.get(1)));
+            pstmt_competition.setInt(4, this.getATournoiByName(infos.get(2)));
+            pstmt_competition.setString(5, Statut.EN_COURS.toString());
             pstmt_competition.executeUpdate();
             pstmt_competition.close();
             result = true;
@@ -999,6 +1034,26 @@ public List<Integer> getTournamentGames(int tournamentId){
         }
         return competition;
     }
+
+    public int getAGameByName(String gameName){
+        openConnection();
+        int game = 0;
+        try {
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            String sqlQuery = ("SELECT * FROM parties where nompartie = ?");
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            preparedStatement.setString(1, gameName);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                game = (rs.getInt("idparties"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return game;
+    }
     public List<Integer> gamesToPlay(int idTournoi){
         openConnection();
         List<Integer> listParties = new ArrayList<>();
@@ -1025,15 +1080,15 @@ public List<Integer> getTournamentGames(int tournamentId){
     public void insertClassementPartie(LinkedHashMap<Joueur,Integer> classement, int idPartie) {
         try {
             openConnection();
-            String sql_insertClassement = "insert into classementpartie values (?, ?, ?);";
+            String sql_insertClassement = "insert into classepartie values (?, ?, ?);";
             Iterator<Map.Entry<Joueur, Integer>> entryIterator = classement.entrySet().iterator();
             int point = 10;
             while (entryIterator.hasNext()) {
                 Map.Entry<Joueur, Integer> next = entryIterator.next();
                 PreparedStatement pstmt_competition = connection.prepareStatement(sql_insertClassement);
-                pstmt_competition.setInt(1, next.getKey().getIdJoueur());
+                pstmt_competition.setInt(3, next.getKey().getIdJoueur());
                 pstmt_competition.setInt(2, idPartie);
-                pstmt_competition.setInt(3, point);
+                pstmt_competition.setInt(1, point);
                 pstmt_competition.executeUpdate();
                 pstmt_competition.close();
                 point -= 2;

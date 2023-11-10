@@ -37,18 +37,18 @@ public class ClassementCompetitionController extends AbstractViewController impl
         if (actionEvent.equals("Confirmer")) {
             System.out.println("loading ");
             System.out.println(view.getListCompetition().getSelectedItem());
-            /* String statutComp = model.getCompetitionByName(view.getListCompetition().getSelectedItem().toString()).getStatutCompetition().toString();
+            String statutComp = model.getCompetitionByName(view.getListCompetition().getSelectedItem().toString()).getStatutCompetition().toString();
             Map<Integer, Integer> classement = model.getBdd().getCompetitionLeaderboards(model.getCompetitionByName(view.getListCompetition().getSelectedItem().toString()).getIdCompetition());
             StringBuilder message = new StringBuilder();
-            message.append("Classement de la compétition ").append(view.getListCompetition().getSelectedItem()).append(" ").append(statutComp).append(":\n"); */
-            if (/* !classement.isEmpty() */ false) {
-                JOptionPane.showMessageDialog(null, "suuu", "Classement", JOptionPane.INFORMATION_MESSAGE);
-                /* int ranking = 0;
+            message.append("Classement de la compétition ").append(view.getListCompetition().getSelectedItem()).append(" ").append(statutComp).append(":\n");
+            if (!classement.isEmpty()) {
+                //JOptionPane.showMessageDialog(null, "suuu", "Classement", JOptionPane.INFORMATION_MESSAGE);
+                int ranking = 1;
                 for (Map.Entry<Integer, Integer> entry : classement.entrySet()) {
-                    message.append(ranking).append(". - ").append(model.getAJoueurById(entry.getKey())).append(": ").append(entry.getValue()).append("pts\n");
+                    message.append(ranking).append(". - ").append(model.getEquipeById(entry.getKey()).getNomEquipe()).append(": ").append(entry.getValue()).append("pts\n");
                     ranking++;
                 }
-                JOptionPane.showMessageDialog(null, message.toString(), "Classement", JOptionPane.INFORMATION_MESSAGE); */
+                JOptionPane.showMessageDialog(null, message.toString(), "Classement", JOptionPane.INFORMATION_MESSAGE);
 
             } else {
                 this.showPopup("Cette compétition n'a pas de classement pour l'instant.", "Pas de classement");

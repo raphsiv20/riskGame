@@ -30,12 +30,12 @@ public class AffecterEquipeController extends AbstractViewController implements 
             System.out.println(model.getEquipeByName(view.getEquipeDropdown().getSelectedItem().toString()).getIdEquipe());
             System.out.println(view.getCompetDropdown().getSelectedItem());
             LocalDate currentDate = LocalDate.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             String dateString = currentDate.format(formatter);
-            //int idCompetition = model.getCompetitionByName(view.getCompetDropdown().getSelectedItem().toString()).getIdCompetition();
+            int idCompetition = model.getCompetitionByName(view.getCompetDropdown().getSelectedItem().toString()).getIdCompetition();
             int idEquipe = model.getEquipeByName(view.getEquipeDropdown().getSelectedItem().toString()).getIdEquipe();
             System.out.println(idEquipe);
-            if (/* model.getBdd().setTeamCompetition(idCompetition, idEquipe, dateString) */ true) {
+            if (model.getBdd().setTeamCompetition(idCompetition, idEquipe, dateString) ) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Equipe ").append(view.getEquipeDropdown().getSelectedItem()).append(" affectée à la compétition ").append(view.getCompetDropdown().getSelectedItem());
                 this.showPopup(sb.toString(), "Equipe affectée.");

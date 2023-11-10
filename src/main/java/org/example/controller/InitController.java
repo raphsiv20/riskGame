@@ -50,6 +50,7 @@ public class InitController implements ActionListener {
             consulterView.setVisible(true);
 
         } else if (actionEvent.equals("Jouer")) {
+            view.setVisible(false);
             System.out.println("Loading OrgaView...");
             //Opens the playerCountDialog
             RiskView riskView1 = new RiskView(model, new PlateauControler(model));

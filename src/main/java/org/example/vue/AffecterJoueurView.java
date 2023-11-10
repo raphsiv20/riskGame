@@ -56,10 +56,10 @@ public class AffecterJoueurView extends JFrame {
         JLabel joueurLabel = new JLabel("Choisir le joueur: ");
 
         tournoiDrompdown = new JComboBox<String>();
-        /* for (Tournoi tournoi : tournois) {
+        for (Tournoi tournoi : tournois) {
             tournoiDrompdown.addItem(tournoi.getNomTournoi());
-        }  */
-        tournoiDrompdown.addItem("djkndskjvn");
+        }
+        //tournoiDrompdown.addItem("djkndskjvn");
 
         JLabel tournoiLabel = new JLabel("Choisir le tournoi: ");
 

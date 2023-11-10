@@ -9,11 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import static org.example.ressourcesImg.RessourcesImages.AFGHANISTAN;
 import static org.example.ressourcesImg.RessourcesImages.ALASKA;
@@ -40,7 +37,7 @@ public class RiskView extends JFrame implements Observateur {
 
     public RiskView(AbstractModel model, AbstractControler controler) {
         this.model = model;
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         initComponents();
         this.mouseListener = new MouseListener(controler);
         this.panelJeu.addMouseListener(this.mouseListener);
@@ -66,39 +63,52 @@ public class RiskView extends JFrame implements Observateur {
             }
             String tournoiChoisi = (String) JOptionPane.showInputDialog(
                     Frame.getFrames()[0],
-                    "Sélectionnez la compétition :",
+                    "Sélectionnez le tournoi :",
                     "Choix du tournoi",
                     JOptionPane.QUESTION_MESSAGE,
                     null,
                     listeTournois,
                     0
             );
+            model.setTournoi(model.getTournamentByName(tournoiChoisi));
+            ArrayList<String> infosPartie = new ArrayList<>();
+            infosPartie.add(tournoiChoisi + " partie");
+            infosPartie.add("3");
+            infosPartie.add(model.getTournamentByName(tournoiChoisi).getNomTournoi());
+            infosPartie.add(Statut.EN_COURS.toString());
+            model.getBdd().insertPartie(infosPartie);
+            Manche newManche = new Manche(model.getBdd().getAGameByName(infosPartie.get(0)), infosPartie.get(0), Integer.parseInt(infosPartie.get(1)), Statut.EN_COURS, model.getTournamentByName(tournoiChoisi));
+            model.addPartie(newManche);
+            model.setManche(newManche);
 
+
+        } else {
+            String[] listeCompet = {"Compet1", "Compet2", "Compet3",};
+            JComboBox<String> comboBox1 = new JComboBox<>(listeCompet);
+            String[] listeTournoi = {"Tournoi1", "Tournoi2", "Tournoi3"};
+            JComboBox<String> comboBox2 = new JComboBox<>(listeTournoi);
+            String territoireCibleNom = (String) JOptionPane.showInputDialog(
+                    Frame.getFrames()[0],
+                    "Sélectionnez la compétition :",
+                    "Choix du tournoi",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    listeCompet,
+                    0
+            );
+            String territoireCibleNo = (String) JOptionPane.showInputDialog(
+                    Frame.getFrames()[0],
+                    "Sélectionnez la compétition :",
+                    "Choix du tournoi",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    listeTournoi,
+                    0
+            );
         }
-        String[] listeCompet = {"Compet1", "Compet2", "Compet3",};
-        JComboBox<String> comboBox1 = new JComboBox<>(listeCompet);
-        String[] listeTournoi = {"Tournoi1", "Tournoi2", "Tournoi3"};
-        JComboBox<String> comboBox2 = new JComboBox<>(listeTournoi);
 
 
-        String territoireCibleNom = (String) JOptionPane.showInputDialog(
-                Frame.getFrames()[0],
-                "Sélectionnez la compétition :",
-                "Choix du tournoi",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                listeCompet,
-                0
-        );
-        String territoireCibleNo = (String) JOptionPane.showInputDialog(
-                Frame.getFrames()[0],
-                "Sélectionnez la compétition :",
-                "Choix du tournoi",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                listeTournoi,
-                0
-        );
+
         panelJeu = new PanelJeu(this);
 
         // label tour
@@ -107,7 +117,7 @@ public class RiskView extends JFrame implements Observateur {
         labelCarteTerritoire = new javax.swing.JTextArea();
         labelCarteTerritoire.setEditable(false);
         labelCarteTerritoire.setVisible(true);
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         labelJoueur.setEditable(false);
 
         // label phase de jeu
@@ -207,17 +217,32 @@ public class RiskView extends JFrame implements Observateur {
                         "point conquérant " + j.getPtsConquerant()
                 );
             }
-            model.endGame();
+
+            LinkedHashMap<Joueur, Integer> classementPartie = model.endGame();
+             System.out.println(classementPartie.values());
+            model.getBdd().insertClassementPartie(classementPartie, model.getManche().getIdManche());
+            model.getBdd().setTournamentLeaderboards(model.getTournoi().getIdTournoi());
+            model.getBdd().setCompetitionLeaderboards(model.getCompetition().getIdCompetition());
+            model.getBdd().updatePartieStatus(model.getManche().getIdManche(), Statut.TERMINE.toString());
+            if (model.getBdd().isTournamentFinished(model.getTournoi().getIdTournoi())) {
+                model.getBdd().updateTournamentStatus(model.getTournoi().getIdTournoi(), Statut.TERMINE.toString());
+                model.getBdd().setTournamentLeaderboards(model.getTournoi().getIdTournoi());
+
+            }
+            if (model.getBdd().isCompetitionFinished(model.getCompetition().getIdCompetition())) {
+                model.getBdd().updateCompetitionStatus(model.getCompetition().getIdCompetition(), Statut.TERMINE.toString());
+                model.getBdd().setCompetitionLeaderboards(model.getCompetition().getIdCompetition());
+            }
 
             // update performance des joueurs de partie veres DB
             model.getBdd().insertClassementPerformancesPartie(model.getJoueursPartie(), model.getManche().getIdManche());
 
             // afficher performance partie
 
-            int[] malChanceux = model.getBdd().getPerformanceJoueur(1, "classeMalchanceux");
-            int[] Belliqueux = model.getBdd().getPerformanceJoueur(1, "classeBelliqueux");
-            int[] Bouclier = model.getBdd().getPerformanceJoueur(1, "classeBouclier");
-            int[] Conquerant = model.getBdd().getPerformanceJoueur(1, "classeConquerant");
+            int[] malChanceux = model.getBdd().getPerformanceJoueur(model.getManche().getIdManche(), "malchanceuxpartie");
+            int[] Belliqueux = model.getBdd().getPerformanceJoueur(model.getManche().getIdManche(), "beliqueuxpartie");
+            int[] Bouclier = model.getBdd().getPerformanceJoueur(model.getManche().getIdManche(), "bouclierpartie");
+            int[] Conquerant = model.getBdd().getPerformanceJoueur(model.getManche().getIdManche(), "conquerantpartie");
 
             HashMap<String, String[]> result = new HashMap<>();
             result.put("Malchanceux" , new String[]{model.getAJoueurById(malChanceux[0]).getNomJoueur(), String.valueOf(malChanceux[1])});
@@ -232,6 +257,18 @@ public class RiskView extends JFrame implements Observateur {
 
              // 显示消息框
              JOptionPane.showMessageDialog(null, message.toString(), "Performance pour cette partie", JOptionPane.INFORMATION_MESSAGE);
+             int rankings = 1;
+             StringBuilder message2 = new StringBuilder("Classement partie:\n");
+             for (Map.Entry<Joueur, Integer> entry : classementPartie.entrySet()) {
+                 System.out.println(entry.getKey().getNomJoueur());
+                 System.out.println(entry.getValue());
+
+                 message2.append(entry.getValue()).append(". - ").append(entry.getKey().getNomJoueur()).append("\n");
+                 rankings++;
+             }
+
+             // 显示消息框
+             JOptionPane.showMessageDialog(null, message2.toString(), "Classement partie", JOptionPane.INFORMATION_MESSAGE);
 
 
          }

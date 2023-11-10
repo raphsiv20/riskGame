@@ -40,7 +40,6 @@ public class ClassementCompetitionView extends JFrame {
         setResizable(true);
         add(mainPanel());
 
-//        this.strAarraysCompetition = getListCompetition();
 
         pack();
         setVisible(true);
@@ -56,10 +55,10 @@ public class ClassementCompetitionView extends JFrame {
 
         JLabel nomComp = new JLabel("Choisir la compétition");
         listCompetition = new JComboBox<String>();
-        /* for (Competition comp : competitions) {
+        for (Competition comp : competitions) {
             listCompetition.addItem(comp.getNomCompetition());
-        } */
-        listCompetition.addItem("djkndskjvn");
+        }
+        //listCompetition.addItem("djkndskjvn");
 
         mainPanel.add(nomComp);
         mainPanel.add(listCompetition);

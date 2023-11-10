@@ -58,10 +58,10 @@ public class AffecterEquipeView extends JFrame {
         JLabel equipeLabel = new JLabel("Choisir l'équipe: ");
 
         competDropdown = new JComboBox<String>();
-        /* for (Competition comp : competitions) {
+        for (Competition comp : competitions) {
             competDropdown.addItem(comp.getNomCompetition());
-        } */
-        competDropdown.addItem("djkndskjvn");
+        }
+        //competDropdown.addItem("djkndskjvn");
 
         JLabel competLabel = new JLabel("Choisir La compétition: ");
 

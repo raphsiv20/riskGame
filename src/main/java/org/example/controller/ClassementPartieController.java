@@ -34,20 +34,18 @@ public class ClassementPartieController extends AbstractViewController implement
 
         if (actionEvent.equals("Confirmer")) {
             System.out.println("loading ");
-            System.out.println(view.getCompChosenName());
-            System.out.println(view.getTournamentChosenName());
             System.out.println(view.getListPartie().getSelectedItem());
-            //Map<Integer, Integer> classement = model.getBdd().getAGameLeaderboards(model.getGameByName(view.getListPartie().getSelectedItem().toString()).getIdManche());
+            Map<Integer, Integer> classement = model.getBdd().getAGameLeaderboards(model.getGameByName(view.getListPartie().getSelectedItem().toString()).getIdManche());
             StringBuilder message = new StringBuilder();
             message.append("Classement de la partie ").append(view.getListPartie().getSelectedItem()).append(":\n");
-            if (/* !classement.isEmpty() */ true) {
-                JOptionPane.showMessageDialog(null, message, "Classement", JOptionPane.INFORMATION_MESSAGE);
-                /* int ranking = 0;
+            if (!classement.isEmpty()) {
+                //JOptionPane.showMessageDialog(null, message, "Classement", JOptionPane.INFORMATION_MESSAGE);
+                int ranking = 1;
                 for (Map.Entry<Integer, Integer> entry : classement.entrySet()) {
-                    message.append(ranking).append(". - ").append(model.getAJoueurById(entry.getKey())).append(": ").append(entry.getValue()).append("pts\n");
+                    message.append(ranking).append(". - ").append(model.getAJoueurById(entry.getKey()).getNomJoueur()).append(": ").append(entry.getValue()).append("pts\n");
                     ranking++;
                 }
-                JOptionPane.showMessageDialog(null, message.toString(), "Classement", JOptionPane.INFORMATION_MESSAGE); */
+                JOptionPane.showMessageDialog(null, message.toString(), "Classement", JOptionPane.INFORMATION_MESSAGE);
 
             } else {
                 this.showPopup("Cette partie n'a pas de classement pour l'instant.", "Pas de classement");

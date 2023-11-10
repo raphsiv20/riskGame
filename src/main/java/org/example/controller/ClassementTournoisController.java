@@ -36,18 +36,18 @@ public class ClassementTournoisController extends AbstractViewController impleme
             System.out.println("loading ");
             System.out.println(view.getListTournoisCompetion().getSelectedItem());
             System.out.println(view.getCompChosenName());
-            /* String statutTournoi = model.getTournamentByName(view.getListTournoisCompetion().getSelectedItem().toString()).getStatutTournoi().toString();
-            Map<Integer, Integer> classement = model.getBdd().getATournamentLeaderboards(model.getTournamentByName(view.getCompChosenName().toString()).getIdTournoi());
+            String statutTournoi = model.getTournamentByName(view.getListTournoisCompetion().getSelectedItem().toString()).getStatutTournoi().toString();
+            Map<Integer, Integer> classement = model.getBdd().getATournamentLeaderboards(model.getTournamentByName(view.getListTournoisCompetion().getSelectedItem().toString()).getIdTournoi());
             StringBuilder message = new StringBuilder();
-            message.append("Classement du tournoi ").append(view.getListTournoisCompetion().getSelectedItem()).append(" ").append(statutTournoi).append(":\n");  */
-            if (/* !classement.isEmpty() */ true) {
-                JOptionPane.showMessageDialog(null, "suuu", "Classement", JOptionPane.INFORMATION_MESSAGE);
-                /* int ranking = 1;
+            message.append("Classement du tournoi ").append(view.getListTournoisCompetion().getSelectedItem()).append(" ").append(statutTournoi).append(":\n");
+            if (!classement.isEmpty()) {
+                //JOptionPane.showMessageDialog(null, "suuu", "Classement", JOptionPane.INFORMATION_MESSAGE);
+                int ranking = 1;
                 for (Map.Entry<Integer, Integer> entry : classement.entrySet()) {
-                    message.append(ranking).append(". - ").append(model.getAJoueurById(entry.getKey())).append(": ").append(entry.getValue()).append("pts\n");
+                    message.append(ranking).append(". - ").append(model.getAJoueurById(entry.getKey()).getNomJoueur()).append(": ").append(entry.getValue()).append("pts\n");
                     ranking++;
                 }
-                JOptionPane.showMessageDialog(null, message.toString(), "Classement", JOptionPane.INFORMATION_MESSAGE); */
+                JOptionPane.showMessageDialog(null, message.toString(), "Classement", JOptionPane.INFORMATION_MESSAGE);
 
             } else {
                 this.showPopup("Ce tournoi n'a pas de classement pour l'instant.", "Pas de classement");

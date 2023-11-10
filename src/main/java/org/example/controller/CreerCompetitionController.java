@@ -1,6 +1,8 @@
 package org.example.controller;
 
 import org.example.model.AbstractModel;
+import org.example.model.Competition;
+import org.example.model.Statut;
 import org.example.vue.CreerCompetitionView;
 
 import javax.swing.*;
@@ -34,11 +36,12 @@ public class CreerCompetitionController extends AbstractViewController implement
         if (actionEvent.equals("Creer")) {
             System.out.println("loading ");
             ArrayList<String> info = view.getCompetitionInfos();
-            if (/* gestionBdd.insertCompetition(info) */ true) {
+            if (gestionBdd.insertCompetition(info)) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Création de la compétition ").append(info.get(0)).append(" terminée.");
                 this.showPopup(sb.toString(), "Compétition crée");
                 view.setVisible(false);
+                model.addCompetition(new Competition(model.getAllCompetitions().size(), info.get(0), info.get(1), info.get(2), Statut.PAS_COMMENCE));
             } else {
                 this.showPopup("La création de la compétition a échouée", "Echec");
             }

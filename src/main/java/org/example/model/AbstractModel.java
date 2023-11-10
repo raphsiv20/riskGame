@@ -184,6 +184,7 @@ public abstract class AbstractModel implements Observable {
     public abstract Joueur getAJoueurById(int joueurId);
 
     public abstract Equipe getEquipeByName(String nomEquipe);
+    public abstract Equipe getEquipeById(int idEquipe);
     public abstract Joueur getJoueurByName(String nomJoueur);
     public abstract CarteTerritoire getACarteTerritoireByTerritoireName(String countryName);
 

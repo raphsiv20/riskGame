@@ -28,13 +28,13 @@ public class AffecterJoueurController extends AbstractViewController implements 
             System.out.println("Affecter button clicked");
             System.out.println(model.getJoueurByName(view.getJoueurDropdown().getSelectedItem().toString()).getIdJoueur());
             System.out.println(view.getTournoiDrompdown().getSelectedItem());
-            //int idTournoi = model.getTournamentByName(view.getTournoiDrompdown().getSelectedItem().toString()).getIdTournoi();
+            int idTournoi = model.getTournamentByName(view.getTournoiDrompdown().getSelectedItem().toString()).getIdTournoi();
             //System.out.println(idTournoi);
             int idJoueur = model.getJoueurByName(view.getJoueurDropdown().getSelectedItem().toString()).getIdJoueur();
             System.out.println(idJoueur);
-            if (/* model.getBdd().setJoueurTournoi(idTournoi, idJoueur) */ true) {
+            if (model.getBdd().setJoueurTournoi(idTournoi, idJoueur)) {
                 StringBuilder sb = new StringBuilder();
-                sb.append("Joueur ").append(view.getJoueurDropdown().getSelectedItem()).append(" affectée au tournoi ").append(view.getTournoiDrompdown().getSelectedItem());
+                sb.append("Joueur ").append(view.getJoueurDropdown().getSelectedItem()).append(" affecté au tournoi ").append(view.getTournoiDrompdown().getSelectedItem());
                 this.showPopup(sb.toString(), "Joueur affecté");
                 view.setVisible(false);
             } else {

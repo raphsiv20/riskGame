@@ -39,7 +39,7 @@ public class ClassementTournoisView extends JFrame {
     public ClassementTournoisView(AbstractModel model)
     {
         this.model = model;
-        //this.competitions = model.getAllCompetitions();
+        this.competitions = model.getAllCompetitions();
 
 
         setTitle("Classement tournois");
@@ -65,43 +65,43 @@ public class ClassementTournoisView extends JFrame {
 
         JLabel compLabel = new JLabel("Choisir la compétition: ");
         listCompetition = new JComboBox<String>();
-        /* for (Competition comp : competitions) {
+        for (Competition comp : competitions) {
             listCompetition.addItem(comp.getNomCompetition());
-        } */
-        listCompetition.addItem("comp1");
-        listCompetition.addItem("comp2");
-        //this.competitionChosen = model.getCompetitionByName(listCompetition.getSelectedItem().toString());
-        this.compChosenName = listCompetition.getSelectedItem().toString();
-        System.out.println("suuuu " + compChosenName);
-        /* this.tournois = model.getBdd().getACompetitionTournaments(competitionChosen.getIdCompetition()).stream()
+        }
+        /*listCompetition.addItem("comp1");
+        listCompetition.addItem("comp2");*/
+        this.competitionChosen = model.getCompetitionByName(listCompetition.getSelectedItem().toString());
+        //this.compChosenName = listCompetition.getSelectedItem().toString();
+        //System.out.println("suuuu " + compChosenName);
+        this.tournois = model.getBdd().getACompetitionTournaments(competitionChosen.getIdCompetition()).stream()
                         .map(model::getTournamentByID)
-                        .toList(); */
+                        .toList();
 
         JLabel tournoiLabel = new JLabel("Choisir le tournoi: ");
         listTournoisCompetion = new JComboBox<String>();
-        /* for (Tournoi tournoi : tournois) {
+        for (Tournoi tournoi : tournois) {
             listTournoisCompetion.addItem(tournoi.getNomTournoi());
-        } */
-        listTournoisCompetion.addItem("t1");
+        }
+        //listTournoisCompetion.addItem("t1");
 
         listCompetition.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //competitionChosen = model.getCompetitionByName(listCompetition.getSelectedItem().toString());
-                compChosenName = listCompetition.getSelectedItem().toString();
-                System.out.println(compChosenName);
-                /* tournois = model.getBdd().getACompetitionTournaments(competitionChosen.getIdCompetition()).stream()
+                competitionChosen = model.getCompetitionByName(listCompetition.getSelectedItem().toString());
+                //compChosenName = listCompetition.getSelectedItem().toString();
+                //System.out.println(compChosenName);
+                tournois = model.getBdd().getACompetitionTournaments(competitionChosen.getIdCompetition()).stream()
                         .map(model::getTournamentByID)
-                        .toList(); */
+                        .toList();
 
                 listTournoisCompetion.removeAllItems();
 
 
 
-                /* for (Tournoi tournoi : tournois) {
+                for (Tournoi tournoi : tournois) {
                 listTournoisCompetion.addItem(tournoi.getNomTournoi());
-                } */
-                listTournoisCompetion.addItem("new t1");
+                }
+                //listTournoisCompetion.addItem("new t1");
                 mainPanel.revalidate();
 
             }

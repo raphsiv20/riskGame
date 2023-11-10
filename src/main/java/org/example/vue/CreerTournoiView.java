@@ -62,10 +62,10 @@ public class CreerTournoiView extends JFrame {
 
         nomTournoi = new JTextField("first");
         listCompetition = new JComboBox<String>();
-        /* for (Competition comp : competitions) {
+        for (Competition comp : competitions) {
             listCompetition.addItem(comp.getNomCompetition());
-        } */
-        listCompetition.addItem("djkndskjvn");
+        }
+        //listCompetition.addItem("djkndskjvn");
         ordreTournoi = new JTextField("Ordre du tournoi");
         dateTournoi = new JTextField("2023/11/03");
 
@@ -102,6 +102,11 @@ public class CreerTournoiView extends JFrame {
     }
 
     // Get methods for text fields
+
+
+    public JComboBox<String> getListCompetition() {
+        return listCompetition;
+    }
 
     public ArrayList<String> getTournoiInfos()
     {

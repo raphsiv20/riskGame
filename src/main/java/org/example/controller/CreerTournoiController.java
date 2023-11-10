@@ -1,6 +1,8 @@
 package org.example.controller;
 
 import org.example.model.AbstractModel;
+import org.example.model.Statut;
+import org.example.model.Tournoi;
 import org.example.vue.CreerCompetitionView;
 import org.example.vue.CreerTournoiView;
 
@@ -35,26 +37,13 @@ public class CreerTournoiController extends AbstractViewController implements Ac
             System.out.println("loading ");
             ArrayList<String> info = view.getTournoiInfos();
             System.out.println(info);
-            if (/* gestionBdd.insertTournoi(info) */true) {
+            if (gestionBdd.insertTournoi(info)) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Création du tournoi ").append(info.get(0)).append(" terminée.");
                 this.showPopup(sb.toString(), "Tournoi crée");
                 view.setVisible(false);
-                /* System.out.println("Competition created with GREAT SUCCESS!!!!");
-                JOptionPane popup = new JOptionPane("Création du tournoi terminée.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION,null, new Object[]{}, null);
-                JDialog popupDialog = popup.createDialog("Tournoi créé");
-                Timer timer = new Timer(2000, new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        popupDialog.setVisible(false);
-                        popupDialog.dispose();
-                    }
-                });
-                timer.setRepeats(false);
-                timer.start();
-                popupDialog.setVisible(true); */
-                view.setVisible(false);
-            } else if (!gestionBdd.insertCompetition(info)) {
+                model.addTournoi(new Tournoi(model.getAllTournaments().size(), info.get(0), Integer.parseInt(info.get(1)), model.getCompetitionByName(view.getListCompetition().getSelectedItem().toString()), Statut.PAS_COMMENCE));
+            } else {
                 this.showPopup("La création du tournoi a échouée", "Echec");
             }
         } else if (actionEvent.equals("Revenir")) {
