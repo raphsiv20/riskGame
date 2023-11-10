@@ -27,19 +27,19 @@ public class ConsulterController implements ActionListener {
         switch (actionEvent) {
             case "Consulter classement competition":
                 System.out.println("Loading classement Competition...");
-                ClassementCompetitionView classementCompetitionView = new ClassementCompetitionView();
+                ClassementCompetitionView classementCompetitionView = new ClassementCompetitionView(model);
                 classementCompetitionView.addActionListeners(new ClassementCompetitionController(model, classementCompetitionView));
                 classementCompetitionView.setVisible(true);
                 break;
             case "Consulter classement tournois":
                 System.out.println("Loading classement tournois...");
-                ClassementTournoisView classementTournoisView = new ClassementTournoisView();
+                ClassementTournoisView classementTournoisView = new ClassementTournoisView(model);
                 classementTournoisView.addActionListeners(new ClassementTournoisController(model, classementTournoisView));
                 classementTournoisView.setVisible(true);
                 break;
             case "Consulter classement partie":
                 System.out.println("Loading classement partie...");
-                ClassementPartieView classementPartieView = new ClassementPartieView();
+                ClassementPartieView classementPartieView = new ClassementPartieView(model);
                 classementPartieView.addActionListeners(new ClassementPartieController(model, classementPartieView));
                 classementPartieView.setVisible(true);
                 break;

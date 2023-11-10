@@ -290,8 +290,9 @@ public class Gestion_BDD {
         endConnection();
 
     }
-    public void setTeamCompetition(int idCompetition, int idequipe, int date) {
+    public boolean setTeamCompetition(int idCompetition, int idequipe, String date) {
         openConnection();
+        boolean result = false;
             try {
                 String sqlQuery = ("INSERT INTO inscrireequipes (idcompetitions, idequipes, dateinscriptionequipes) " +
                         "VALUES (?, ?, ?) ");
@@ -299,23 +300,24 @@ public class Gestion_BDD {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
                 preparedStatement.setInt(1, idCompetition);
                 preparedStatement.setInt(2, idequipe);
-                preparedStatement.setInt(3,date);
+                preparedStatement.setString(3,date);
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
-                endConnection();
+                result = true;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            return result;
         }
 
-    public void setPlayerCompetition(int idCompetition, int idjoueurs, int date) {
+    public void setPlayerCompetition(int idCompetition, int idjoueurs, String date) {
         openConnection();
         try {
             String sqlQuery = ("INSERT INTO inscrirejoueurs (dateinscription, idjoueurs, idcompetitions) " +
                     "VALUES (?, ?, ?) ");
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-            preparedStatement.setInt(1, date);
+            preparedStatement.setString(1, date);
             preparedStatement.setInt(2, idjoueurs);
             preparedStatement.setInt(3,idCompetition);
             preparedStatement.executeUpdate();
@@ -525,8 +527,9 @@ public class Gestion_BDD {
 
     }
 
-    public void setJoueurPartie(int idPartie, List<Integer> playersId) {
+    public boolean setJoueurPartie(int idPartie, List<Integer> playersId) {
         openConnection();
+        boolean result = false;
         for (int playerId : playersId) {
             try {
                 String sqlQuery = ("INSERT INTO jouer (idparties, idjoueurs) " +
@@ -537,19 +540,18 @@ public class Gestion_BDD {
                 preparedStatement.setInt(2, playerId);
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
-
-
+                result = true;
             }catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-
-         endConnection();
+        endConnection();
+        return result;
     }
 
-    public void setJoueurTournoi(int idTournoi, int playerId) {
+    public boolean setJoueurTournoi(int idTournoi, int playerId) {
         openConnection();
-
+        boolean result = false;
         try {
             String sqlQuery = ("INSERT INTO participer (idtournois, idjoueurs) " +
                     "VALUES (?, ?) ");
@@ -559,11 +561,12 @@ public class Gestion_BDD {
             preparedStatement.setInt(2, playerId);
             preparedStatement.executeUpdate();
             preparedStatement.close();
+            result = true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         endConnection();
+        return result;
     }
     public Map<Integer, List<String>> getAllCompetitions() {
         Map<Integer, List<String>> competitions = new HashMap<>();
@@ -588,15 +591,23 @@ public class Gestion_BDD {
         return competitions;
     }
 
-    public List<Integer> getAllTournaments() {
-        List<Integer> tournaments = new ArrayList<Integer>();
+    public Map<List<Integer>, List<String>> getAllTournaments() {
+        Map<List<Integer>, List<String>> tournaments = new HashMap<>();
         try {
             openConnection();
             Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery("SELECT * FROM tournois");
             while(rs.next()){
-                tournaments.add(rs.getInt("idtournois"));
+                List<Integer> idTournois = new ArrayList<Integer>();
+                List<String> tournInfos = new ArrayList<>();
+                tournInfos.add(rs.getString("nom"));
+                tournInfos.add(rs.getString("statut"));
+
+                idTournois.add(rs.getInt("idCompetitions"));
+                idTournois.add(rs.getInt("ordre"));
+                idTournois.add(rs.getInt("idtournois"));
+                tournaments.put(idTournois, tournInfos);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -605,15 +616,23 @@ public class Gestion_BDD {
         return tournaments;
     }
 
-    public List<Integer> getAllGames() {
-        List<Integer> games = new ArrayList<Integer>();
+    public Map<List<Integer>, List<String>> getAllGames() {
+        Map<List<Integer>, List<String>> games = new HashMap<>();
         try {
             openConnection();
             Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery("SELECT * FROM parties");
             while(rs.next()){
-                games.add(rs.getInt("idparties"));
+                List<Integer> idPartie = new ArrayList<Integer>();
+                List<String> partieInfos = new ArrayList<>();
+                partieInfos.add(rs.getString("nompartie"));
+                partieInfos.add(rs.getString("statut"));
+
+                idPartie.add(rs.getInt("idpartie"));
+                idPartie.add(rs.getInt("ordre"));
+                idPartie.add(rs.getInt("idtournois"));
+                games.put(idPartie, partieInfos);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -721,6 +740,41 @@ public class Gestion_BDD {
             pstmt_competition.setString(3, infos.get(1));
             pstmt_competition.setString(4, infos.get(2));
             pstmt_competition.setString(5, Statut.PAS_COMMENCE.toString());
+            pstmt_competition.executeUpdate();
+            pstmt_competition.close();
+            result = true;
+        }
+        catch (Exception e){
+
+            e.printStackTrace();
+        }
+        endConnection();
+        return result;
+    }
+
+    public boolean insertTournoi(ArrayList<String> infos) {
+        this.openConnection();
+        int idTournoi = 0;
+        boolean result = false;
+        try {
+            String sql = "SELECT MAX(idtournois) FROM tournois;";
+
+            PreparedStatement pstmt1_competition = connection.prepareStatement(sql);
+            ResultSet rs = pstmt1_competition.executeQuery();
+
+            if (rs.next()) {
+                // Extract the results and store them in the 'result' array
+                idTournoi = rs.getInt("MAX(idtournois)")+1;
+            }
+
+            String sql_malchanceux = "insert into tournois values (?, ?, ?, ?,?, ?);";
+            PreparedStatement pstmt_competition = connection.prepareStatement(sql_malchanceux);
+            pstmt_competition.setInt(1, idTournoi);
+            pstmt_competition.setString(2, infos.get(0));
+            pstmt_competition.setInt(3, Integer.parseInt(infos.get(1)));
+            pstmt_competition.setString(4, infos.get(2));
+            pstmt_competition.setString(5, Statut.PAS_COMMENCE.toString());
+            pstmt_competition.setInt(6, this.getACompetitionByName(infos.get(3)));
             pstmt_competition.executeUpdate();
             pstmt_competition.close();
             result = true;
@@ -901,7 +955,6 @@ public List<Integer> getTournamentGames(int tournamentId){
             while (rs.next()) {
                 tournoi = rs.getInt("idtournois");
             }
-            endConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -941,7 +994,6 @@ public List<Integer> getTournamentGames(int tournamentId){
             while(rs.next()){
                 competition = (rs.getInt("idcompetitions"));
             }
-            endConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }

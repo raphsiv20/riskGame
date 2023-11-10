@@ -1,12 +1,18 @@
 package org.example.vue;
 
+import org.example.model.AbstractModel;
+import org.example.model.Competition;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ClassementCompetitionView extends JFrame {
+
+    private AbstractModel model;
     private JPanel mainPanel;
     private GridLayout mainLayout;
 
@@ -18,15 +24,18 @@ public class ClassementCompetitionView extends JFrame {
     private String confirmerButtonName = "Confirmer";
     private String quitButtonName = "Revenir";
 
-    private String[] strAarraysCompetition = {"str1", "str2"};
+    private List<Competition> competitions;
 
 
-    public ClassementCompetitionView()
+    public ClassementCompetitionView(AbstractModel model)
     {
+        this.model = model;
+        this.competitions = model.getAllCompetitions();
+
         setTitle("Classement competition");
 
         setPreferredSize(new Dimension(600, 600));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(true);
         add(mainPanel());
@@ -42,15 +51,19 @@ public class ClassementCompetitionView extends JFrame {
 
         mainPanel = new JPanel();
 
-        mainLayout = new GridLayout(4, 2, 5, 5);
+        mainLayout = new GridLayout(3, 2, 5, 5);
         mainPanel.setLayout(mainLayout);
 
+        JLabel nomComp = new JLabel("Choisir la compétition");
         listCompetition = new JComboBox<String>();
-        for (String str : strAarraysCompetition) {
-            listCompetition.addItem(str);
-        }
+        /* for (Competition comp : competitions) {
+            listCompetition.addItem(comp.getNomCompetition());
+        } */
+        listCompetition.addItem("djkndskjvn");
 
+        mainPanel.add(nomComp);
         mainPanel.add(listCompetition);
+
 
         confirmerBtn = new JButton("Confirmer");
         confirmerBtn.setActionCommand(confirmerButtonName);
@@ -69,11 +82,9 @@ public class ClassementCompetitionView extends JFrame {
         backBtn.addActionListener(evt);
     }
 
-    // Get methods for text fields
+    public JComboBox<String> getListCompetition() {
+        return listCompetition;
+    }
 
-//    public String getCompetitionChoisi()
-//    {
-//        return Objects.requireNonNull(listCompetition.getSelectedItem()).toString();
-//    }
 
 }

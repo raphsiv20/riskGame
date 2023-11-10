@@ -1,10 +1,14 @@
 package org.example.vue;
 
+import org.example.model.AbstractModel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class ConsulterView extends JFrame {
+
+    private AbstractModel model;
     private JPanel mainPanel;
 
     private GridLayout mainLayout;
@@ -22,8 +26,9 @@ public class ConsulterView extends JFrame {
     /**
      * Constructs the main menu.
      **/
-    public ConsulterView()
+    public ConsulterView(AbstractModel model)
     {
+        this.model = model;
         setTitle("Java-Risk");
         setPreferredSize(new Dimension(600, 600));
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

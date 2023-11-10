@@ -16,6 +16,5 @@ public class Main {
         AbstractModel model = new Plateau(10, 7);
         InitView initView = new InitView();
         InitController initController = new InitController(model,initView);
-
     }
 }

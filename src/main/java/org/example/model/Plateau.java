@@ -187,10 +187,16 @@ public class Plateau extends AbstractModel {
         this.addEquipe(equipes);
         this.addJoueurs(joueurs);
         this.attribuerEquipePartie();
-        for (Map.Entry<Integer, List<String>> entry: getBdd().getAllCompetitions().entrySet()) {
+        /* for (Map.Entry<Integer, List<String>> entry: getBdd().getAllCompetitions().entrySet()) {
             this.addCompetition(new Competition(entry.getKey(), entry.getValue().get(0), entry.getValue().get(1), entry.getValue().get(2), Statut.valueOf(entry.getValue().get(3))));
         }
-
+        for (Map.Entry<List<Integer>, List<String>> entry: getBdd().getAllTournaments().entrySet()) {
+            this.addTournoi(new Tournoi(entry.getKey().get(2), entry.getValue().get(0), entry.getKey().get(1), this.getCompetitionByID(entry.getKey().get(0)), Statut.valueOf(entry.getValue().get(1))));
+        }
+        for (Map.Entry<List<Integer>, List<String>> entry: getBdd().getAllGames().entrySet()) {
+            this.addPartie(new Manche(entry.getKey().get(0), entry.getValue().get(0), entry.getKey().get(1), Statut.valueOf(entry.getValue().get(1)), this.getTournamentByID(entry.getKey().get(2))));
+        }
+        System.out.println(getAllGames().size()); */
     }
 
     @Override
@@ -468,6 +474,13 @@ public class Plateau extends AbstractModel {
     }
 
     @Override
+    public Joueur getJoueurByName(String nomJoueur) {
+        return this.getJoueurs().stream()
+                .filter(joueur -> joueur.getNomJoueur().equals(nomJoueur))
+                .toList().get(0);
+    }
+
+    @Override
     public void attribuerEquipePartie() {
         Random random = new Random();
         for (Equipe equipe : this.getEquipes()) {
@@ -513,4 +526,24 @@ public class Plateau extends AbstractModel {
                 .toList().get(0);
     }
 
- }
+    @Override
+    public Competition getCompetitionByName(String nomComp) {
+        return this.getAllCompetitions().stream()
+                .filter(competition -> competition.getNomCompetition().equals(nomComp))
+                .toList().get(0);
+    }
+
+    @Override
+    public Tournoi getTournamentByName(String nomTour) {
+        return this.getAllTournaments().stream()
+                .filter(tournoi -> tournoi.getNomTournoi().equals(nomTour))
+                .toList().get(0);
+    }
+
+    @Override
+    public Manche getGameByName(String nomGame) {
+        return this.getAllGames().stream()
+                .filter(game -> game.getNomPartie().equals(nomGame))
+                .toList().get(0);
+    }
+}

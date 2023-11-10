@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.example.ressourcesImg.RessourcesImages.AFGHANISTAN;
@@ -50,13 +51,36 @@ public class RiskView extends JFrame implements Observateur {
 
     // initialise l'affichage
     private void initComponents() {
-        System.out.println(model.getBdd().getACompetitionTournaments(1));
+        //System.out.println(model.getBdd().getACompetitionTournaments(1));
+
+        if (model.getBdd().isACompetitionStarted()) {
+            model.setCompetition(model.getCompetitionByID(model.getBdd().getCompetitionActive()));
+            Object[] listeTournois = model.getBdd().getACompetitionTournaments(model.getCompetition().getIdCompetition()).stream()
+                    .map(model::getTournamentByID)
+                    .filter(tournoi -> !model.getBdd().isTournamentFinished(tournoi.getIdTournoi()))
+                    .map(Tournoi::getNomTournoi)
+                    .toArray();
+            JComboBox<String> tournoisComboBox = new JComboBox<String>();
+            for (Object tournoi: listeTournois) {
+                tournoisComboBox.addItem(tournoi.toString());
+            }
+            String tournoiChoisi = (String) JOptionPane.showInputDialog(
+                    Frame.getFrames()[0],
+                    "Sélectionnez la compétition :",
+                    "Choix du tournoi",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    listeTournois,
+                    0
+            );
+
+        }
         String[] listeCompet = {"Compet1", "Compet2", "Compet3",};
         JComboBox<String> comboBox1 = new JComboBox<>(listeCompet);
         String[] listeTournoi = {"Tournoi1", "Tournoi2", "Tournoi3"};
         JComboBox<String> comboBox2 = new JComboBox<>(listeTournoi);
 
-        // result territoire attaque
+
         String territoireCibleNom = (String) JOptionPane.showInputDialog(
                 Frame.getFrames()[0],
                 "Sélectionnez la compétition :",

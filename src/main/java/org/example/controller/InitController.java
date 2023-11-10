@@ -23,6 +23,7 @@ public class InitController implements ActionListener {
         System.out.println("Loaded Risk!");
 
         this.model = model;
+        System.out.println(this.model.getHauteur());
         this.view = view;
         //Add this class' actionListener to riskView's buttons
         view.riskViewActionListeners(this);
@@ -37,14 +38,14 @@ public class InitController implements ActionListener {
 
             System.out.println("Loading OrgaView...");
             //Opens the playerCountDialog
-            OrganisationView organisationView = new OrganisationView();
+            OrganisationView organisationView = new OrganisationView(model);
             organisationView.addActionListeners(new OrganisationController(model, organisationView));
             organisationView.setVisible(true);
 
         } else if (actionEvent.equals("Consulter classement")) {
             System.out.println("Loading ConsulterView...");
             //Opens the playerCountDialog
-            ConsulterView consulterView = new ConsulterView();
+            ConsulterView consulterView = new ConsulterView(model);
             consulterView.addActionListeners(new ConsulterController(model, consulterView));
             consulterView.setVisible(true);
 

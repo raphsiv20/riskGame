@@ -1,24 +1,26 @@
 package org.example.vue;
 
+import org.example.model.AbstractModel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class OrganisationView extends JFrame {
+
+    private AbstractModel model;
     private JPanel mainPanel;
 
     private GridLayout mainLayout;
 
     private JButton creerCompetition;
     private JButton creerTournoi;
-    private JButton creerPartie;
     private JButton affecterEquipe;
     private JButton affecterJoueur;
     private JButton quit;
 
     private String creerCompetitionName = "Créer Competition";
     private String creerTournoiName = "Créer Tournoi";
-    private String creerPartieButtonName = "Créer Partie";
     private String affecterJoueurName = "Affecter Joueur";
     private String affecterEquipeButtonName = "Affecter Equipe";
     private String quitButtonName = "Revenir";
@@ -26,11 +28,12 @@ public class OrganisationView extends JFrame {
     /**
      * Constructs the main menu.
      **/
-    public OrganisationView()
+    public OrganisationView(AbstractModel model)
     {
+        this.model = model;
         setTitle("Java-Risk");
         setPreferredSize(new Dimension(600, 600));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(true);
 
@@ -47,15 +50,13 @@ public class OrganisationView extends JFrame {
         mainPanel = new JPanel();
 
         // Sets Layout
-        mainLayout = new GridLayout(6, 1, 5, 5);
+        mainLayout = new GridLayout(5, 1, 5, 5);
         mainPanel.setLayout(mainLayout);
 
         // Creates buttons
         creerCompetition = new JButton("Créer Competition");
 
         creerTournoi = new JButton("Créer Tournoi");
-
-        creerPartie = new JButton("Créer Partie");
 
         affecterEquipe = new JButton("Affecter Equipe");
 
@@ -67,7 +68,6 @@ public class OrganisationView extends JFrame {
         // Sets button commands
         creerCompetition.setActionCommand(creerCompetitionName);
         creerTournoi.setActionCommand(creerTournoiName);
-        creerPartie.setActionCommand(creerPartieButtonName);
         affecterEquipe.setActionCommand(affecterEquipeButtonName);
         affecterJoueur.setActionCommand(affecterJoueurName);
         quit.setActionCommand(quitButtonName);
@@ -75,7 +75,6 @@ public class OrganisationView extends JFrame {
         // Adds buttons to mainPanel
         mainPanel.add(creerCompetition);
         mainPanel.add(creerTournoi);
-        mainPanel.add(creerPartie);
         mainPanel.add(affecterEquipe);
         mainPanel.add(affecterJoueur);
         mainPanel.add(quit);
@@ -88,7 +87,6 @@ public class OrganisationView extends JFrame {
     {
         creerCompetition.addActionListener(evt);
         creerTournoi.addActionListener(evt);
-        creerPartie.addActionListener(evt);
         affecterEquipe.addActionListener(evt);
         affecterJoueur.addActionListener(evt);
         quit.addActionListener(evt);

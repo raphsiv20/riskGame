@@ -1,8 +1,15 @@
 package org.example.vue;
 
+import org.example.model.AbstractModel;
+import org.example.model.Competition;
+import org.example.model.Tournoi;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author: xxx
@@ -10,11 +17,16 @@ import java.awt.event.ActionListener;
  * @project: xxx
  */
 public class ClassementTournoisView extends JFrame {
+    private AbstractModel model;
     private JPanel mainPanel;
     private GridLayout mainLayout;
 
     private JComboBox<String> listCompetition;
     private JComboBox<String> listTournoisCompetion ;
+    private List<Competition> competitions;
+    private Competition competitionChosen;
+    private String compChosenName;
+    private List<Tournoi> tournois;
 
     private JButton confirmerBtn;
     private JButton backBtn;
@@ -22,22 +34,22 @@ public class ClassementTournoisView extends JFrame {
     private String confirmerButtonName = "Confirmer";
     private String quitButtonName = "Revenir";
 
-    private String[] strAarraysCompetition = {"str1", "str2"};
-    private String[] strArraysTournois = {"tournois1", "tournois2"};
 
 
-    public ClassementTournoisView()
+    public ClassementTournoisView(AbstractModel model)
     {
+        this.model = model;
+        //this.competitions = model.getAllCompetitions();
+
+
         setTitle("Classement tournois");
 
         setPreferredSize(new Dimension(600, 600));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(true);
         add(mainPanel());
 
-//        this.strAarraysCompetition = getListCompetition();
-//        this.strArraysTournois = getListTournois();
 
         pack();
         setVisible(true);
@@ -48,20 +60,56 @@ public class ClassementTournoisView extends JFrame {
 
         mainPanel = new JPanel();
 
-        mainLayout = new GridLayout(4, 2, 5, 5);
+        mainLayout = new GridLayout(3, 2, 5, 5);
         mainPanel.setLayout(mainLayout);
 
+        JLabel compLabel = new JLabel("Choisir la compétition: ");
         listCompetition = new JComboBox<String>();
-        for (String str : strAarraysCompetition) {
-            listCompetition.addItem(str);
-        }
+        /* for (Competition comp : competitions) {
+            listCompetition.addItem(comp.getNomCompetition());
+        } */
+        listCompetition.addItem("comp1");
+        listCompetition.addItem("comp2");
+        //this.competitionChosen = model.getCompetitionByName(listCompetition.getSelectedItem().toString());
+        this.compChosenName = listCompetition.getSelectedItem().toString();
+        System.out.println("suuuu " + compChosenName);
+        /* this.tournois = model.getBdd().getACompetitionTournaments(competitionChosen.getIdCompetition()).stream()
+                        .map(model::getTournamentByID)
+                        .toList(); */
 
+        JLabel tournoiLabel = new JLabel("Choisir le tournoi: ");
         listTournoisCompetion = new JComboBox<String>();
-        for (String strT : strArraysTournois) {
-            listTournoisCompetion.addItem(strT);
-        }
+        /* for (Tournoi tournoi : tournois) {
+            listTournoisCompetion.addItem(tournoi.getNomTournoi());
+        } */
+        listTournoisCompetion.addItem("t1");
 
+        listCompetition.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //competitionChosen = model.getCompetitionByName(listCompetition.getSelectedItem().toString());
+                compChosenName = listCompetition.getSelectedItem().toString();
+                System.out.println(compChosenName);
+                /* tournois = model.getBdd().getACompetitionTournaments(competitionChosen.getIdCompetition()).stream()
+                        .map(model::getTournamentByID)
+                        .toList(); */
+
+                listTournoisCompetion.removeAllItems();
+
+
+
+                /* for (Tournoi tournoi : tournois) {
+                listTournoisCompetion.addItem(tournoi.getNomTournoi());
+                } */
+                listTournoisCompetion.addItem("new t1");
+                mainPanel.revalidate();
+
+            }
+        });
+
+        mainPanel.add(compLabel);
         mainPanel.add(listCompetition);
+        mainPanel.add(tournoiLabel);
         mainPanel.add(listTournoisCompetion);
 
         confirmerBtn = new JButton("Confirmer");
@@ -75,17 +123,20 @@ public class ClassementTournoisView extends JFrame {
         return mainPanel;
     }
 
+
+
     public void addActionListeners(ActionListener evt)
     {
         confirmerBtn.addActionListener(evt);
         backBtn.addActionListener(evt);
     }
 
-    // Get methods for text fields
 
-//    public String getCompetitionChoisi()
-//    {
-//        return Objects.requireNonNull(listCompetition.getSelectedItem()).toString();
-//    }
+    public JComboBox<String> getListTournoisCompetion() {
+        return listTournoisCompetion;
+    }
 
+    public String getCompChosenName() {
+        return compChosenName;
+    }
 }

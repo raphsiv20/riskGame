@@ -184,6 +184,7 @@ public abstract class AbstractModel implements Observable {
     public abstract Joueur getAJoueurById(int joueurId);
 
     public abstract Equipe getEquipeByName(String nomEquipe);
+    public abstract Joueur getJoueurByName(String nomJoueur);
     public abstract CarteTerritoire getACarteTerritoireByTerritoireName(String countryName);
 
 
@@ -307,6 +308,10 @@ public abstract class AbstractModel implements Observable {
     public abstract Competition getCompetitionByID(int id);
     public abstract Tournoi getTournamentByID(int id);
     public abstract Manche getGameByID(int id);
+
+    public abstract Competition getCompetitionByName(String nomComp);
+    public abstract Tournoi getTournamentByName(String nomTour);
+    public abstract Manche getGameByName(String nomGame);
 
     public abstract CarteTerritoire obtenirCarteTerritoire();
 

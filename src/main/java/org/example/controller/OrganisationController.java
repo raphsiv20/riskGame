@@ -1,8 +1,7 @@
 package org.example.controller;
 
 import org.example.model.AbstractModel;
-import org.example.vue.CreerCompetitionView;
-import org.example.vue.OrganisationView;
+import org.example.vue.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,15 +35,21 @@ public class OrganisationController  implements ActionListener {
                 break;
             case "Créer Tournoi":
                 System.out.println("Loading Créer Tournoi...");
-                break;
-            case "Créer Partie":
-                System.out.println("Loading Partie...");
+                CreerTournoiView creerTournoiView = new CreerTournoiView(model);
+                creerTournoiView.addActionListeners(new CreerTournoiController(model, creerTournoiView));
+                creerTournoiView.setVisible(true);
                 break;
             case "Affecter Equipe":
                 System.out.println("Loading Equipe...");
+                AffecterEquipeView affecterEquipeView = new AffecterEquipeView(model);
+                affecterEquipeView.addActionListeners(new AffecterEquipeController(model, affecterEquipeView));
+                affecterEquipeView.setVisible(true);
                 break;
             case "Affecter Joueur":
                 System.out.println("Loading Joueur...");
+                AffecterJoueurView affecterJoueurView = new AffecterJoueurView(model);
+                affecterJoueurView.addActionListeners(new AffecterJoueurController(model, affecterJoueurView));
+                affecterJoueurView.setVisible(true);
                 break;
             case "Revenir":
                 System.out.println("Loading Revenir...");
